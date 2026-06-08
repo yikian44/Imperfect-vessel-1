@@ -701,6 +701,7 @@
       glowPath.setAttribute("stroke-width", "16");
       glowPath.setAttribute("stroke-linecap", "round");
       glowPath.style.filter = "blur(8px)"; // Broad soft diffusion
+      glowPath.style.opacity = "0"; // Hide initially
 
       const corePath = document.createElementNS(svgNS, "path");
       corePath.setAttribute("d", frag.path);
@@ -709,6 +710,7 @@
       corePath.setAttribute("stroke-width", "3");
       corePath.setAttribute("stroke-linecap", "round");
       corePath.style.filter = "blur(2px)"; // Slight softening
+      corePath.style.opacity = "0"; // Hide initially
       
       tracingG.appendChild(glowPath);
       tracingG.appendChild(corePath);
