@@ -373,6 +373,9 @@
 
     /* Mobile Responsive Adjustments */
     @media (max-width: 768px) {
+      #custom-cursor {
+        display: none !important;
+      }
       #ui-panel {
         top: 20px;
         left: 50%;
