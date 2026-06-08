@@ -358,7 +358,7 @@
       }
       
       const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
-      const initialTexture = texturesList[Math.floor(Math.random() * texturesList.length)];
+      const initialTexture = window.innerWidth < 768 ? 'none' : texturesList[Math.floor(Math.random() * texturesList.length)];
 
       return {
         id: index,
@@ -1125,7 +1125,7 @@
         }
 
         const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
-        f.texture = texturesList[Math.floor(Math.random() * texturesList.length)];
+        f.texture = window.innerWidth < 768 ? 'none' : texturesList[Math.floor(Math.random() * texturesList.length)];
 
         f.pathElement.setAttribute("fill", f.color);
         if (f.texture === 'none') {

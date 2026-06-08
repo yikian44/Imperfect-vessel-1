@@ -376,6 +376,15 @@
       #custom-cursor {
         display: none !important;
       }
+      .fragment svg {
+        filter: none !important;
+      }
+      .kintsugi .fragment svg {
+        filter: none !important;
+      }
+      #texture-section {
+        display: none !important;
+      }
       #ui-panel {
         top: 20px;
         left: 50%;
