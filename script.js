@@ -670,11 +670,18 @@
       const pathBg = document.createElementNS(svgNS, "path");
       pathBg.setAttribute("d", frag.path);
       pathBg.setAttribute("fill", frag.color);
+      
+      const textureOverlay = document.createElementNS(svgNS, "path");
+      textureOverlay.setAttribute("d", frag.path);
+      textureOverlay.setAttribute("pointer-events", "none");
       if (frag.texture !== 'none') {
-        pathBg.setAttribute("filter", `url(#${frag.texture})`);
+        textureOverlay.setAttribute("fill", `url(#${frag.texture})`);
+      } else {
+        textureOverlay.setAttribute("fill", "none");
       }
 
       clippedGroup.appendChild(pathBg);
+      clippedGroup.appendChild(textureOverlay);
       
       drawFeatures(frag, clippedGroup, svgNS);
       
@@ -779,6 +786,7 @@
       
       frag.element = div;
       frag.pathElement = pathBg;
+      frag.textureOverlay = textureOverlay;
       frag.clipPathElem = clipPathElem;
       frag.clippedGroup = clippedGroup;
       frag.glowPath = glowPath;
@@ -821,9 +829,9 @@
       if (!selectedFragment) return;
       selectedFragment.texture = textureId;
       if (textureId === 'none') {
-        selectedFragment.pathElement.removeAttribute("filter");
+        selectedFragment.textureOverlay.setAttribute("fill", "none");
       } else {
-        selectedFragment.pathElement.setAttribute("filter", `url(#${textureId})`);
+        selectedFragment.textureOverlay.setAttribute("fill", `url(#${textureId})`);
       }
       editCount++;
     }
@@ -1094,6 +1102,7 @@
         f.type = piece.type;
         
         f.pathElement.setAttribute("d", f.path);
+        f.textureOverlay.setAttribute("d", f.path);
         f.clipPathElem.setAttribute("d", f.path);
         f.glowPath.setAttribute("d", f.path);
         f.corePath.setAttribute("d", f.path);
@@ -1129,9 +1138,9 @@
 
         f.pathElement.setAttribute("fill", f.color);
         if (f.texture === 'none') {
-          f.pathElement.removeAttribute("filter");
+          f.textureOverlay.setAttribute("fill", "none");
         } else {
-          f.pathElement.setAttribute("filter", `url(#${f.texture})`);
+          f.textureOverlay.setAttribute("fill", `url(#${f.texture})`);
         }
         f.element.classList.remove('selected');
         drawFeatures(f, f.clippedGroup, "http://www.w3.org/2000/svg");
@@ -1169,6 +1178,7 @@
         f.type = piece.type;
         
         f.pathElement.setAttribute("d", f.path);
+        f.textureOverlay.setAttribute("d", f.path);
         f.clipPathElem.setAttribute("d", f.path);
         f.glowPath.setAttribute("d", f.path);
         f.corePath.setAttribute("d", f.path);
@@ -1245,8 +1255,8 @@
         </g>`;
 
       fragments.forEach(f => {
-        const textureAttr = f.texture !== 'none' ? `filter="url(#${f.texture})"` : '';
         const clipId = `save-clip-${f.id}`;
+        const textureOverlayString = f.texture !== 'none' ? `<path d="${f.path}" fill="url(#${f.texture})" pointer-events="none" />` : '';
         
         svgContent += `
           <g transform="translate(${w / 2 + f.x}, ${h / 2 + f.y}) rotate(${f.rot})">
@@ -1257,8 +1267,9 @@
             <clipPath id="${clipId}">
               <path d="${f.path}" />
             </clipPath>
-            <g clip-path="url(#${clipId})" ${textureAttr}>
+            <g clip-path="url(#${clipId})">
               <path d="${f.path}" fill="${f.color}" />
+              ${textureOverlayString}
               ${f.featureSvgString || ''}
             </g>
           </g>`;

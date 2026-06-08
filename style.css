@@ -382,9 +382,6 @@
       .kintsugi .fragment svg {
         filter: none !important;
       }
-      #texture-section {
-        display: none !important;
-      }
       #ui-panel {
         top: 20px;
         left: 50%;

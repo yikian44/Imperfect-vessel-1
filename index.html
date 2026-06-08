@@ -33,46 +33,23 @@
         <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
       </filter>
 
-      <!-- Matte Texture -->
-      <filter id="texture-matte">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blurred" />
-        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" result="noise" />
-        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.25 0" in="noise"
-          result="coloredNoise" />
-        <feComposite operator="in" in="coloredNoise" in2="SourceAlpha" result="maskedNoise" />
-        <feBlend mode="screen" in="maskedNoise" in2="blurred" result="blend1" />
-        <feComposite operator="in" in="blend1" in2="SourceAlpha" />
-      </filter>
+      <!-- Matte Texture (Soft dots) -->
+      <pattern id="texture-matte" width="4" height="4" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="0.5" fill="rgba(0,0,0,0.08)"/>
+        <circle cx="3" cy="3" r="0.5" fill="rgba(0,0,0,0.06)"/>
+      </pattern>
 
       <!-- Rough Canvas Texture (Picasso Cubism) -->
-      <filter id="texture-canvas">
-        <feTurbulence type="fractalNoise" baseFrequency="0.5 0.04" numOctaves="3" result="v_lines"/>
-        <feTurbulence type="fractalNoise" baseFrequency="0.04 0.5" numOctaves="3" result="h_lines"/>
-        <feBlend mode="multiply" in="v_lines" in2="h_lines" result="weave"/>
-        
-        <!-- Convert weave to bump map alpha -->
-        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" in="weave" result="bumpMap" />
-        
-        <!-- Apply strong 3D lighting to the bump map -->
-        <feDiffuseLighting in="bumpMap" surfaceScale="8" diffuseConstant="1.5" lighting-color="#ffffff" result="light">
-          <feDistantLight azimuth="45" elevation="45" />
-        </feDiffuseLighting>
-        
-        <!-- Blend the lighting with the original color -->
-        <feBlend mode="multiply" in="light" in2="SourceGraphic" result="textured"/>
-        <feComposite operator="in" in="textured" in2="SourceAlpha" />
-      </filter>
+      <pattern id="texture-canvas" width="6" height="6" patternUnits="userSpaceOnUse">
+        <path d="M0 0L6 0M0 3L6 3" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/>
+        <path d="M0 0L0 6M3 0L3 6" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/>
+      </pattern>
 
-      <!-- Glaze Texture -->
-      <filter id="texture-glaze">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="2.5" result="blurAlpha" />
-        <feSpecularLighting in="blurAlpha" surfaceScale="6" specularConstant="1.2" specularExponent="25"
-          lighting-color="#ffffff" result="specOut">
-          <fePointLight x="-200" y="-200" z="200" />
-        </feSpecularLighting>
-        <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOutMasked" />
-        <feComposite in="specOutMasked" in2="SourceGraphic" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
-      </filter>
+      <!-- Glaze Texture (Diagonal shine lines) -->
+      <pattern id="texture-glaze" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M-5 25 L25 -5" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M5 35 L35 5" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-linecap="round"/>
+      </pattern>
 
       <!-- Organic Wabi-Sabi Edge -->
       <filter id="wabi-edge" x="-20%" y="-20%" width="140%" height="140%">
@@ -105,25 +82,20 @@
       </filter>
 
       <!-- Grainy Texture -->
-      <filter id="texture-grainy">
-        <feTurbulence type="fractalNoise" baseFrequency="1.8" numOctaves="2" result="noise" />
-        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0" in="noise"
-          result="coloredNoise" />
-        <feComposite operator="in" in="coloredNoise" in2="SourceAlpha" result="maskedNoise" />
-        <feBlend mode="multiply" in="maskedNoise" in2="SourceGraphic" />
-      </filter>
+      <pattern id="texture-grainy" width="6" height="6" patternUnits="userSpaceOnUse">
+        <circle cx="1" cy="1" r="0.5" fill="rgba(0,0,0,0.15)"/>
+        <circle cx="4" cy="2" r="0.6" fill="rgba(0,0,0,0.1)"/>
+        <circle cx="2" cy="5" r="0.4" fill="rgba(0,0,0,0.12)"/>
+        <circle cx="5" cy="4" r="0.5" fill="rgba(0,0,0,0.08)"/>
+      </pattern>
 
       <!-- Speckled Texture -->
-      <filter id="texture-speckled">
-        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" result="noise" />
-        <feComponentTransfer in="noise" result="speckles">
-          <feFuncA type="discrete" tableValues="0 0 0 0 0 0 0.5 0.8 1 1" />
-        </feComponentTransfer>
-        <feColorMatrix type="matrix" values="0 0 0 0 0.15  0 0 0 0 0.12  0 0 0 0 0.08  0 0 0 1.2 0" in="speckles"
-          result="coloredSpeckles" />
-        <feComposite operator="in" in="coloredSpeckles" in2="SourceAlpha" result="maskedSpeckles" />
-        <feBlend mode="multiply" in="maskedSpeckles" in2="SourceGraphic" />
-      </filter>
+      <pattern id="texture-speckled" width="24" height="24" patternUnits="userSpaceOnUse">
+        <circle cx="4" cy="4" r="1.5" fill="rgba(0,0,0,0.15)"/>
+        <circle cx="16" cy="10" r="1" fill="rgba(0,0,0,0.12)"/>
+        <circle cx="10" cy="18" r="2" fill="rgba(0,0,0,0.1)"/>
+        <circle cx="20" cy="22" r="1.2" fill="rgba(0,0,0,0.15)"/>
+      </pattern>
     </defs>
   </svg>
 
