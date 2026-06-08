@@ -8,6 +8,28 @@
 
     // Prologue Sequence
     window.addEventListener('load', () => {
+      // Pre-bake complex SVG filters into static image patterns to prevent lag on mobile while keeping the organic look
+      const bake = (svgString, imgId) => {
+        const encoded = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
+        const imgElem = document.getElementById(imgId);
+        if (imgElem) imgElem.setAttribute("href", encoded);
+      };
+
+      bake(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' result='noise'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.45 0' in='noise'/></filter><rect width='100%' height='100%' filter='url(#f)'/></svg>`,
+        'img-matte'
+      );
+
+      bake(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='1.8' numOctaves='2' result='noise'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0' in='noise'/></filter><rect width='100%' height='100%' filter='url(#f)'/></svg>`,
+        'img-grainy'
+      );
+
+      bake(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' result='n'/><feComponentTransfer in='n' result='s'><feFuncA type='discrete' tableValues='0 0 0 0 0 0 0.5 0.8 1 1'/></feComponentTransfer><feColorMatrix type='matrix' values='0 0 0 0 0.15  0 0 0 0 0.12  0 0 0 0 0.08  0 0 0 1.5 0' in='s'/></filter><rect width='100%' height='100%' filter='url(#f)'/></svg>`,
+        'img-speckled'
+      );
+
       const prologue = document.getElementById('prologue');
       const text = document.getElementById('prologue-text');
       const quote = document.getElementById('prologue-quote');
