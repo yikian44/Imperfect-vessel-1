@@ -1,0 +1,458 @@
+:root {
+      --bg-color: #e8e6e1;
+      --text-color: #5a5854;
+      --panel-bg: rgba(245, 243, 238, 0.85);
+      --btn-border: rgba(90, 88, 84, 0.3);
+    }
+
+    * {
+      cursor: none !important;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      /* Woven canvas texture */
+      background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px),
+        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+
+    /* Custom Cursor */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 6px;
+      background: var(--text-color);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s ease, height 0.3s ease, background 0.3s ease, border 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    #custom-cursor.hover {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid var(--text-color);
+    }
+
+    /* Prologue Sequence */
+    #prologue {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 1;
+      transition: opacity 2s ease;
+      pointer-events: auto;
+    }
+
+    .prologue-content {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    #prologue h1 {
+      font-family: 'Space Grotesk', 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+      font-weight: 300;
+      color: var(--text-color);
+      opacity: 0;
+      font-size: clamp(2rem, 6vw, 6rem);
+      letter-spacing: 0px;
+      margin: 0;
+      line-height: 1;
+      transform: translateY(20px);
+      transition: opacity 2s ease, letter-spacing 3s cubic-bezier(0.2, 0.8, 0.2, 1), transform 2s ease;
+    }
+
+    #prologue h1.visible {
+      opacity: 1;
+      letter-spacing: 12px;
+      transform: translateY(0);
+    }
+
+    .prologue-quote {
+      font-family: 'Space Grotesk', 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      font-style: italic;
+      color: #7a7874;
+      opacity: 0;
+      max-width: 800px;
+      padding: 0 20px;
+      line-height: 1.6;
+      margin: 0;
+      transition: opacity 2s ease 1s;
+    }
+
+    .prologue-quote.visible {
+      opacity: 1;
+    }
+
+    .prologue-subtext {
+      font-family: 'Space Grotesk', 'Avenir', 'Helvetica Neue', Helvetica, sans-serif;
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: #8a8884;
+      margin-top: 40px;
+      opacity: 0;
+      transition: opacity 1.5s ease 2s;
+      animation: pulseText 3s infinite alternate ease-in-out;
+    }
+
+    .prologue-subtext.visible {
+      opacity: 1;
+    }
+
+    @keyframes pulseText {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    #canvas-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fragment {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: center;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+
+    .fragment svg {
+      overflow: visible;
+      filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.1));
+      pointer-events: none;
+      will-change: filter;
+    }
+
+    .fragment path {
+      pointer-events: auto;
+    }
+
+    /* Kintsugi Glow Effect (Now Depth Shadow) */
+    .kintsugi .fragment svg {
+      filter: drop-shadow(0px 15px 20px rgba(0, 0, 0, 0.4)) drop-shadow(0px 5px 8px rgba(0, 0, 0, 0.3)) !important;
+      transition: filter 2s ease-out !important; /* Shortened to reduce Chrome CPU choking */
+    }
+
+    #bg-dimmer {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #181716; /* Museum dark gray */
+      opacity: 0;
+      z-index: -2; /* Above the canvas background, below gold underlay */
+      pointer-events: none;
+      will-change: opacity;
+      transition: opacity 4s ease;
+    }
+
+    body.kintsugi #bg-dimmer {
+      opacity: 0.85; /* Dim the background to 85% opacity over the woven texture */
+    }
+
+    body.kintsugi #ui-panel {
+      opacity: 0.2;
+      transition: opacity 3s ease;
+    }
+
+    body.kintsugi #ui-panel:hover {
+      opacity: 1;
+    }
+
+    /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
+    body.kintsugi .fragment {
+      opacity: 0.85;
+      transition: opacity 3s ease;
+    }
+
+    /* UI Panel */
+    #ui-panel {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      background: var(--panel-bg);
+      padding: 24px;
+      border-radius: 2px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
+      transform: translateY(-10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    #ui-panel.visible {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .ui-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #8a8884;
+      margin-bottom: 8px;
+    }
+
+    .options-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      max-width: 240px;
+    }
+
+    .color-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .texture-btn {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--btn-border);
+      color: var(--text-color);
+      font-size: 11px;
+      letter-spacing: 1px;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .texture-btn:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* Let Go Button */
+    #let-go-btn {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      padding: 14px 28px;
+      background: transparent;
+      border: 1px solid var(--btn-border);
+      color: var(--text-color);
+      font-size: 12px;
+      letter-spacing: 3px;
+      border-radius: 24px;
+      transition: all 0.5s ease;
+      z-index: 10;
+    }
+
+    #let-go-btn:hover {
+      background: rgba(90, 88, 84, 0.04);
+      border-color: rgba(90, 88, 84, 0.7);
+      transform: translateY(-2px);
+    }
+
+    #let-go-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Final Message */
+    #final-message {
+      position: absolute;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 3s ease;
+      text-align: center;
+      z-index: 20;
+      color: #4a4844;
+      font-weight: 300;
+    }
+
+    #final-message.visible {
+      opacity: 1;
+    }
+
+    /* Textures via SVG filters */
+    #filter-defs {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* Post Action Buttons */
+    #post-action-container {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 16px;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 2s ease, visibility 2s;
+      transition-delay: 1.5s;
+      z-index: 20;
+    }
+
+    #post-action-container.visible {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .action-btn {
+      padding: 10px 24px;
+      background: transparent;
+      border: 1px solid var(--btn-border);
+      color: var(--text-color);
+      font-size: 11px;
+      letter-spacing: 2px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background: rgba(90, 88, 84, 0.04);
+      border-color: rgba(90, 88, 84, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .tracing-path {
+      pointer-events: none;
+      opacity: 0;
+      filter: drop-shadow(0 0 4px rgba(255, 235, 133, 0.8)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+    }
+
+    /* Mobile Responsive Adjustments */
+    @media (max-width: 768px) {
+      #ui-panel {
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        width: 90%;
+        max-width: none; /* Allow it to be wide for scrolling */
+        padding: 16px;
+        gap: 12px;
+      }
+      #ui-panel.visible {
+        transform: translateX(-50%) translateY(0);
+      }
+      .ui-label {
+        margin-bottom: 8px;
+        font-size: 10px;
+      }
+      .options-row {
+        max-width: 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 12px;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        gap: 12px;
+      }
+      /* Hide scrollbar for a cleaner look */
+      .options-row::-webkit-scrollbar {
+        display: none;
+      }
+      .options-row {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .color-btn {
+        flex: 0 0 auto;
+        width: 32px;
+        height: 32px;
+        touch-action: pan-x;
+      }
+      .texture-btn {
+        flex: 0 0 auto;
+        padding: 8px 14px;
+        font-size: 11px;
+        touch-action: pan-x;
+      }
+      #let-go-btn {
+        bottom: 40px;
+        right: 50%;
+        transform: translateX(50%);
+        padding: 12px 24px;
+      }
+      #let-go-btn:hover {
+        transform: translateX(50%) translateY(-2px);
+      }
+      #post-action-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        bottom: 30px;
+        width: 90%;
+        gap: 10px;
+      }
+      .action-btn {
+        width: auto;
+        padding: 10px 16px;
+        font-size: 10px;
+        flex: 1 1 40%;
+        text-align: center;
+      }
+      .prologue-quote {
+        font-size: 12px;
+      }
+      #prologue h1 {
+        font-size: clamp(1.5rem, 8vw, 3rem);
+      }
+      #final-message {
+        bottom: 120px;
+        font-size: 14px;
+        width: 100%;
+      }
+    }
