@@ -883,10 +883,10 @@
     // Keyboard Rotation (Z / X)
     window.addEventListener('keydown', (e) => {
       if (!isFreeArrange || !selectedFragment) return;
-      if (e.key.toLowerCase() === 'z') {
-        selectedFragment.rot -= 5;
-      } else if (e.key.toLowerCase() === 'x') {
-        selectedFragment.rot += 5;
+      if (e.code === 'KeyZ' || e.key.toLowerCase() === 'z') {
+        selectedFragment.rot -= 15;
+      } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
+        selectedFragment.rot += 15;
       }
     });
 

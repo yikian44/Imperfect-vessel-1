@@ -326,15 +326,12 @@
       height: 0;
     }
 
-    /* Post Action Buttons */
     #post-action-container {
       position: absolute;
-      bottom: 50px;
-      left: 50px;
-      transform: none;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
       gap: 16px;
       opacity: 0;
       pointer-events: none;
@@ -446,8 +443,6 @@
         flex-wrap: wrap;
         justify-content: center;
         bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
         width: 90%;
         gap: 10px;
       }
