@@ -881,8 +881,12 @@
       editCount++;
     }
 
-    // Keyboard Rotation (Z / X) and Undo (Ctrl+Z)
+    const keys = {};
+
+    // Keyboard Tracking and Undo (Ctrl+Z)
     window.addEventListener('keydown', (e) => {
+      keys[e.code] = true;
+      
       if (!isFreeArrange) return;
 
       if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.key.toLowerCase() === 'z')) {
@@ -890,13 +894,10 @@
         document.getElementById('return-btn').click();
         return;
       }
+    });
 
-      if (!selectedFragment) return;
-      if (e.code === 'KeyZ' || e.key.toLowerCase() === 'z') {
-        selectedFragment.rot -= 15;
-      } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
-        selectedFragment.rot += 15;
-      }
+    window.addEventListener('keyup', (e) => {
+      keys[e.code] = false;
     });
 
     // Mobile Two-Finger Rotation
@@ -967,6 +968,16 @@
     // Main Animation Loop
     function animate() {
       time += 0.01;
+
+      // Handle continuous smooth keyboard rotation
+      if (isFreeArrange && selectedFragment) {
+        if (keys['KeyZ']) {
+          selectedFragment.rot -= 2.5;
+        }
+        if (keys['KeyX']) {
+          selectedFragment.rot += 2.5;
+        }
+      }
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
