@@ -1,6 +1,7 @@
     let editCount = 0;
     let isSettling = false;
     let isFreeArrange = false;
+    let isCustomArranged = false;
     let moveHistory = [];
     let selectedFragment = null;
     let returningFragment = null;
@@ -1000,7 +1001,7 @@
 
         } else {
           // Assembling State ("Let Go")
-          if (isFreeArrange) {
+          if (isFreeArrange || isCustomArranged) {
             f.element.style.transform = `translate(${centerX + f.x}px, ${centerY + f.y}px) rotate(${f.rot}deg) scale(${f.scale})`;
             return;
           }
@@ -1144,6 +1145,7 @@
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
+      isCustomArranged = false;
       moveHistory = [];
       returningFragment = null;
       time = 0;
@@ -1156,6 +1158,8 @@
       }
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
+      document.getElementById('post-action-container').style.display = '';
+      document.getElementById('done-container').style.display = 'none';
       document.getElementById('free-arrange-btn').style.display = '';
       document.getElementById('return-btn').style.display = 'none';
       letGoBtn.classList.remove('hidden');
@@ -1253,6 +1257,7 @@
 
     document.getElementById('change-shape-btn').addEventListener('click', () => {
       isFreeArrange = false;
+      isCustomArranged = false;
       document.getElementById('free-arrange-btn').style.display = '';
       document.getElementById('arrange-tools').style.display = 'none';
       const goldSvg = document.getElementById('gold-underlay-svg');
@@ -1323,7 +1328,9 @@
 
     document.getElementById('free-arrange-btn').addEventListener('click', () => {
       isFreeArrange = true;
-      document.getElementById('free-arrange-btn').style.display = 'none';
+      isCustomArranged = true;
+      document.getElementById('post-action-container').style.display = 'none';
+      document.getElementById('done-container').style.display = 'flex';
       document.getElementById('arrange-tools').style.display = 'block';
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Shape it as you wish.";
@@ -1344,6 +1351,15 @@
           lastMove.frag.rot = lastMove.oldRot;
         }
       }
+    });
+
+    document.getElementById('done-arrange-btn').addEventListener('click', () => {
+      isFreeArrange = false;
+      document.getElementById('done-container').style.display = 'none';
+      document.getElementById('post-action-container').style.display = 'flex';
+      document.getElementById('arrange-tools').style.display = 'none';
+      uiPanel.classList.remove('visible');
+      deselectFragment();
     });
 
     function generateTitle() {
