@@ -1,6 +1,7 @@
     let editCount = 0;
     let isSettling = false;
     let isFreeArrange = false;
+    let moveHistory = [];
     let selectedFragment = null;
     let returningFragment = null;
     let time = 0;
@@ -771,6 +772,8 @@
         div.style.zIndex = topZIndex;
 
         frag.isDragging = true;
+        frag.dragStartX = frag.x;
+        frag.dragStartY = frag.y;
         returningFragment = null;
         customCursor.classList.remove('hover'); // hide hover ring while dragging
 
@@ -795,6 +798,15 @@
         if (frag.isDragging) {
           frag.isDragging = false;
           returningFragment = frag;
+          
+          if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY) {
+            moveHistory.push({
+              frag: frag,
+              oldX: frag.dragStartX,
+              oldY: frag.dragStartY
+            });
+          }
+
           div.releasePointerCapture(e.pointerId);
           e.stopPropagation();
         }
@@ -1081,6 +1093,7 @@
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
+      moveHistory = [];
       returningFragment = null;
       time = 0;
 
@@ -1270,14 +1283,11 @@
     });
 
     document.getElementById('return-btn').addEventListener('click', () => {
-      isFreeArrange = false;
-      document.getElementById('return-btn').style.display = 'none';
-      document.getElementById('free-arrange-btn').style.display = 'inline-block';
-      showFinalMessage(); // Restore the original message text
-      
-      const goldSvg = document.getElementById('gold-underlay-svg');
-      if (goldSvg) {
-        goldSvg.style.opacity = '1';
+      if (moveHistory.length > 0) {
+        const lastMove = moveHistory.pop();
+        // Restore previous position smoothly
+        lastMove.frag.x = lastMove.oldX;
+        lastMove.frag.y = lastMove.oldY;
       }
     });
 
