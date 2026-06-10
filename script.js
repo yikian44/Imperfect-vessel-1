@@ -885,15 +885,14 @@
 
     // Keyboard Tracking and Undo (Ctrl+Z)
     window.addEventListener('keydown', (e) => {
-      keys[e.code] = true;
-      
-      if (!isFreeArrange) return;
-
       if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.key.toLowerCase() === 'z')) {
         e.preventDefault();
         document.getElementById('return-btn').click();
         return;
       }
+      
+      keys[e.code] = true;
+      if (!isFreeArrange) return;
     });
 
     window.addEventListener('keyup', (e) => {
@@ -1380,10 +1379,6 @@
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
       deselectFragment();
-      const goldSvg = document.getElementById('gold-underlay-svg');
-      if (goldSvg) {
-        goldSvg.style.display = '';
-      }
     });
 
     function generateTitle() {
