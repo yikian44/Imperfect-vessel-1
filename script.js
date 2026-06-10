@@ -1337,6 +1337,7 @@
       
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
+        goldSvg.style.transition = 'none';
         goldSvg.style.opacity = '0';
       }
     });
