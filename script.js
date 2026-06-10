@@ -1093,6 +1093,7 @@
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
       document.getElementById('free-arrange-btn').style.display = '';
+      document.getElementById('return-btn').style.display = 'none';
       letGoBtn.classList.remove('hidden');
 
       if (droneGain && audioCtx) {
@@ -1189,6 +1190,7 @@
     document.getElementById('change-shape-btn').addEventListener('click', () => {
       isFreeArrange = false;
       document.getElementById('free-arrange-btn').style.display = '';
+      document.getElementById('return-btn').style.display = 'none';
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
         goldSvg.style.transition = 'none';
@@ -1258,11 +1260,24 @@
     document.getElementById('free-arrange-btn').addEventListener('click', () => {
       isFreeArrange = true;
       document.getElementById('free-arrange-btn').style.display = 'none';
+      document.getElementById('return-btn').style.display = 'inline-block';
       finalMessage.innerText = "Shape it as you wish.";
       
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
         goldSvg.style.opacity = '0';
+      }
+    });
+
+    document.getElementById('return-btn').addEventListener('click', () => {
+      isFreeArrange = false;
+      document.getElementById('return-btn').style.display = 'none';
+      document.getElementById('free-arrange-btn').style.display = 'inline-block';
+      showFinalMessage(); // Restore the original message text
+      
+      const goldSvg = document.getElementById('gold-underlay-svg');
+      if (goldSvg) {
+        goldSvg.style.opacity = '1';
       }
     });
 
