@@ -44,10 +44,25 @@
         <path d="M0 0L0 8M4 0L4 8" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
       </pattern>
 
-      <!-- Glaze Texture (Diagonal shine lines) - Made more obvious -->
-      <pattern id="texture-glaze" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <path d="M0 20 L40 20" stroke="rgba(255,255,255,0.6)" stroke-width="6" />
-        <path d="M0 8 L40 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" />
+      <!-- Glaze Texture (Glossy ceramic reflection with subtle crackle/waviness) -->
+      <filter id="glaze-lighting" x="0%" y="0%" width="100%" height="100%">
+        <!-- Smooth, undulating surface noise for glass-like distortion -->
+        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+        <!-- Convert luminance to alpha for bump map -->
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.2126 0.7152 0.0722 0 0" in="noise" result="bumpMap" />
+        <!-- Generate glossy specular highlight -->
+        <feSpecularLighting in="bumpMap" surfaceScale="15" specularConstant="1.8" specularExponent="45" lighting-color="#ffffff" result="spec">
+          <fePointLight x="100" y="-50" z="150" />
+        </feSpecularLighting>
+        <!-- Ensure black areas of the lighting become transparent so it overlays cleanly -->
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0.33 0.33 0.33 0 0" in="spec" result="specAlpha" />
+      </filter>
+
+      <pattern id="texture-glaze" width="400" height="400" patternUnits="userSpaceOnUse">
+        <rect width="400" height="400" fill="transparent" filter="url(#glaze-lighting)"/>
+        <!-- Soft diagonal shine for an extra glassy ceramic feel -->
+        <path d="M-100 -100 L500 500" stroke="rgba(255,255,255,0.5)" stroke-width="80" filter="blur(20px)" />
+        <path d="M0 -100 L600 500" stroke="rgba(255,255,255,0.3)" stroke-width="30" filter="blur(8px)" />
       </pattern>
 
       <!-- Organic Wabi-Sabi Edge -->
@@ -110,6 +125,7 @@
   <div id="post-action-container">
     <button id="try-again-btn" class="action-btn">TRY AGAIN</button>
     <button id="change-shape-btn" class="action-btn">CHANGE SHAPE</button>
+    <button id="free-arrange-btn" class="action-btn">REARRANGE</button>
     <button id="save-btn" class="action-btn">SAVE</button>
   </div>
 

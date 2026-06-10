@@ -1,6 +1,7 @@
 // System State
     let editCount = 0;
     let isSettling = false;
+    let isFreeArrange = false;
     let selectedFragment = null;
     let returningFragment = null;
     let time = 0;
@@ -748,7 +749,7 @@
 
       // Custom cursor hover logic
       div.addEventListener('pointerenter', () => {
-        if (!isSettling && !isPrologue && !fragments.some(f => f.isDragging)) {
+        if ((!isSettling || isFreeArrange) && !isPrologue && !fragments.some(f => f.isDragging)) {
           customCursor.classList.add('hover');
         }
       });
@@ -759,10 +760,14 @@
       // Interaction
       div.addEventListener('pointerdown', (e) => {
         e.stopPropagation();
-        if (isSettling || isPrologue) return;
+        if (isPrologue) return;
+        if (isSettling && !isFreeArrange) return;
 
         playClink();
         selectFragment(frag);
+
+        // Bring to front
+        container.appendChild(div);
 
         frag.isDragging = true;
         returningFragment = null;
@@ -777,7 +782,7 @@
       });
 
       div.addEventListener('pointermove', (e) => {
-        if (!frag.isDragging || isSettling) return;
+        if (!frag.isDragging) return;
         e.stopPropagation();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
@@ -818,7 +823,7 @@
 
     // Deselect on background click
     document.body.addEventListener('pointerdown', () => {
-      if (isSettling || isPrologue) return;
+      if ((isSettling && !isFreeArrange) || isPrologue) return;
       deselectFragment();
     });
 
@@ -932,6 +937,11 @@
 
         } else {
           // Assembling State ("Let Go")
+          if (isFreeArrange) {
+            f.element.style.transform = `translate(${centerX + f.x}px, ${centerY + f.y}px) rotate(${f.rot}deg) scale(${f.scale})`;
+            return;
+          }
+
           // True anti-overlapping gap based on polygon centroid relative to face center
           // This ensures pieces are pulled apart proportionally, scaling the entire face uniformly outward
           const gapScale = 0.03; // 3% gap outward scaling
@@ -946,9 +956,11 @@
           const targetY = f.basey + finalChaosY;
           const targetRot = f.baseRot + finalChaosRot;
 
-          f.x += (targetX - f.x) * 0.025;
-          f.y += (targetY - f.y) * 0.025;
-          f.rot += (targetRot - f.rot) * 0.025;
+          if (!f.isDragging) {
+            f.x += (targetX - f.x) * 0.025;
+            f.y += (targetY - f.y) * 0.025;
+            f.rot += (targetRot - f.rot) * 0.025;
+          }
 
           // Animate depth/scale to uniform 1.0
           f.scale += (1 - f.scale) * 0.025;
@@ -1067,6 +1079,7 @@
       // Soft reset
       editCount = 0;
       isSettling = false;
+      isFreeArrange = false;
       returningFragment = null;
       time = 0;
 
@@ -1078,6 +1091,7 @@
       }
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
+      document.getElementById('free-arrange-btn').style.display = '';
       letGoBtn.classList.remove('hidden');
 
       if (droneGain && audioCtx) {
@@ -1172,6 +1186,8 @@
     });
 
     document.getElementById('change-shape-btn').addEventListener('click', () => {
+      isFreeArrange = false;
+      document.getElementById('free-arrange-btn').style.display = '';
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
         goldSvg.style.transition = 'none';
@@ -1237,6 +1253,17 @@
     });
 
     document.getElementById('save-btn').innerText = "SAVE (PNG)";
+
+    document.getElementById('free-arrange-btn').addEventListener('click', () => {
+      isFreeArrange = true;
+      document.getElementById('free-arrange-btn').style.display = 'none';
+      finalMessage.innerText = "Shape it as you wish.";
+      
+      const goldSvg = document.getElementById('gold-underlay-svg');
+      if (goldSvg) {
+        goldSvg.style.opacity = '0';
+      }
+    });
 
     function generateTitle() {
       const adjs = ["Weeping", "Geometric", "Blue", "Shattered", "Silent", "Cubist", "Abstract", "Fragmented", "Angular"];
