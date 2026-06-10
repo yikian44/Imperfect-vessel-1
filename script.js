@@ -881,9 +881,17 @@
       editCount++;
     }
 
-    // Keyboard Rotation (Z / X)
+    // Keyboard Rotation (Z / X) and Undo (Ctrl+Z)
     window.addEventListener('keydown', (e) => {
-      if (!isFreeArrange || !selectedFragment) return;
+      if (!isFreeArrange) return;
+
+      if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.key.toLowerCase() === 'z')) {
+        e.preventDefault();
+        document.getElementById('return-btn').click();
+        return;
+      }
+
+      if (!selectedFragment) return;
       if (e.code === 'KeyZ' || e.key.toLowerCase() === 'z') {
         selectedFragment.rot -= 15;
       } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
@@ -1153,6 +1161,7 @@
       document.body.classList.remove('kintsugi');
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
+        goldSvg.style.display = '';
         goldSvg.style.transition = 'none';
         goldSvg.style.opacity = '0';
       }
@@ -1165,8 +1174,7 @@
       letGoBtn.classList.remove('hidden');
 
       if (droneGain && audioCtx) {
-        droneGain.gain.cancelScheduledValues(audioCtx.currentTime);
-        droneGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        droneGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
       }
 
       pieces = generatePieces();
@@ -1262,6 +1270,7 @@
       document.getElementById('arrange-tools').style.display = 'none';
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
+        goldSvg.style.display = '';
         goldSvg.style.transition = 'none';
         goldSvg.style.opacity = '0';
       }
@@ -1337,8 +1346,7 @@
       
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
-        goldSvg.style.transition = 'none';
-        goldSvg.style.opacity = '0';
+        goldSvg.style.display = 'none';
       }
     });
 
@@ -1361,6 +1369,10 @@
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
       deselectFragment();
+      const goldSvg = document.getElementById('gold-underlay-svg');
+      if (goldSvg) {
+        goldSvg.style.display = '';
+      }
     });
 
     function generateTitle() {
