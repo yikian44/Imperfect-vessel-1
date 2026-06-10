@@ -216,7 +216,6 @@
       visibility: hidden;
       transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
       transform: translateY(-10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
     }
 
     #ui-panel.visible {
@@ -230,8 +229,8 @@
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: #8a8884;
-      margin-bottom: 8px;
+      color: #9a9a9a;
+      margin-bottom: 12px;
     }
 
     .options-row {
@@ -242,31 +241,41 @@
     }
 
     .color-btn {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      border: none;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
     }
 
     .color-btn:hover {
       transform: scale(1.15);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-
+    .color-btn.active {
+      box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px #555;
+    }
     .texture-btn {
-      padding: 6px 12px;
+      padding: 8px 12px;
       background: transparent;
-      border: 1px solid var(--btn-border);
-      color: var(--text-color);
-      font-size: 11px;
+      border: 1px solid #cfccc6;
+      color: #555;
+      font-size: 12px;
       letter-spacing: 1px;
-      border-radius: 12px;
+      border-radius: 20px;
       transition: all 0.3s ease;
+      width: 100%;
+      cursor: pointer;
     }
 
     .texture-btn:hover {
       background: rgba(0, 0, 0, 0.03);
+    }
+    
+    .texture-btn.active {
+      background: #e8e6e1;
+      border-color: #a0a0a0;
     }
 
     /* Let Go Button */

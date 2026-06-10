@@ -113,8 +113,9 @@
 
     // Palette: Vibrant Picasso Cubist Colors
     const colors = [
-      '#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92',
-      '#d95b27', '#4b1c73', '#0f4f22', '#8c1616', '#ffffff', '#111111'
+      '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#8c3ad8', '#e462a3',
+      '#28a396', '#d86830', '#5a2e87', '#216a32', '#9c2828', '#ffffff',
+      '#222222'
     ];
 
     // Populate buttons
@@ -664,6 +665,7 @@
     fragments.forEach(frag => {
       const div = document.createElement('div');
       div.className = 'fragment';
+      div.style.transformOrigin = `${piece.cx + 200}px ${piece.cy + 200}px`;
 
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");

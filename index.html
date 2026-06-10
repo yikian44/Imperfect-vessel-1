@@ -104,12 +104,12 @@
 
   <div id="ui-panel">
     <div>
-      <div class="ui-label">Hue</div>
-      <div class="options-row" id="color-options"></div>
+      <div class="ui-label">HUE</div>
+      <div class="options-row" id="color-options" style="display: grid; grid-template-columns: repeat(6, 32px); gap: 12px; justify-content: start;"></div>
     </div>
-    <div id="texture-section">
-      <div class="ui-label">Texture</div>
-      <div class="options-row" id="texture-options">
+    <div id="texture-section" style="margin-top: 32px;">
+      <div class="ui-label">TEXTURE</div>
+      <div class="options-row" id="texture-options" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
         <button class="texture-btn" data-texture="none">Plain</button>
         <button class="texture-btn" data-texture="texture-matte">Matte</button>
         <button class="texture-btn" data-texture="texture-canvas">Canvas</button>
@@ -118,13 +118,13 @@
         <button class="texture-btn" data-texture="texture-speckled">Speckled</button>
       </div>
     </div>
-    <div id="arrange-tools" style="display: none; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 16px; margin-top: 8px;">
-      <div class="ui-label">Arrange</div>
-      <button id="return-btn" class="texture-btn" style="padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 6px;" title="Undo">
+    <div id="arrange-tools" style="display: none; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 24px; margin-top: 24px;">
+      <div class="ui-label">ARRANGE</div>
+      <button id="return-btn" class="texture-btn" style="padding: 8px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" title="Undo">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path></svg>
         Ctrl+Z
       </button>
-      <div style="font-size: 10px; color: #8a8884; margin-top: 8px; letter-spacing: 1px;">Rotate: Z / X <br/> or Two Fingers</div>
+      <div style="font-size: 11px; color: #8a8884; margin-top: 12px; letter-spacing: 1px; line-height: 1.5;">Rotate: Z / X <br/> or Two Fingers</div>
     </div>
   </div>
 
