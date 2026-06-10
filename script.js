@@ -774,6 +774,7 @@
         frag.isDragging = true;
         frag.dragStartX = frag.x;
         frag.dragStartY = frag.y;
+        frag.dragStartRot = frag.rot;
         returningFragment = null;
         customCursor.classList.remove('hover'); // hide hover ring while dragging
 
@@ -799,11 +800,12 @@
           frag.isDragging = false;
           returningFragment = frag;
           
-          if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY) {
+          if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY || frag.rot !== frag.dragStartRot) {
             moveHistory.push({
               frag: frag,
               oldX: frag.dragStartX,
-              oldY: frag.dragStartY
+              oldY: frag.dragStartY,
+              oldRot: frag.dragStartRot
             });
           }
 
@@ -855,7 +857,9 @@
         selectedFragment.element.classList.remove('selected');
         selectedFragment = null;
       }
-      uiPanel.classList.remove('visible');
+      if (!isFreeArrange) {
+        uiPanel.classList.remove('visible');
+      }
     }
 
     function applyColor(color) {
@@ -875,6 +879,52 @@
       }
       editCount++;
     }
+
+    // Keyboard Rotation (Z / X)
+    window.addEventListener('keydown', (e) => {
+      if (!isFreeArrange || !selectedFragment) return;
+      if (e.key.toLowerCase() === 'z') {
+        selectedFragment.rot -= 5;
+      } else if (e.key.toLowerCase() === 'x') {
+        selectedFragment.rot += 5;
+      }
+    });
+
+    // Mobile Two-Finger Rotation
+    let initialTouchAngle = null;
+    let initialFragRot = null;
+
+    document.addEventListener('touchstart', (e) => {
+      if (!isFreeArrange || !selectedFragment) return;
+      if (e.touches.length === 2) {
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        initialTouchAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+        initialFragRot = selectedFragment.rot;
+      }
+    }, {passive: false});
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isFreeArrange || !selectedFragment) return;
+      if (e.touches.length === 2 && initialTouchAngle !== null) {
+        e.preventDefault(); // prevent zoom/scroll
+        const dx = e.touches[1].clientX - e.touches[0].clientX;
+        const dy = e.touches[1].clientY - e.touches[0].clientY;
+        const currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+        let delta = currentAngle - initialTouchAngle;
+        
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+
+        selectedFragment.rot = initialFragRot + delta;
+      }
+    }, {passive: false});
+
+    document.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        initialTouchAngle = null;
+      }
+    });
 
     function pseudoNoise(t) {
       return Math.sin(t) * 0.5 + Math.sin(t * 0.8) * 0.3 + Math.sin(t * 1.2) * 0.2;
@@ -1090,6 +1140,7 @@
 
     document.getElementById('try-again-btn').addEventListener('click', () => {
       // Soft reset
+      document.getElementById('arrange-tools').style.display = 'none';
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
@@ -1203,7 +1254,7 @@
     document.getElementById('change-shape-btn').addEventListener('click', () => {
       isFreeArrange = false;
       document.getElementById('free-arrange-btn').style.display = '';
-      document.getElementById('return-btn').style.display = 'none';
+      document.getElementById('arrange-tools').style.display = 'none';
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
         goldSvg.style.transition = 'none';
@@ -1273,7 +1324,8 @@
     document.getElementById('free-arrange-btn').addEventListener('click', () => {
       isFreeArrange = true;
       document.getElementById('free-arrange-btn').style.display = 'none';
-      document.getElementById('return-btn').style.display = 'inline-block';
+      document.getElementById('arrange-tools').style.display = 'block';
+      uiPanel.classList.add('visible');
       finalMessage.innerText = "Shape it as you wish.";
       
       const goldSvg = document.getElementById('gold-underlay-svg');
@@ -1285,9 +1337,12 @@
     document.getElementById('return-btn').addEventListener('click', () => {
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
-        // Restore previous position smoothly
+        // Restore previous position and rotation smoothly
         lastMove.frag.x = lastMove.oldX;
         lastMove.frag.y = lastMove.oldY;
+        if (lastMove.oldRot !== undefined) {
+          lastMove.frag.rot = lastMove.oldRot;
+        }
       }
     });
 
