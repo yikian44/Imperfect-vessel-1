@@ -1,4 +1,3 @@
-// System State
     let editCount = 0;
     let isSettling = false;
     let isFreeArrange = false;
@@ -6,6 +5,7 @@
     let returningFragment = null;
     let time = 0;
     let isPrologue = true;
+    let topZIndex = 100;
 
     // Prologue Sequence
     window.addEventListener('load', () => {
@@ -766,8 +766,9 @@
         playClink();
         selectFragment(frag);
 
-        // Bring to front
-        container.appendChild(div);
+        // Bring to front safely without detaching DOM node
+        topZIndex++;
+        div.style.zIndex = topZIndex;
 
         frag.isDragging = true;
         returningFragment = null;
