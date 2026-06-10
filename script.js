@@ -883,9 +883,7 @@
       editCount++;
     }
 
-    const keys = {};
-
-    // Keyboard Tracking and Undo (Ctrl+Z)
+    // Keyboard Rotation and Undo (Ctrl+Z)
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.key.toLowerCase() === 'z')) {
         e.preventDefault();
@@ -893,12 +891,15 @@
         return;
       }
       
-      keys[e.code] = true;
-      if (!isFreeArrange) return;
-    });
+      if (!isFreeArrange || !selectedFragment) return;
 
-    window.addEventListener('keyup', (e) => {
-      keys[e.code] = false;
+      if (e.code === 'KeyZ' || e.key.toLowerCase() === 'z') {
+        if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
+        selectedFragment.targetRot -= 15;
+      } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
+        if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
+        selectedFragment.targetRot += 15;
+      }
     });
 
     // Mobile Two-Finger Rotation
@@ -928,6 +929,7 @@
         if (delta < -180) delta += 360;
 
         selectedFragment.rot = initialFragRot + delta;
+        selectedFragment.targetRot = selectedFragment.rot;
       }
     }, {passive: false});
 
@@ -970,15 +972,12 @@
     function animate() {
       time += 0.01;
 
-      // Handle continuous smooth keyboard rotation
-      if (isFreeArrange && selectedFragment) {
-        if (keys['KeyZ']) {
-          selectedFragment.rot -= 2.5;
+      // Smooth lerp to target rotation
+      fragments.forEach(f => {
+        if (f.targetRot !== undefined) {
+          f.rot += (f.targetRot - f.rot) * 0.15;
         }
-        if (keys['KeyX']) {
-          selectedFragment.rot += 2.5;
-        }
-      }
+      });
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
