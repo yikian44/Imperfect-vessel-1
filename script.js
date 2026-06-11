@@ -786,13 +786,6 @@
         frag.dragOffsetX = e.clientX - (centerX + frag.x);
         frag.dragOffsetY = e.clientY - (centerY + frag.y);
 
-        frag.lastMouseX = e.clientX;
-        frag.lastMouseY = e.clientY;
-        frag.lastMoveTime = performance.now();
-        frag.vx = 0;
-        frag.vy = 0;
-        frag.vrot = 0;
-
         div.setPointerCapture(e.pointerId);
       });
 
@@ -803,15 +796,6 @@
         const centerY = window.innerHeight / 2;
         frag.x = e.clientX - centerX - frag.dragOffsetX;
         frag.y = e.clientY - centerY - frag.dragOffsetY;
-
-        const now = performance.now();
-        const dt = Math.max(1, now - frag.lastMoveTime);
-        frag.vx = ((e.clientX - frag.lastMouseX) / dt) * 12; 
-        frag.vy = ((e.clientY - frag.lastMouseY) / dt) * 12;
-        
-        frag.lastMouseX = e.clientX;
-        frag.lastMouseY = e.clientY;
-        frag.lastMoveTime = now;
       });
 
       div.addEventListener('pointerup', (e) => {
@@ -834,8 +818,6 @@
               frag.startRot = frag.rot;
               frag.tensionDirX = 0;
               frag.tensionDirY = 0;
-              // Inherit throwing velocity (already set in pointermove)
-              frag.vrot = (Math.random() - 0.5) * 2; // give a slight spin when thrown
             }
           }
 
@@ -1020,64 +1002,31 @@
           f.scale += (f.targetScale - f.scale) * 0.03;
 
           // Floating Anti-Gravity + Tension
-          if (!isSettling && !isFreeArrange) {
-            // ZERO GRAVITY DRIFTING
-            if (f.vx === undefined) {
-              f.vx = (Math.random() - 0.5) * 0.8;
-              f.vy = (Math.random() - 0.5) * 0.8;
-              f.vrot = (Math.random() - 0.5) * 0.2;
-            }
+          const floatX = pseudoNoise(time * 0.5 + f.noiseOffsetX) * 40;
+          const floatY = pseudoNoise(time * 0.5 + f.noiseOffsetY) * 40;
 
-            if (!f.isDragging) {
-              f.x += f.vx;
-              f.y += f.vy;
-              f.rot += f.vrot;
+          const jitterX = pseudoNoise(time * 15 + f.noiseOffsetX) * tensionFactor * 0.6;
+          const jitterY = pseudoNoise(time * 15 + f.noiseOffsetY) * tensionFactor * 0.6;
+          const jitterRot = pseudoNoise(time * 15 + f.noiseOffsetRot) * tensionFactor * 0.3;
 
-              // Ultra-soft friction for endless drift
-              f.vx *= 0.99;
-              f.vy *= 0.99;
-              f.vrot *= 0.99;
+          const pullX = f.tensionDirX * tensionFactor * 3;
+          const pullY = f.tensionDirY * tensionFactor * 3;
+          const pullRot = f.tensionDirRot * tensionFactor * 2;
 
-              // Add a gentle Perlin drift so it never fully stops
-              f.vx += (pseudoNoise(time * 0.5 + f.noiseOffsetX) - 0.5) * 0.02;
-              f.vy += (pseudoNoise(time * 0.5 + f.noiseOffsetY) - 0.5) * 0.02;
-              f.vrot += (pseudoNoise(time * 0.5 + f.noiseOffsetRot) - 0.5) * 0.01;
+          let targetX = f.startX + floatX + pullX + jitterX;
+          let targetY = f.startY + floatY + pullY + jitterY;
+          const targetRot = f.startRot + pullRot + jitterRot;
 
-              // Constrain target within window bounds and bounce softly
-              const marginW = window.innerWidth / 2 - 120;
-              const marginH = window.innerHeight / 2 - 120;
-              if (f.x > marginW) { f.x = marginW; f.vx *= -0.5; }
-              if (f.x < -marginW) { f.x = -marginW; f.vx *= -0.5; }
-              if (f.y > marginH) { f.y = marginH; f.vy *= -0.5; }
-              if (f.y < -marginH) { f.y = -marginH; f.vy *= -0.5; }
+          // Constrain target within window bounds
+          const marginW = window.innerWidth / 2 - 120;
+          const marginH = window.innerHeight / 2 - 120;
+          targetX = Math.max(-marginW, Math.min(marginW, targetX));
+          targetY = Math.max(-marginH, Math.min(marginH, targetY));
 
-              // Keep start anchor synced so 'Let Go' transition is seamless
-              f.startX = f.x;
-              f.startY = f.y;
-              f.startRot = f.rot;
-            }
-          } else {
-            // SETTLING / TENSION PHASE
-            const floatX = pseudoNoise(time * 0.5 + f.noiseOffsetX) * 40;
-            const floatY = pseudoNoise(time * 0.5 + f.noiseOffsetY) * 40;
-
-            const jitterX = pseudoNoise(time * 15 + f.noiseOffsetX) * tensionFactor * 0.6;
-            const jitterY = pseudoNoise(time * 15 + f.noiseOffsetY) * tensionFactor * 0.6;
-            const jitterRot = pseudoNoise(time * 15 + f.noiseOffsetRot) * tensionFactor * 0.3;
-
-            const pullX = f.tensionDirX * tensionFactor * 3;
-            const pullY = f.tensionDirY * tensionFactor * 3;
-            const pullRot = f.tensionDirRot * tensionFactor * 2;
-
-            let targetX = f.startX + floatX + pullX + jitterX;
-            let targetY = f.startY + floatY + pullY + jitterY;
-            const targetRot = f.startRot + pullRot + jitterRot;
-
-            if (!f.isDragging) {
-              f.x += (targetX - f.x) * 0.05;
-              f.y += (targetY - f.y) * 0.05;
-              f.rot += (targetRot - f.rot) * 0.05;
-            }
+          if (!f.isDragging) {
+            f.x += (targetX - f.x) * 0.05;
+            f.y += (targetY - f.y) * 0.05;
+            f.rot += (targetRot - f.rot) * 0.05;
           }
 
           if (tensionFactor > 0 || Math.abs(f.x - f.startX) > 1) {
@@ -1187,11 +1136,6 @@
 
       // "Sigh" effect: outward push before settling
       fragments.forEach(f => {
-        // Recalculate tension vector based on current drift position towards center
-        f.tensionDirX = -f.x * 0.01;
-        f.tensionDirY = -f.y * 0.01;
-        f.tensionDirRot = -f.rot * 0.01;
-
         // Imperfections disabled to prevent overlapping
         f.impX = 0;
         f.impY = 0;
