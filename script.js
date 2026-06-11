@@ -1219,7 +1219,10 @@
       }
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
-      document.getElementById('post-action-container').style.display = '';
+      const pac = document.getElementById('post-action-container');
+      pac.style.display = '';
+      pac.style.transitionDelay = '';
+      pac.style.transitionDuration = '';
       document.getElementById('free-arrange-btn').style.display = '';
       document.getElementById('return-btn').style.display = 'none';
       letGoBtn.classList.remove('hidden');
@@ -1426,10 +1429,19 @@
 
     document.getElementById('done-arrange-btn').addEventListener('click', () => {
       isFreeArrange = false;
-      document.getElementById('post-action-container').style.display = 'flex';
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
       deselectFragment();
+      
+      const pac = document.getElementById('post-action-container');
+      pac.classList.remove('visible');
+      pac.style.display = 'flex';
+      pac.style.transitionDelay = '0s';
+      pac.style.transitionDuration = '0.6s';
+      
+      // Force reflow before adding visible class back
+      void pac.offsetWidth;
+      pac.classList.add('visible');
     });
 
     function generateTitle() {
