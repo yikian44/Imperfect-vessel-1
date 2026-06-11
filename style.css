@@ -281,6 +281,9 @@
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      forced-color-adjust: none;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
     }
 
     .color-btn:hover {
@@ -306,6 +309,7 @@
       gap: 8px;
       transition: all 0.3s ease;
       cursor: pointer;
+      forced-color-adjust: none;
     }
 
     .texture-btn:hover, .undo-btn:hover {
@@ -408,8 +412,6 @@
     .action-btn {
       padding: 12px 28px;
       background: rgba(255, 255, 255, 0.9);
-      
-      -webkit-
       border: 1px solid var(--panel-border);
       color: var(--text-color);
       font-size: 11px;
