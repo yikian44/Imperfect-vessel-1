@@ -17,6 +17,7 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      touch-action: none;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -493,9 +494,6 @@
         font-size: 11px;
         width: auto;
         touch-action: pan-x;
-      }
-      #return-btn {
-        width: 100%;
       }
       #let-go-btn {
         bottom: 40px;
