@@ -920,7 +920,8 @@
           frag: selectedFragment,
           oldX: selectedFragment.x,
           oldY: selectedFragment.y,
-          oldRot: selectedFragment.targetRot
+          oldRot: selectedFragment.targetRot,
+          type: 'spatial'
         });
 
         selectedFragment.targetRot -= 15;
@@ -931,7 +932,8 @@
           frag: selectedFragment,
           oldX: selectedFragment.x,
           oldY: selectedFragment.y,
-          oldRot: selectedFragment.targetRot
+          oldRot: selectedFragment.targetRot,
+          type: 'spatial'
         });
 
         selectedFragment.targetRot += 15;
@@ -1436,10 +1438,6 @@
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
       deselectFragment();
-      const goldSvg = document.getElementById('gold-underlay-svg');
-      if (goldSvg) {
-        goldSvg.style.display = 'block';
-      }
       
       const pac = document.getElementById('post-action-container');
       pac.classList.remove('visible');
