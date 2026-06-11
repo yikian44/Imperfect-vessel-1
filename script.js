@@ -810,6 +810,15 @@
               oldY: frag.dragStartY,
               oldRot: frag.dragStartRot
             });
+            
+            // Allow fragments to be placed anywhere and stay there
+            if (!isSettling && !isFreeArrange) {
+              frag.startX = frag.x;
+              frag.startY = frag.y;
+              frag.startRot = frag.rot;
+              frag.tensionDirX = 0;
+              frag.tensionDirY = 0;
+            }
           }
 
           div.releasePointerCapture(e.pointerId);
@@ -1004,9 +1013,15 @@
           const pullY = f.tensionDirY * tensionFactor * 3;
           const pullRot = f.tensionDirRot * tensionFactor * 2;
 
-          const targetX = f.startX + floatX + pullX + jitterX;
-          const targetY = f.startY + floatY + pullY + jitterY;
+          let targetX = f.startX + floatX + pullX + jitterX;
+          let targetY = f.startY + floatY + pullY + jitterY;
           const targetRot = f.startRot + pullRot + jitterRot;
+
+          // Constrain target within window bounds
+          const marginW = window.innerWidth / 2 - 120;
+          const marginH = window.innerHeight / 2 - 120;
+          targetX = Math.max(-marginW, Math.min(marginW, targetX));
+          targetY = Math.max(-marginH, Math.min(marginH, targetY));
 
           if (!f.isDragging) {
             f.x += (targetX - f.x) * 0.05;
