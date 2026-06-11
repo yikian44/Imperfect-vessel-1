@@ -134,6 +134,7 @@
     // Audio Context Setup
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx;
+    let centerYOffset = 0;
     let droneOsc1, droneOsc2, droneGain;
 
     function initAudio() {
@@ -1014,8 +1015,11 @@
         }
       });
 
+      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -150 : 0;
+      centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
+
       const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
+      const centerY = window.innerHeight / 2 + centerYOffset;
       const tensionFactor = Math.min(editCount * 0.8, 25);
 
       let allSettled = true;
