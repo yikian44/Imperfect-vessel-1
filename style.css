@@ -249,6 +249,14 @@
       flex-wrap: wrap;
       max-width: 240px;
     }
+    #color-options {
+      display: grid;
+      grid-template-columns: repeat(6, 32px);
+    }
+    #texture-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
 
     .color-btn {
       width: 32px;
@@ -418,9 +426,10 @@
         filter: none !important;
       }
       #ui-panel {
-        top: 20px;
+        top: auto;
+        bottom: 80px;
         left: 50%;
-        transform: translateX(-50%) translateY(-10px);
+        transform: translateX(-50%) translateY(20px);
         width: 90%;
         max-width: none; /* Allow it to be wide for scrolling */
         padding: 24px;
@@ -436,6 +445,9 @@
       .ui-label {
         margin-bottom: 8px;
         font-size: 10px;
+      }
+      #color-options, #texture-options {
+        display: flex;
       }
       .options-row {
         max-width: 100%;
