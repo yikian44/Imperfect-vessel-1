@@ -1455,22 +1455,24 @@
 
     document.getElementById('rotate-left-btn').addEventListener('click', () => {
       if (!isFreeArrange || !selectedFragment) return;
+      if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
         frag: selectedFragment,
-        oldRot: selectedFragment.rot,
+        oldRot: selectedFragment.targetRot,
         type: 'spatial'
       });
-      selectedFragment.rot -= 15;
+      selectedFragment.targetRot -= 15;
     });
 
     document.getElementById('rotate-right-btn').addEventListener('click', () => {
       if (!isFreeArrange || !selectedFragment) return;
+      if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
         frag: selectedFragment,
-        oldRot: selectedFragment.rot,
+        oldRot: selectedFragment.targetRot,
         type: 'spatial'
       });
-      selectedFragment.rot += 15;
+      selectedFragment.targetRot += 15;
     });
 
     function generateTitle() {
