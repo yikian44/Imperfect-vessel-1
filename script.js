@@ -1230,7 +1230,6 @@
       pac.style.transitionDelay = '';
       pac.style.transitionDuration = '';
       document.getElementById('free-arrange-btn').style.display = '';
-      document.getElementById('return-btn').style.display = 'none';
       letGoBtn.classList.remove('hidden');
 
       if (droneGain && audioCtx) {
@@ -1435,8 +1434,10 @@
 
     document.getElementById('done-arrange-btn').addEventListener('click', () => {
       isFreeArrange = false;
-      document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
+      setTimeout(() => {
+        if (!isFreeArrange) document.getElementById('arrange-tools').style.display = 'none';
+      }, 500);
       deselectFragment();
       
       const pac = document.getElementById('post-action-container');
