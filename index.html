@@ -119,13 +119,16 @@
         <button class="texture-btn" data-texture="texture-speckled">Speckled</button>
       </div>
     </div>
-    <div id="arrange-tools" style="display: none; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 16px;">
+    <div id="arrange-tools" style="display: none; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 20px;">
       <div class="ui-label">ARRANGE</div>
-      <button id="return-btn" class="texture-btn" style="padding: 8px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" title="Undo">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path></svg>
-        Ctrl+Z
-      </button>
-      <div style="font-size: 11px; color: #8a8884; margin-top: 12px; letter-spacing: 1px; line-height: 1.5;">Rotate: Z / X <br/> or Two Fingers</div>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <button id="return-btn" class="texture-btn" style="padding: 10px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;" title="Undo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path></svg>
+          UNDO (Ctrl+Z)
+        </button>
+        <button id="done-arrange-btn" class="action-btn" style="width: 100%; box-sizing: border-box; background: var(--text-color); color: #fff;">DONE</button>
+      </div>
+      <div style="font-size: 10px; color: #8a8884; margin-top: 16px; letter-spacing: 1px; line-height: 1.6; text-align: center; text-transform: uppercase;">Rotate: Z / X <br/> or Two Fingers</div>
     </div>
   </div>
 
@@ -136,9 +139,6 @@
     <button id="change-shape-btn" class="action-btn">CHANGE SHAPE</button>
     <button id="free-arrange-btn" class="action-btn">REARRANGE</button>
     <button id="save-btn" class="action-btn">SAVE (PNG)</button>
-  </div>
-  <div id="done-container" style="display: none; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 20;">
-    <button id="done-arrange-btn" class="action-btn">DONE</button>
   </div>
 
   <script src="script.js"></script>

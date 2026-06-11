@@ -1179,7 +1179,6 @@
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
       document.getElementById('post-action-container').style.display = '';
-      document.getElementById('done-container').style.display = 'none';
       document.getElementById('free-arrange-btn').style.display = '';
       document.getElementById('return-btn').style.display = 'none';
       letGoBtn.classList.remove('hidden');
@@ -1350,7 +1349,6 @@
       isFreeArrange = true;
       isCustomArranged = true;
       document.getElementById('post-action-container').style.display = 'none';
-      document.getElementById('done-container').style.display = 'flex';
       document.getElementById('arrange-tools').style.display = 'block';
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Shape it as you wish.";
@@ -1375,7 +1373,6 @@
 
     document.getElementById('done-arrange-btn').addEventListener('click', () => {
       isFreeArrange = false;
-      document.getElementById('done-container').style.display = 'none';
       document.getElementById('post-action-container').style.display = 'flex';
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
