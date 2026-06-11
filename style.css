@@ -155,14 +155,13 @@
 
     .fragment svg {
       overflow: visible;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
       pointer-events: none;
       will-change: filter;
       transition: filter 0.3s ease, transform 0.3s ease;
     }
 
     .fragment.selected svg {
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.8)) brightness(1.1);
+      filter: brightness(1.15);
       transform: scale(1.02);
     }
 
