@@ -1080,7 +1080,7 @@
           f.scale += (1 - f.scale) * 0.025;
 
           const dist = Math.abs(targetX - f.x) + Math.abs(targetY - f.y) + Math.abs(targetRot - f.rot) + Math.abs(1 - f.scale);
-          if (dist > 2.5) {
+          if (dist > 0.5) {
             allSettled = false;
           } else {
             f.x = targetX;
