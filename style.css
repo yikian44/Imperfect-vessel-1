@@ -7,6 +7,7 @@
     }
 
     * {
+      box-sizing: border-box;
       cursor: none !important;
     }
 
@@ -490,7 +491,11 @@
         flex: 0 0 auto;
         padding: 8px 14px;
         font-size: 11px;
+        width: auto;
         touch-action: pan-x;
+      }
+      #return-btn {
+        width: 100%;
       }
       #let-go-btn {
         bottom: 40px;

@@ -385,7 +385,7 @@
       }
       
       const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
-      const initialTexture = window.innerWidth < 768 ? 'none' : texturesList[Math.floor(Math.random() * texturesList.length)];
+      const initialTexture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
       return {
         id: index,
@@ -1015,7 +1015,7 @@
         }
       });
 
-      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -150 : 0;
+      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -250 : 0;
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
 
       const centerX = window.innerWidth / 2;
@@ -1305,7 +1305,7 @@
         }
 
         const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
-        f.texture = window.innerWidth < 768 ? 'none' : texturesList[Math.floor(Math.random() * texturesList.length)];
+        f.texture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
         f.pathElement.setAttribute("fill", f.color);
         if (f.texture === 'none') {
