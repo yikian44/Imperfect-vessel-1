@@ -665,7 +665,7 @@
     fragments.forEach(frag => {
       const div = document.createElement('div');
       div.className = 'fragment';
-      div.style.transformOrigin = `${frag.cx + 200}px ${frag.cy + 200}px`;
+      div.style.transformOrigin = `${frag.cx}px ${frag.cy}px`;
 
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
