@@ -1396,7 +1396,7 @@
         lastMove.frag.x = lastMove.oldX;
         lastMove.frag.y = lastMove.oldY;
         if (lastMove.oldRot !== undefined) {
-          lastMove.frag.rot = lastMove.oldRot;
+          lastMove.frag.targetRot = lastMove.oldRot;
         }
       }
     });
