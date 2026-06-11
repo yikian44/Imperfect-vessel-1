@@ -1458,6 +1458,8 @@
       if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
         frag: selectedFragment,
+        oldX: selectedFragment.x,
+        oldY: selectedFragment.y,
         oldRot: selectedFragment.targetRot,
         type: 'spatial'
       });
@@ -1469,6 +1471,8 @@
       if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
         frag: selectedFragment,
+        oldX: selectedFragment.x,
+        oldY: selectedFragment.y,
         oldRot: selectedFragment.targetRot,
         type: 'spatial'
       });
