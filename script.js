@@ -904,9 +904,25 @@
 
       if (e.code === 'KeyZ' || e.key.toLowerCase() === 'z') {
         if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
+        
+        moveHistory.push({
+          frag: selectedFragment,
+          oldX: selectedFragment.x,
+          oldY: selectedFragment.y,
+          oldRot: selectedFragment.targetRot
+        });
+
         selectedFragment.targetRot -= 15;
       } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
         if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
+        
+        moveHistory.push({
+          frag: selectedFragment,
+          oldX: selectedFragment.x,
+          oldY: selectedFragment.y,
+          oldRot: selectedFragment.targetRot
+        });
+
         selectedFragment.targetRot += 15;
       }
     });
@@ -1064,7 +1080,7 @@
           f.scale += (1 - f.scale) * 0.025;
 
           const dist = Math.abs(targetX - f.x) + Math.abs(targetY - f.y) + Math.abs(targetRot - f.rot) + Math.abs(1 - f.scale);
-          if (dist > 0.5) {
+          if (dist > 2.5) {
             allSettled = false;
           } else {
             f.x = targetX;
@@ -1202,8 +1218,7 @@
         droneGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
       }
 
-      pieces = generatePieces();
-      updateGoldUnderlay(pieces);
+
       
       const skinPalette = ['#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92', '#d95b27'];
       const skinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
