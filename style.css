@@ -153,9 +153,15 @@
 
     .fragment svg {
       overflow: visible;
-      filter: none;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
       pointer-events: none;
       will-change: filter;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .fragment.selected svg {
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.8)) brightness(1.1);
+      transform: scale(1.02);
     }
 
     .fragment path {
@@ -262,7 +268,7 @@
       box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--text-color);
       transform: scale(1.1);
     }
-    .texture-btn {
+    .texture-btn, .undo-btn {
       padding: 10px 16px;
       background: rgba(255, 255, 255, 0.4);
       border: 1px solid var(--panel-border);
@@ -276,13 +282,13 @@
       cursor: pointer;
     }
 
-    .texture-btn:hover {
+    .texture-btn:hover, .undo-btn:hover {
       background: rgba(255, 255, 255, 0.9);
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     
-    .texture-btn.active {
+    .texture-btn.active, .undo-btn:active {
       background: var(--text-color);
       color: #fff;
       border-color: var(--text-color);
@@ -455,7 +461,7 @@
         height: 32px;
         touch-action: pan-x;
       }
-      .texture-btn {
+      .texture-btn, .undo-btn {
         flex: 0 0 auto;
         padding: 8px 14px;
         font-size: 11px;

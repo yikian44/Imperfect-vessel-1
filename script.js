@@ -1378,6 +1378,7 @@
     document.getElementById('free-arrange-btn').addEventListener('click', () => {
       isFreeArrange = true;
       isCustomArranged = true;
+      moveHistory = [];
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       uiPanel.classList.add('visible');
