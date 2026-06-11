@@ -1261,6 +1261,15 @@
         f.startY = Math.sin(angle) * dist;
         f.startRot = (Math.random() - 0.5) * 360;
 
+        let tdX = f.startX;
+        let tdY = f.startY;
+        const tMag = Math.hypot(tdX, tdY) || 1;
+        tdX /= tMag;
+        tdY /= tMag;
+        f.tensionDirX = tdX;
+        f.tensionDirY = tdY;
+        f.tensionDirRot = (Math.random() - 0.5) * 2;
+
         f.targetScale = 0.6 + Math.random() * 1.0;
         f.scale = 1.5; // reset scale on "Try Again", keep it moderate to prevent lag
         f.x = f.tensionDirX * 2500; // reset far out
@@ -1437,7 +1446,7 @@
       uiPanel.classList.remove('visible');
       setTimeout(() => {
         if (!isFreeArrange) document.getElementById('arrange-tools').style.display = 'none';
-      }, 500);
+      }, 700);
       deselectFragment();
       
       const pac = document.getElementById('post-action-container');
