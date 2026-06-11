@@ -1436,6 +1436,10 @@
       document.getElementById('arrange-tools').style.display = 'none';
       uiPanel.classList.remove('visible');
       deselectFragment();
+      const goldSvg = document.getElementById('gold-underlay-svg');
+      if (goldSvg) {
+        goldSvg.style.display = 'block';
+      }
       
       const pac = document.getElementById('post-action-container');
       pac.classList.remove('visible');
@@ -1446,6 +1450,27 @@
       // Force reflow before adding visible class back
       void pac.offsetWidth;
       pac.classList.add('visible');
+      checkArrangement();
+    });
+
+    document.getElementById('rotate-left-btn').addEventListener('click', () => {
+      if (!isFreeArrange || !selectedFragment) return;
+      moveHistory.push({
+        frag: selectedFragment,
+        oldRot: selectedFragment.rot,
+        type: 'spatial'
+      });
+      selectedFragment.rot -= 15;
+    });
+
+    document.getElementById('rotate-right-btn').addEventListener('click', () => {
+      if (!isFreeArrange || !selectedFragment) return;
+      moveHistory.push({
+        frag: selectedFragment,
+        oldRot: selectedFragment.rot,
+        type: 'spatial'
+      });
+      selectedFragment.rot += 15;
     });
 
     function generateTitle() {
