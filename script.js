@@ -876,6 +876,11 @@
 
     function applyColor(color) {
       if (!selectedFragment) return;
+      moveHistory.push({
+        frag: selectedFragment,
+        oldColor: selectedFragment.color,
+        type: 'color'
+      });
       selectedFragment.color = color;
       selectedFragment.pathElement.setAttribute("fill", color);
       editCount++;
@@ -883,6 +888,11 @@
 
     function applyTexture(textureId) {
       if (!selectedFragment) return;
+      moveHistory.push({
+        frag: selectedFragment,
+        oldTexture: selectedFragment.texture,
+        type: 'texture'
+      });
       selectedFragment.texture = textureId;
       if (textureId === 'none') {
         selectedFragment.textureOverlay.setAttribute("fill", "none");
@@ -1393,11 +1403,23 @@
     document.getElementById('return-btn').addEventListener('click', () => {
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
-        // Restore previous position and rotation smoothly
-        lastMove.frag.x = lastMove.oldX;
-        lastMove.frag.y = lastMove.oldY;
-        if (lastMove.oldRot !== undefined) {
-          lastMove.frag.targetRot = lastMove.oldRot;
+        if (lastMove.type === 'color') {
+          lastMove.frag.color = lastMove.oldColor;
+          lastMove.frag.pathElement.setAttribute("fill", lastMove.oldColor);
+        } else if (lastMove.type === 'texture') {
+          lastMove.frag.texture = lastMove.oldTexture;
+          if (lastMove.oldTexture === 'none') {
+            lastMove.frag.textureOverlay.setAttribute("fill", "none");
+          } else {
+            lastMove.frag.textureOverlay.setAttribute("fill", `url(#${lastMove.oldTexture})`);
+          }
+        } else {
+          // Restore previous position and rotation smoothly
+          lastMove.frag.x = lastMove.oldX;
+          lastMove.frag.y = lastMove.oldY;
+          if (lastMove.oldRot !== undefined) {
+            lastMove.frag.targetRot = lastMove.oldRot;
+          }
         }
       }
     });
