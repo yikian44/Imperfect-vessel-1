@@ -556,8 +556,11 @@
 
     /* Firefox Performance Fallback: Disable expensive backdrop-filter */
     @-moz-document url-prefix() {
-      #ui-panel, #let-go-btn, .action-btn {
+      #ui-panel, #let-go-btn, .action-btn:not(#done-arrange-btn) {
         backdrop-filter: none !important;
         background: rgba(255, 255, 255, 0.95) !important;
+      }
+      #done-arrange-btn {
+        backdrop-filter: none !important;
       }
     }
