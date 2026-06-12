@@ -1576,5 +1576,17 @@
       img.src = url;
     });
 
+    // Keyboard Shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (!isFreeArrange) return;
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
+        document.getElementById('return-btn').click();
+      } else if (!e.ctrlKey && !e.metaKey && (e.key === 'z' || e.key === 'Z')) {
+        document.getElementById('rotate-left-btn').click();
+      } else if (!e.ctrlKey && !e.metaKey && (e.key === 'x' || e.key === 'X')) {
+        document.getElementById('rotate-right-btn').click();
+      }
+    });
+
     // Start loop
     animate();
