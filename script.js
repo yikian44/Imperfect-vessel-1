@@ -1017,7 +1017,7 @@
         }
       });
 
-      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -250 : 0;
+      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -100 : 0;
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
 
       const centerX = window.innerWidth / 2;
