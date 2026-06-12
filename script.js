@@ -1409,7 +1409,7 @@
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       uiPanel.classList.add('visible');
-      finalMessage.innerText = "Shape it as you wish.";
+      finalMessage.innerText = "Drag fragments to move. Shape it as you wish.";
       
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
