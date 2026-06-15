@@ -797,8 +797,10 @@
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */
-    .action-btn, #let-go-btn {
+    .action-btn {
       position: relative;
+    }
+    .action-btn, #let-go-btn {
       overflow: hidden;
       color: transparent !important; /* Hide original text */
     }
