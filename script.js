@@ -312,9 +312,7 @@
       goldSvg.innerHTML = "";
       
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      // Stunning rich gold with a heavy glowing drop shadow (TEMPORARILY DISABLED)
       g.setAttribute("fill", "#eeb422"); 
-      // g.style.filter = "drop-shadow(0px 0px 8px rgba(255, 215, 0, 0.8)) drop-shadow(0px 0px 15px rgba(255, 140, 0, 0.5))";
       
       currentPieces.forEach(p => {
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -1125,8 +1123,8 @@
             { strokeDashoffset: -sweepLength, opacity: 0, offset: 1 }
           ];
           const animConfig = {
-            duration: 3000, // Natural light shift (3 seconds)
-            delay: 1000 + Math.random() * 2000, // Randomize start slightly for organic feel
+            duration: 3000,
+            delay: 1000 + Math.random() * 2000,
             easing: 'ease-in-out',
             fill: 'forwards'
           };
@@ -1281,6 +1279,7 @@
         f.cx = piece.cx;
         f.cy = piece.cy;
         f.type = piece.type;
+        f.element.style.transformOrigin = `${f.cx}px ${f.cy}px`;
         
         f.pathElement.setAttribute("d", f.path);
         f.textureOverlay.setAttribute("d", f.path);
@@ -1302,6 +1301,8 @@
         f.impX = 0;
         f.impY = 0;
         f.impRot = 0;
+        f.targetRot = undefined;
+        f.isDragging = false;
 
         // Semantic Coloring based on type
         if (piece.type === 'eye') {
@@ -1362,6 +1363,7 @@
         f.cx = piece.cx;
         f.cy = piece.cy;
         f.type = piece.type;
+        f.element.style.transformOrigin = `${f.cx}px ${f.cy}px`;
         
         f.pathElement.setAttribute("d", f.path);
         f.textureOverlay.setAttribute("d", f.path);
@@ -1384,6 +1386,8 @@
         f.impX = 0;
         f.impY = 0;
         f.impRot = 0;
+        f.targetRot = undefined;
+        f.isDragging = false;
         
         // Semantic Coloring based on type
         if (piece.type === 'eye') {
@@ -1458,7 +1462,6 @@
       // Force reflow before adding visible class back
       void pac.offsetWidth;
       pac.classList.add('visible');
-      checkArrangement();
     });
 
     document.getElementById('rotate-left-btn').addEventListener('click', () => {
@@ -1530,10 +1533,7 @@
         const textureOverlayString = f.texture !== 'none' ? `<path d="${f.path}" fill="url(#${f.texture})" pointer-events="none" />` : '';
         
         svgContent += `
-          <g transform="translate(${w / 2 + f.x}, ${h / 2 + f.y}) rotate(${f.rot})">
-            <!-- Shadow Caster Path (Bypasses Canvas clip-path filter bugs) -->
-            <path d="${f.path}" fill="${f.color}" style="filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.1))" />
-            
+          <g transform="translate(${w / 2 + f.x + f.cx}, ${h / 2 + f.y + f.cy}) rotate(${f.rot}) scale(${f.scale}) translate(${-f.cx}, ${-f.cy})">
             <!-- Fragment Content -->
             <clipPath id="${clipId}">
               <path d="${f.path}" />
