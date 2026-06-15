@@ -181,20 +181,54 @@
     // Prevent uiPanel clicks from deselecting the active fragment
     uiPanel.addEventListener('pointerdown', (e) => e.stopPropagation());
 
-    // Palette: Vibrant Picasso Cubist Colors
-    const colors = [
-      '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#8c3ad8', '#e462a3',
-      '#28a396', '#d86830', '#5a2e87', '#216a32', '#9c2828', '#ffffff',
-      '#222222'
-    ];
+    // Palette Categorization
+    const colorCategories = {
+      "Wabi-Sabi": [
+        '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78'
+      ],
+      "Cubist Vibrant": [
+        '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3'
+      ],
+      "Monochrome": [
+        '#ffffff', '#888888', '#222222'
+      ]
+    };
 
-    // Populate buttons
-    colors.forEach(color => {
-      const btn = document.createElement('button');
-      btn.className = 'color-btn';
-      btn.style.backgroundColor = color;
-      btn.onclick = () => applyColor(color);
-      colorOptions.appendChild(btn);
+    colorOptions.style.flexDirection = 'column';
+    colorOptions.style.alignItems = 'flex-start';
+    colorOptions.style.gap = '16px';
+
+    // Populate buttons by category
+    Object.entries(colorCategories).forEach(([category, colors]) => {
+      const group = document.createElement('div');
+      group.style.display = 'flex';
+      group.style.flexDirection = 'column';
+      group.style.gap = '8px';
+      group.style.width = '100%';
+      
+      const label = document.createElement('div');
+      label.innerText = category;
+      label.style.fontSize = '9px';
+      label.style.color = 'var(--text-color)';
+      label.style.opacity = '0.6';
+      label.style.letterSpacing = '1px';
+      label.style.textTransform = 'uppercase';
+      
+      const row = document.createElement('div');
+      row.className = 'options-row';
+      row.style.gap = '10px';
+      
+      colors.forEach(color => {
+        const btn = document.createElement('button');
+        btn.className = 'color-btn';
+        btn.style.backgroundColor = color;
+        btn.onclick = () => applyColor(color);
+        row.appendChild(btn);
+      });
+      
+      group.appendChild(label);
+      group.appendChild(row);
+      colorOptions.appendChild(group);
     });
 
     document.querySelectorAll('.texture-btn').forEach(btn => {
