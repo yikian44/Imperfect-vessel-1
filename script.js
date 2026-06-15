@@ -1552,7 +1552,7 @@
         
         <!-- Gold Underlay Export -->
         <g transform="translate(${w / 2}, ${h / 2})">
-          ${document.getElementById('gold-underlay-svg') ? document.getElementById('gold-underlay-svg').innerHTML : ''}
+          ${(!isCustomArranged && document.getElementById('gold-underlay-svg') && document.getElementById('gold-underlay-svg').style.display !== 'none') ? document.getElementById('gold-underlay-svg').innerHTML : ''}
         </g>`;
 
       fragments.forEach(f => {
