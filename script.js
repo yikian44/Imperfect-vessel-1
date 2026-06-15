@@ -194,7 +194,9 @@
       ]
     };
 
+    colorOptions.style.display = 'flex';
     colorOptions.style.flexDirection = 'column';
+    colorOptions.style.flexWrap = 'nowrap'; // Prevent wrapping into multiple columns
     colorOptions.style.alignItems = 'flex-start';
     colorOptions.style.gap = '16px';
 
@@ -217,6 +219,7 @@
       const row = document.createElement('div');
       row.className = 'options-row';
       row.style.gap = '10px';
+      row.style.maxWidth = '100%';
       
       colors.forEach(color => {
         const btn = document.createElement('button');
