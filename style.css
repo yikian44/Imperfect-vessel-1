@@ -242,7 +242,6 @@
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--panel-border);
       border-radius: 20px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
       max-height: calc(100vh - 80px);
     }
 
@@ -289,7 +288,6 @@
       border: 2px solid rgba(255, 255, 255, 0.2);
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       forced-color-adjust: none;
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
@@ -297,7 +295,6 @@
 
     .color-btn:hover {
       transform: scale(1.2);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     .color-btn.active {
       box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--text-color);
@@ -354,7 +351,6 @@
       background: var(--text-color);
       color: #fff;
       border-color: var(--text-color);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     /* Let Go Button */
@@ -374,7 +370,6 @@
       border-radius: 30px;
       transition: all 0.5s ease;
       z-index: 10;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
     }
 
     #let-go-btn:hover {
@@ -451,7 +446,6 @@
       letter-spacing: 2px;
       border-radius: 24px;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
       forced-color-adjust: none;
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
