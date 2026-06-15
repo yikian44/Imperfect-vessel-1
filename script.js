@@ -82,6 +82,39 @@
     let hardwareX = cursorX;
     let hardwareY = cursorY;
 
+    const crackCanvas = document.getElementById('crack-canvas');
+    let lastCrackX = null;
+    let lastCrackY = null;
+    const CRACK_THRESHOLD = 30; // pixels
+
+    function generateCrackPath(x1, y1, x2, y2) {
+      // Add jitter for fracture look
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const dist = Math.hypot(dx, dy);
+      if (dist === 0) return "";
+      
+      const angle = Math.atan2(dy, dx);
+      // Random midpoints
+      const numMidpoints = Math.floor(Math.random() * 2) + 1; // 1 to 2 midpoints
+      
+      let d = `M ${x1} ${y1} `;
+      for (let i = 1; i <= numMidpoints; i++) {
+        const t = i / (numMidpoints + 1);
+        const basePathX = x1 + dx * t;
+        const basePathY = y1 + dy * t;
+        
+        // Perpendicular jitter
+        const jitterAmt = (Math.random() - 0.5) * dist * 0.4;
+        const jitterX = Math.cos(angle + Math.PI / 2) * jitterAmt;
+        const jitterY = Math.sin(angle + Math.PI / 2) * jitterAmt;
+        
+        d += `L ${basePathX + jitterX} ${basePathY + jitterY} `;
+      }
+      d += `L ${x2} ${y2}`;
+      return d;
+    }
+
     window.addEventListener('pointermove', (e) => {
       if (returningFragment) {
         const dx = e.clientX - hardwareX;
@@ -95,6 +128,39 @@
       hardwareY = e.clientY;
       cursorTargetX = e.clientX;
       cursorTargetY = e.clientY;
+
+      // Crack trail logic
+      if (crackCanvas && isPrologue === false) { // Only draw trail after prologue
+        if (lastCrackX === null) {
+          lastCrackX = e.clientX;
+          lastCrackY = e.clientY;
+        } else {
+          const dx = e.clientX - lastCrackX;
+          const dy = e.clientY - lastCrackY;
+          if (Math.hypot(dx, dy) > CRACK_THRESHOLD) {
+            const pathData = generateCrackPath(lastCrackX, lastCrackY, e.clientX, e.clientY);
+            const pathNode = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            pathNode.setAttribute("d", pathData);
+            pathNode.setAttribute("class", "crack-line");
+            crackCanvas.appendChild(pathNode);
+            
+            // Fade out and remove
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                pathNode.style.opacity = '0';
+              });
+            });
+            setTimeout(() => {
+              if (pathNode.parentNode === crackCanvas) {
+                crackCanvas.removeChild(pathNode);
+              }
+            }, 3000);
+            
+            lastCrackX = e.clientX;
+            lastCrackY = e.clientY;
+          }
+        }
+      }
 
       // Immediate update during drag for tight responsiveness
       if (fragments && fragments.some(f => f.isDragging)) {

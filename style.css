@@ -646,3 +646,22 @@
     .action-btn:hover::after, #let-go-btn:hover::after {
       transform: translateY(0);
     }
+
+    /* Mouse Trail Fracture Canvas */
+    #crack-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 1; /* Below the UI and Fragments, but above background dimmer */
+    }
+
+    .crack-line {
+      stroke: rgba(0, 0, 0, 0.4);
+      stroke-width: 0.8px;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 1;
+      transition: opacity 3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
