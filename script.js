@@ -38,11 +38,46 @@
       const quote = document.getElementById('prologue-quote');
       const subtext = document.getElementById('prologue-subtext');
 
-      setTimeout(() => {
-        text.classList.add('visible');
-        setTimeout(() => { if (quote) quote.classList.add('visible'); }, 800);
-        setTimeout(() => { if (subtext) subtext.classList.add('visible'); }, 2000);
-      }, 500);
+      const loader = document.getElementById('ll-loader');
+      const counterElem = document.getElementById('ll-counter');
+      const progressBar = document.getElementById('ll-progress-bar');
+      
+      let progress = 0;
+      let startTime = performance.now();
+      
+      function animateLoader(time) {
+        const elapsed = time - startTime;
+        const duration = 1800; // 1.8 seconds
+        let t = Math.min(elapsed / duration, 1.0);
+        
+        // Ease out quadratic: t * (2 - t)
+        progress = Math.floor(t * (2 - t) * 100);
+        
+        counterElem.innerText = progress + '%';
+        progressBar.style.transform = `scaleX(${progress / 100})`;
+        
+        if (elapsed < duration) {
+          requestAnimationFrame(animateLoader);
+        } else {
+          counterElem.innerText = '100%';
+          progressBar.style.transform = 'scaleX(1)';
+          
+          setTimeout(() => {
+            loader.classList.add('slide-up');
+            
+            // Reveal prologue text right as the screen slides up
+            text.classList.add('visible');
+            setTimeout(() => { if (quote) quote.classList.add('visible'); }, 800);
+            setTimeout(() => { if (subtext) subtext.classList.add('visible'); }, 2000);
+            
+            setTimeout(() => {
+              loader.style.display = 'none';
+            }, 1000); // match CSS transition duration
+          }, 300); // dramatic pause at 100%
+        }
+      }
+      
+      requestAnimationFrame(animateLoader);
 
       const startExperience = () => {
         if (!isPrologue) return;
