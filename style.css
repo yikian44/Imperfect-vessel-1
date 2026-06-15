@@ -353,6 +353,45 @@
       border-color: var(--text-color);
     }
 
+    #done-arrange-btn {
+      padding: 8px 24px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      border-radius: 20px;
+      border: 1px solid var(--text-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      background: var(--text-color);
+      color: #fff;
+      transition: all 0.3s ease;
+      forced-color-adjust: none;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+    
+    #done-arrange-btn::before {
+      content: '';
+      position: absolute;
+      top: 100%; left: 0; right: 0; height: 100%;
+      background: #fff;
+      transition: top 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+      z-index: -1;
+    }
+    
+    #done-arrange-btn:hover {
+      color: var(--text-color);
+    }
+    
+    #done-arrange-btn:hover::before {
+      top: 0;
+    }
+
     /* Let Go Button */
     #let-go-btn {
       position: absolute;
@@ -580,10 +619,6 @@
         backdrop-filter: none !important;
         background: rgba(255, 255, 255, 0.95) !important;
       }
-      #done-arrange-btn {
-        background: #333333 !important;
-        color: #ffffff !important;
-      }
     }
 
     /* Lama Lama Style Loader */
@@ -644,11 +679,6 @@
       justify-content: center;
       color: var(--text-color);
       transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
-    }
-
-    /* #done-arrange-btn needs white text because of its dark background */
-    #done-arrange-btn::before, #done-arrange-btn::after {
-      color: #fff;
     }
 
     .action-btn::after, #let-go-btn::after, .texture-btn::after {
