@@ -33,11 +33,6 @@
         'img-speckled'
       );
 
-      const prologue = document.getElementById('prologue');
-      const text = document.getElementById('prologue-text');
-      const quote = document.getElementById('prologue-quote');
-      const subtext = document.getElementById('prologue-subtext');
-
       const loader = document.getElementById('ll-loader');
       const counterElem = document.getElementById('ll-counter');
       const progressBar = document.getElementById('ll-progress-bar');
@@ -65,10 +60,8 @@
           setTimeout(() => {
             loader.classList.add('slide-up');
             
-            // Reveal prologue text right as the screen slides up
-            text.classList.add('visible');
-            setTimeout(() => { if (quote) quote.classList.add('visible'); }, 800);
-            setTimeout(() => { if (subtext) subtext.classList.add('visible'); }, 2000);
+            // Allow interaction immediately
+            isPrologue = false;
             
             setTimeout(() => {
               loader.style.display = 'none';
@@ -78,30 +71,6 @@
       }
       
       requestAnimationFrame(animateLoader);
-
-      const startExperience = () => {
-        if (!isPrologue) return;
-        text.classList.remove('visible');
-        if (quote) quote.classList.remove('visible');
-        if (subtext) subtext.classList.remove('visible');
-        prologue.style.opacity = '0';
-        prologue.style.pointerEvents = 'none';
-        isPrologue = false;
-
-        setTimeout(() => {
-          prologue.style.display = 'none';
-        }, 1000);
-
-        if (audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        initDrone();
-      };
-
-      prologue.addEventListener('pointerdown', startExperience);
-
-      // Auto-start after 8 seconds if no click
-      setTimeout(startExperience, 8000);
     });
 
     // Custom Cursor Logic

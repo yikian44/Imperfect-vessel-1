@@ -342,6 +342,201 @@
       font-weight: 500;
       letter-spacing: 3px;
       border-radius: 30px;
+      left: 0;
+      transform-origin: center;
+      will-change: transform;
+      transform: translateZ(0);
+    }
+
+    .fragment svg {
+      overflow: visible;
+      pointer-events: none;
+      will-change: filter;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .fragment.selected svg {
+      filter: brightness(1.15);
+      transform: scale(1.02);
+    }
+
+    .fragment path {
+      pointer-events: auto;
+    }
+
+    /* Kintsugi Glow Effect (Now Depth Shadow) */
+    .kintsugi .fragment svg {
+      filter: none !important;
+      transition: filter 2s ease-out !important; /* Shortened to reduce Chrome CPU choking */
+    }
+
+    .bg-noise {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      z-index: 0;
+    }
+
+    #bg-dimmer {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #181716; /* Museum dark gray */
+      opacity: 0;
+      z-index: -2; /* Above the canvas background, below gold underlay */
+      pointer-events: none;
+      will-change: opacity;
+      transition: opacity 4s ease;
+    }
+
+    body.kintsugi #bg-dimmer {
+      opacity: 0.85; /* Dim the background to 85% opacity over the woven texture */
+    }
+
+    body.kintsugi #ui-panel {
+      opacity: 0.2;
+      transition: opacity 3s ease;
+    }
+
+    body.kintsugi #ui-panel:hover {
+      opacity: 1;
+    }
+
+    /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
+    body.kintsugi .fragment {
+      opacity: 0.85;
+      transition: opacity 3s ease;
+    }
+
+    /* UI Panel */
+    #ui-panel {
+      position: absolute;
+      top: 50px;
+      left: 50px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
+      transform: translateY(-10px);
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    #ui-panel.visible {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .ui-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: #888681;
+      margin-bottom: 16px;
+    }
+
+    #texture-section {
+      margin-top: 32px;
+    }
+    .options-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      max-width: 240px;
+      padding-top: 8px;
+      margin-top: -8px;
+    }
+    #color-options {
+      display: grid;
+      grid-template-columns: repeat(6, 32px);
+    }
+    #texture-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .color-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      forced-color-adjust: none;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .color-btn.active {
+      box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--text-color);
+      transform: scale(1.1);
+    }
+    .texture-btn, .undo-btn {
+      padding: 10px 16px;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid var(--panel-border);
+      color: var(--text-color);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      forced-color-adjust: none;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    .texture-btn:hover, .undo-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .texture-btn.active, .undo-btn:active {
+      background: var(--text-color);
+      color: #fff;
+      border-color: var(--text-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Let Go Button */
+    #let-go-btn {
+      position: absolute;
+      bottom: 50px;
+      right: 50px;
+      padding: 16px 32px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      color: var(--text-color);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      border-radius: 30px;
       transition: all 0.5s ease;
       z-index: 10;
       box-shadow: 0 8px 24px rgba(0,0,0,0.05);
@@ -349,8 +544,6 @@
 
     #let-go-btn:hover {
       background: rgba(255, 255, 255, 0.7);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
     }
 
     #let-go-btn.hidden {
@@ -431,8 +624,6 @@
 
     .action-btn:hover {
       background: rgba(255, 255, 255, 0.8);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
     }
 
     .tracing-path {
@@ -603,4 +794,40 @@
 
     #ll-counter {
       letter-spacing: 2px;
+    }
+
+    /* Lama Lama Text Roll-Up Hover Effect for Buttons */
+    .action-btn, #let-go-btn {
+      position: relative;
+      overflow: hidden;
+      color: transparent !important; /* Hide original text */
+    }
+
+    .action-btn::before, #let-go-btn::before,
+    .action-btn::after, #let-go-btn::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+    }
+
+    /* #done-arrange-btn needs white text because of its dark background */
+    #done-arrange-btn::before, #done-arrange-btn::after {
+      color: #fff;
+    }
+
+    .action-btn::after, #let-go-btn::after {
+      transform: translateY(100%);
+    }
+
+    .action-btn:hover::before, #let-go-btn:hover::before {
+      transform: translateY(-100%);
+    }
+
+    .action-btn:hover::after, #let-go-btn:hover::after {
+      transform: translateY(0);
     }

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3.5">
+  <link rel="stylesheet" href="style.css?v=3.6">
   <link rel="icon" href="data:,">
 </head>
 
@@ -21,13 +21,7 @@
 
   <div id="custom-cursor"></div>
 
-  <div id="prologue">
-    <div class="prologue-content">
-      <h1 id="prologue-text">IMPERFECT VESSEL</h1>
-      <p id="prologue-quote" class="prologue-quote">"Do not try to control too much. True beauty emerges when you learn to let go."</p>
-      <div id="prologue-subtext" class="prologue-subtext">[ CLICK ANYWHERE TO BEGIN ]</div>
-    </div>
-  </div>
+
 
   <!-- Hidden SVG Filters for textures -->
   <svg id="filter-defs">
@@ -136,18 +130,18 @@
             <span style="font-size: 10px; opacity: 0.6;">(X)</span>
           </button>
         </div>
-        <button id="done-arrange-btn" class="action-btn" style="width: 100%; box-sizing: border-box; background: var(--text-color); color: #fff;">DONE</button>
+        <button id="done-arrange-btn" class="action-btn" data-text="DONE" style="width: 100%; box-sizing: border-box; background: var(--text-color); color: #fff;">DONE</button>
       </div>
     </div>
   </div>
 
-  <button id="let-go-btn">RELEASE</button>
+  <button id="let-go-btn" data-text="RELEASE">RELEASE</button>
   <div id="final-message"></div>
   <div id="post-action-container">
-    <button id="try-again-btn" class="action-btn">TRY AGAIN</button>
-    <button id="change-shape-btn" class="action-btn">CHANGE SHAPE</button>
-    <button id="free-arrange-btn" class="action-btn">REARRANGE</button>
-    <button id="save-btn" class="action-btn">SAVE (PNG)</button>
+    <button id="try-again-btn" class="action-btn" data-text="TRY AGAIN">TRY AGAIN</button>
+    <button id="change-shape-btn" class="action-btn" data-text="CHANGE SHAPE">CHANGE SHAPE</button>
+    <button id="free-arrange-btn" class="action-btn" data-text="REARRANGE">REARRANGE</button>
+    <button id="save-btn" class="action-btn" data-text="SAVE (PNG)">SAVE (PNG)</button>
   </div>
   <script src="script.js?v=3.4"></script>
 </body>
