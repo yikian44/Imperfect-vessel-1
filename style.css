@@ -160,9 +160,17 @@
       transition: filter 0.3s ease, transform 0.3s ease;
     }
 
+    .fragment.selected {
+      z-index: 999;
+    }
+    
+    body.kintsugi .fragment.selected {
+      opacity: 1;
+    }
+
     .fragment.selected svg {
-      filter: brightness(1.15);
-      transform: scale(1.02);
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) brightness(1.2) !important;
+      transform: scale(1.06) !important;
     }
 
     .fragment path {
