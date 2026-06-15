@@ -322,10 +322,31 @@
       color-adjust: exact;
     }
 
-    .texture-btn:hover, .undo-btn:hover {
+    .texture-btn:hover {
       background: rgba(255, 255, 255, 0.9);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .undo-btn {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .undo-btn::before {
+      content: '';
+      position: absolute;
+      top: 100%; left: 0; right: 0; height: 100%;
+      background: var(--text-color);
+      transition: top 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+      z-index: -1;
+    }
+    
+    .undo-btn:hover {
+      color: #fff;
+    }
+    
+    .undo-btn:hover::before {
+      top: 0;
     }
     
     .texture-btn.active, .undo-btn:active {
@@ -610,16 +631,16 @@
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */
-    .action-btn {
+    .action-btn, .texture-btn {
       position: relative;
     }
-    .action-btn, #let-go-btn {
+    .action-btn, #let-go-btn, .texture-btn {
       overflow: hidden;
       color: transparent !important; /* Hide original text */
     }
 
-    .action-btn::before, #let-go-btn::before,
-    .action-btn::after, #let-go-btn::after {
+    .action-btn::before, #let-go-btn::before, .texture-btn::before,
+    .action-btn::after, #let-go-btn::after, .texture-btn::after {
       content: attr(data-text);
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -635,15 +656,15 @@
       color: #fff;
     }
 
-    .action-btn::after, #let-go-btn::after {
+    .action-btn::after, #let-go-btn::after, .texture-btn::after {
       transform: translateY(100%);
     }
 
-    .action-btn:hover::before, #let-go-btn:hover::before {
+    .action-btn:hover::before, #let-go-btn:hover::before, .texture-btn:hover::before {
       transform: translateY(-100%);
     }
 
-    .action-btn:hover::after, #let-go-btn:hover::after {
+    .action-btn:hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
       transform: translateY(0);
     }
 
