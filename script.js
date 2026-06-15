@@ -198,14 +198,14 @@
     colorOptions.style.flexDirection = 'column';
     colorOptions.style.flexWrap = 'nowrap'; // Prevent wrapping into multiple columns
     colorOptions.style.alignItems = 'flex-start';
-    colorOptions.style.gap = '16px';
+    colorOptions.style.gap = '12px';
 
     // Populate buttons by category
     Object.entries(colorCategories).forEach(([category, colors]) => {
       const group = document.createElement('div');
       group.style.display = 'flex';
       group.style.flexDirection = 'column';
-      group.style.gap = '8px';
+      group.style.gap = '6px';
       group.style.width = '100%';
       
       const label = document.createElement('div');
