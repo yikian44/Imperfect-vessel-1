@@ -1015,7 +1015,11 @@
         }
       });
 
-      const targetCenterYOffset = (uiPanel.classList.contains('visible') && window.innerWidth < 768) ? -100 : 0;
+      let targetCenterYOffset = window.innerWidth < 768 ? -120 : -80;
+      if (uiPanel.classList.contains('visible') && window.innerWidth < 768) {
+        targetCenterYOffset = -140;
+      }
+      
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
 
       const centerX = window.innerWidth / 2;
@@ -1186,21 +1190,52 @@
 
     function showFinalMessage() {
       let text = "";
+      let quote = "";
+      
+      const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
       if (editCount > 25) {
         text = "Not everything needs to be fixed.";
+        quote = pickRandom([
+          "\"There is a crack in everything, that's how the light gets in.\" — Leonard Cohen",
+          "\"Have no fear of perfection - you'll never reach it.\" — Salvador Dali",
+          "\"To improve is to change; to be perfect is to change often.\" — Winston Churchill"
+        ]);
       } else if (editCount > 15) {
         text = "You tried to hold everything together.";
+        quote = pickRandom([
+          "\"Life is a balance of holding on and letting go.\" — Rumi",
+          "\"Let go of the battle. Breathe quietly and let it be.\" — Jack Kornfield",
+          "\"Sometimes letting things go is an act of far greater power than defending or hanging on.\" — Eckhart Tolle"
+        ]);
       } else if (editCount >= 5) {
         text = "You tried, and that is enough.";
+        quote = pickRandom([
+          "\"Success is not final, failure is not fatal: it is the courage to continue that counts.\" — Winston Churchill",
+          "\"Do what you can, with what you have, where you are.\" — Theodore Roosevelt",
+          "\"Ever tried. Ever failed. No matter. Try again. Fail again. Fail better.\" — Samuel Beckett"
+        ]);
       } else if (editCount > 0) {
         text = "You knew when to stop.";
+        quote = pickRandom([
+          "\"He who knows when to stop does not meet with danger.\" — Lao Tzu",
+          "\"Half of knowing what you want is knowing what you must give up before you get it.\" — Sidney Howard",
+          "\"Leave well enough alone.\" — Aesop"
+        ]);
       } else {
         text = "Sometimes, it's best to just watch.";
+        quote = pickRandom([
+          "\"You can see a lot by just observing.\" — Yogi Berra",
+          "\"The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.\" — Marcel Proust",
+          "\"To look at a thing is very different from seeing a thing.\" — Oscar Wilde"
+        ]);
       }
 
-      finalMessage.innerText = text;
+      finalMessage.innerHTML = `${text}<br><span style="font-size: 0.6em; opacity: 0.7; display: block; margin-top: 10px; font-weight: normal; font-style: italic;">${quote}</span>`;
       finalMessage.classList.add('visible');
-      document.getElementById('post-action-container').classList.add('visible');
+      const pac = document.getElementById('post-action-container');
+      pac.style.display = 'flex';
+      pac.classList.add('visible');
     }
 
     document.getElementById('try-again-btn').addEventListener('click', () => {
@@ -1453,15 +1488,7 @@
       }, 700);
       deselectFragment();
       
-      const pac = document.getElementById('post-action-container');
-      pac.classList.remove('visible');
-      pac.style.display = 'flex';
-      pac.style.transitionDelay = '0s';
-      pac.style.transitionDuration = '0.6s';
-      
-      // Force reflow before adding visible class back
-      void pac.offsetWidth;
-      pac.classList.add('visible');
+      showFinalMessage();
     });
 
     document.getElementById('rotate-left-btn').addEventListener('click', () => {
