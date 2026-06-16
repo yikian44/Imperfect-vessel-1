@@ -157,7 +157,7 @@
       overflow: visible;
       pointer-events: none;
       will-change: filter;
-      transition: filter 0.3s ease, transform 0.3s ease;
+      transition: transform 0.3s ease;
     }
 
     .fragment.selected {
