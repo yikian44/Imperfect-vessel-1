@@ -332,27 +332,8 @@
       background: rgba(255, 255, 255, 0.9);
     }
     
-    .undo-btn {
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
-    
-    .undo-btn::before {
-      content: '';
-      position: absolute;
-      top: 100%; left: 0; right: 0; height: 100%;
-      background: var(--text-color);
-      transition: top 0.4s cubic-bezier(0.8, 0, 0.2, 1);
-      z-index: -1;
-    }
-    
     .undo-btn:hover {
-      color: #fff;
-    }
-    
-    .undo-btn:hover::before {
-      top: 0;
+      background: rgba(255, 255, 255, 0.9);
     }
     
     .texture-btn.active, .undo-btn:active {
@@ -372,9 +353,6 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
       background: var(--text-color);
       color: #fff;
       transition: all 0.3s ease;
@@ -383,21 +361,9 @@
       color-adjust: exact;
     }
     
-    #done-arrange-btn::before {
-      content: '';
-      position: absolute;
-      top: 100%; left: 0; right: 0; height: 100%;
-      background: #fff;
-      transition: top 0.4s cubic-bezier(0.8, 0, 0.2, 1);
-      z-index: -1;
-    }
-    
     #done-arrange-btn:hover {
+      background: #fff;
       color: var(--text-color);
-    }
-    
-    #done-arrange-btn:hover::before {
-      top: 0;
     }
 
     /* Let Go Button */
