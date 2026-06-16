@@ -967,6 +967,7 @@
       selectedFragment = frag;
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
+      document.body.classList.add('has-selected');
       editCount += 0.5;
     }
 
@@ -978,6 +979,7 @@
       if (!isFreeArrange) {
         uiPanel.classList.remove('visible');
       }
+      document.body.classList.remove('has-selected');
     }
 
     function applyColor(color) {
