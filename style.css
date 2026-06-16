@@ -175,9 +175,8 @@
 
     /* 当有碎片被选中时，未被选中的碎片变暗 */
     body.has-selected .fragment:not(.selected) {
-      opacity: 0.4 !important;
-      filter: grayscale(30%);
-      transition: opacity 0.3s ease, filter 0.3s ease !important;
+      opacity: 0.3 !important;
+      transition: opacity 0.3s ease !important;
     }
 
     .fragment path {
