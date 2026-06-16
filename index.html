@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=3.19">
+  <link rel="stylesheet" href="style.css?v=3.21">
   <link rel="icon" href="data:,">
 </head>
 
@@ -103,12 +103,11 @@
 
   <div id="ui-panel">
     <div id="style-menu-container" style="width: 100%;">
-      <button id="toggle-style-btn" class="undo-btn rollup-text-btn" style="width: 100%;" data-text="STYLE">
-        <div class="original-content" style="padding: 8px 16px; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 1-9-9c0-5 4-9 9-9s9 4 9 9a5 5 0 0 1-5 5h-1.5a1.5 1.5 0 0 0-1.5 1.5v1.5a1.5 1.5 0 0 1-1.5 1.5z"></path></svg>
-          STYLE
-        </div>
-      </button>
+      <div id="toggle-style-btn" style="width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 0 0 8px 0; opacity: 0.4; transition: opacity 0.3s;">
+        <svg id="style-arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+      </div>
       <div id="style-menu-content" style="display: none; flex-direction: column; gap: 16px; margin-top: 16px;">
         <div id="color-section">
           <div class="ui-label">COLOR</div>
@@ -168,7 +167,7 @@
     <button id="free-arrange-btn" class="action-btn" data-text="REARRANGE">REARRANGE</button>
     <button id="save-btn" class="action-btn" data-text="SAVE (PNG)">SAVE (PNG)</button>
   </div>
-  <script src="script.js?v=3.6"></script>
+  <script src="script.js?v=3.8"></script>
 </body>
 
 </html>

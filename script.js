@@ -972,10 +972,12 @@
         document.getElementById('arrange-tools').style.display = 'none';
         document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'flex';
+        document.getElementById('style-arrow-icon').classList.add('expanded');
       } else {
         document.getElementById('arrange-tools').style.display = 'block';
         document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'none';
+        document.getElementById('style-arrow-icon').classList.remove('expanded');
       }
 
       document.body.classList.add('has-selected');
@@ -1363,6 +1365,7 @@
       document.getElementById('arrange-tools').style.display = 'none';
       document.getElementById('style-menu-container').style.display = '';
       document.getElementById('style-menu-content').style.display = 'flex';
+      document.getElementById('style-arrow-icon').classList.add('expanded');
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
@@ -1571,6 +1574,7 @@
       document.getElementById('arrange-tools').style.display = 'block';
       document.getElementById('style-menu-container').style.display = '';
       document.getElementById('style-menu-content').style.display = 'none';
+      document.getElementById('style-arrow-icon').classList.remove('expanded');
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Drag fragments to move. Shape it as you wish.";
       
@@ -1612,6 +1616,7 @@
           document.getElementById('arrange-tools').style.display = 'none';
           document.getElementById('style-menu-container').style.display = '';
           document.getElementById('style-menu-content').style.display = 'flex';
+          document.getElementById('style-arrow-icon').classList.add('expanded');
         }
       }, 700);
       deselectFragment();
@@ -1621,10 +1626,13 @@
 
     document.getElementById('toggle-style-btn').addEventListener('click', () => {
       const content = document.getElementById('style-menu-content');
+      const icon = document.getElementById('style-arrow-icon');
       if (content.style.display === 'none') {
         content.style.display = 'flex';
+        icon.classList.add('expanded');
       } else {
         content.style.display = 'none';
+        icon.classList.remove('expanded');
       }
     });
 

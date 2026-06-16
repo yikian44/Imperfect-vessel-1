@@ -457,6 +457,13 @@
       height: 0;
     }
 
+    #style-arrow-icon {
+      transition: transform 0.3s ease;
+    }
+    #style-arrow-icon.expanded {
+      transform: rotate(180deg);
+    }
+
     #post-action-container {
       position: absolute;
       bottom: 40px;
