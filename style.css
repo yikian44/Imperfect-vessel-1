@@ -171,6 +171,7 @@
     .fragment.selected svg {
       filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) brightness(1.2) !important;
       transform: scale(1.06) !important;
+      transition: transform 0.3s ease !important;
     }
 
     /* 当有碎片被选中时，未被选中的碎片变暗 */
