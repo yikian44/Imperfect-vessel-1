@@ -383,12 +383,13 @@
     .rollup-text-btn::after {
       content: attr(data-text);
       position: absolute;
-      top: 100%; left: 0; right: 0; bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
       color: inherit;
+      transform: translateY(100%);
     }
     
     .rollup-text-btn:hover .original-content {
@@ -396,7 +397,7 @@
     }
     
     .rollup-text-btn:hover::after {
-      transform: translateY(-100%);
+      transform: translateY(0);
     }
 
     /* Let Go Button */
