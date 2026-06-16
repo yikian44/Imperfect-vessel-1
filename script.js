@@ -967,6 +967,17 @@
       selectedFragment = frag;
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
+      
+      if (!isFreeArrange) {
+        document.getElementById('arrange-tools').style.display = 'none';
+        document.getElementById('color-section').style.display = '';
+        document.getElementById('texture-section').style.display = '';
+      } else {
+        document.getElementById('arrange-tools').style.display = 'block';
+        document.getElementById('color-section').style.display = 'none';
+        document.getElementById('texture-section').style.display = 'none';
+      }
+
       document.body.classList.add('has-selected');
       editCount += 0.5;
     }
@@ -1350,6 +1361,8 @@
     document.getElementById('try-again-btn').addEventListener('click', () => {
       // Soft reset
       document.getElementById('arrange-tools').style.display = 'none';
+      document.getElementById('color-section').style.display = '';
+      document.getElementById('texture-section').style.display = '';
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
@@ -1556,6 +1569,8 @@
       moveHistory = [];
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
+      document.getElementById('color-section').style.display = 'none';
+      document.getElementById('texture-section').style.display = 'none';
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Drag fragments to move. Shape it as you wish.";
       
@@ -1593,7 +1608,11 @@
       isFreeArrange = false;
       uiPanel.classList.remove('visible');
       setTimeout(() => {
-        if (!isFreeArrange) document.getElementById('arrange-tools').style.display = 'none';
+        if (!isFreeArrange) {
+          document.getElementById('arrange-tools').style.display = 'none';
+          document.getElementById('color-section').style.display = '';
+          document.getElementById('texture-section').style.display = '';
+        }
       }, 700);
       deselectFragment();
       
