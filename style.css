@@ -366,6 +366,39 @@
       color: var(--text-color);
     }
 
+    /* Rollup Text Button Animation */
+    .rollup-text-btn {
+      position: relative;
+      overflow: hidden;
+      padding: 0 !important;
+    }
+    
+    .rollup-text-btn .original-content {
+      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    
+    .rollup-text-btn::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 100%; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+      color: inherit;
+    }
+    
+    .rollup-text-btn:hover .original-content {
+      transform: translateY(-100%);
+    }
+    
+    .rollup-text-btn:hover::after {
+      transform: translateY(-100%);
+    }
+
     /* Let Go Button */
     #let-go-btn {
       position: absolute;
