@@ -162,6 +162,7 @@
 
     .fragment.selected {
       z-index: 999;
+      transition: opacity 0s !important;
     }
     
     body.kintsugi .fragment.selected {
