@@ -361,10 +361,7 @@
       color-adjust: exact;
     }
     
-    #done-arrange-btn:hover {
-      background: #fff;
-      color: var(--text-color);
-    }
+
 
     /* Rollup Text Button Animation */
     .rollup-text-btn {
