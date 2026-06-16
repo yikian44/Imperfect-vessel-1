@@ -620,6 +620,9 @@
         font-size: 14px;
         width: 100%;
       }
+      .keyboard-shortcut {
+        display: none !important;
+      }
     }
 
 

@@ -970,12 +970,12 @@
       
       if (!isFreeArrange) {
         document.getElementById('arrange-tools').style.display = 'none';
-        document.getElementById('color-section').style.display = '';
-        document.getElementById('texture-section').style.display = '';
+        document.getElementById('style-menu-container').style.display = '';
+        document.getElementById('style-menu-content').style.display = 'flex';
       } else {
         document.getElementById('arrange-tools').style.display = 'block';
-        document.getElementById('color-section').style.display = 'none';
-        document.getElementById('texture-section').style.display = 'none';
+        document.getElementById('style-menu-container').style.display = '';
+        document.getElementById('style-menu-content').style.display = 'none';
       }
 
       document.body.classList.add('has-selected');
@@ -1361,8 +1361,8 @@
     document.getElementById('try-again-btn').addEventListener('click', () => {
       // Soft reset
       document.getElementById('arrange-tools').style.display = 'none';
-      document.getElementById('color-section').style.display = '';
-      document.getElementById('texture-section').style.display = '';
+      document.getElementById('style-menu-container').style.display = '';
+      document.getElementById('style-menu-content').style.display = 'flex';
       editCount = 0;
       isSettling = false;
       isFreeArrange = false;
@@ -1569,8 +1569,8 @@
       moveHistory = [];
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
-      document.getElementById('color-section').style.display = 'none';
-      document.getElementById('texture-section').style.display = 'none';
+      document.getElementById('style-menu-container').style.display = '';
+      document.getElementById('style-menu-content').style.display = 'none';
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Drag fragments to move. Shape it as you wish.";
       
@@ -1610,13 +1610,22 @@
       setTimeout(() => {
         if (!isFreeArrange) {
           document.getElementById('arrange-tools').style.display = 'none';
-          document.getElementById('color-section').style.display = '';
-          document.getElementById('texture-section').style.display = '';
+          document.getElementById('style-menu-container').style.display = '';
+          document.getElementById('style-menu-content').style.display = 'flex';
         }
       }, 700);
       deselectFragment();
       
       showFinalMessage();
+    });
+
+    document.getElementById('toggle-style-btn').addEventListener('click', () => {
+      const content = document.getElementById('style-menu-content');
+      if (content.style.display === 'none') {
+        content.style.display = 'flex';
+      } else {
+        content.style.display = 'none';
+      }
     });
 
     document.getElementById('rotate-left-btn').addEventListener('click', () => {
