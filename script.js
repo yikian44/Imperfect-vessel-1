@@ -989,7 +989,8 @@
     });
 
     // Deselect on background click
-    document.body.addEventListener('pointerdown', () => {
+    document.body.addEventListener('pointerdown', (e) => {
+      if (!e.isPrimary) return; // allow second finger touches for rotation
       if ((isSettling && !isFreeArrange) || isPrologue) return;
       deselectFragment();
     });
