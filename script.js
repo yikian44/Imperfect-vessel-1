@@ -1034,16 +1034,14 @@
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
       
+      document.getElementById('style-menu-container').style.display = '';
+      document.getElementById('style-menu-content').style.display = 'flex';
+      document.getElementById('style-arrow-icon').classList.add('expanded');
+      
       if (!isFreeArrange) {
         document.getElementById('arrange-tools').style.display = 'none';
-        document.getElementById('style-menu-container').style.display = '';
-        document.getElementById('style-menu-content').style.display = 'flex';
-        document.getElementById('style-arrow-icon').classList.add('expanded');
       } else {
         document.getElementById('arrange-tools').style.display = 'block';
-        document.getElementById('style-menu-container').style.display = '';
-        document.getElementById('style-menu-content').style.display = 'none';
-        document.getElementById('style-arrow-icon').classList.remove('expanded');
       }
 
       document.body.classList.add('has-selected');
@@ -1237,10 +1235,13 @@
     function animate() {
       time += 0.01;
 
-      // Smooth lerp to target rotation
+      // Smooth lerp to target rotation and scale
       fragments.forEach(f => {
         if (f.targetRot !== undefined) {
           f.rot += (f.targetRot - f.rot) * 0.15;
+        }
+        if (f.targetScale !== undefined) {
+          f.scale += (f.targetScale - f.scale) * 0.15;
         }
       });
 
@@ -1690,8 +1691,8 @@
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       document.getElementById('style-menu-container').style.display = '';
-      document.getElementById('style-menu-content').style.display = 'none';
-      document.getElementById('style-arrow-icon').classList.remove('expanded');
+      document.getElementById('style-menu-content').style.display = 'flex';
+      document.getElementById('style-arrow-icon').classList.add('expanded');
       uiPanel.classList.add('visible');
       const gestureHint = document.getElementById('gesture-hint');
       if (gestureHint) {
