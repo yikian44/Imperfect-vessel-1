@@ -1643,11 +1643,14 @@
       document.getElementById('style-menu-content').style.display = 'none';
       document.getElementById('style-arrow-icon').classList.remove('expanded');
       uiPanel.classList.add('visible');
-      const isMobile = window.innerWidth < 768;
-      if (isMobile) {
-        finalMessage.innerHTML = "Drag to move. <br><span style='font-size: 0.8em; opacity: 0.8;'>Pinch & Twist to zoom and rotate.</span>";
-      } else {
-        finalMessage.innerHTML = "Drag to move. <br><span style='font-size: 0.8em; opacity: 0.8;'>Use Z / X keys to rotate.</span>";
+      const gestureHint = document.getElementById('gesture-hint');
+      if (gestureHint) {
+        const isMobile = window.innerWidth < 768;
+        if (isMobile) {
+          gestureHint.innerHTML = "Drag to move. Pinch & Twist to zoom and rotate.";
+        } else {
+          gestureHint.innerHTML = "Drag to move. Use Z / X keys to rotate.";
+        }
       }
       
       const goldSvg = document.getElementById('gold-underlay-svg');
