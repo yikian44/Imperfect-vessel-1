@@ -1719,6 +1719,11 @@
       if (goldSvg) {
         goldSvg.style.display = 'none';
       }
+      
+      const finalMessage = document.getElementById('final-message');
+      if (finalMessage) {
+        finalMessage.classList.remove('visible');
+      }
     });
 
     document.getElementById('return-btn').addEventListener('click', () => {
