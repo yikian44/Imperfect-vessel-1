@@ -844,7 +844,7 @@
       hitArea.setAttribute("d", frag.path);
       hitArea.setAttribute("fill", "transparent");
       hitArea.setAttribute("stroke", "transparent");
-      hitArea.setAttribute("stroke-width", "50");
+      hitArea.setAttribute("stroke-width", "25");
       hitArea.setAttribute("stroke-linejoin", "round");
       hitArea.style.pointerEvents = "all";
       frag.hitArea = hitArea;
@@ -967,6 +967,11 @@
       });
 
       container.appendChild(div);
+
+      // Give smaller fragments a higher initial z-index so they aren't swallowed by larger neighbors' invisible hit areas
+      const bbox = pathBg.getBBox();
+      const area = bbox.width * bbox.height;
+      div.style.zIndex = Math.floor(1000 - area / 100);
 
       // Initialize Tracing Path length for natural sweep
       const length = corePath.getTotalLength();
