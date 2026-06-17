@@ -102,13 +102,19 @@
   <div id="canvas-container"></div>
 
   <div id="ui-panel">
+    <!-- Close Button -->
+    <div id="close-panel-btn" style="position: absolute; top: 16px; right: 16px; cursor: pointer; opacity: 0.4; transition: opacity 0.2s; z-index: 10;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </div>
+
+    <!-- Tab Bar -->
+    <div id="panel-tabs" style="display: flex; gap: 24px; border-bottom: 1px solid rgba(0,0,0,0.08); margin-bottom: 8px; padding-bottom: 8px; margin-top: -8px;">
+      <div class="panel-tab active" data-tab="style" style="font-size: 13px; letter-spacing: 2px; font-weight: 500; cursor: pointer; color: var(--text-color); transition: opacity 0.2s;">STYLE</div>
+      <div class="panel-tab" data-tab="arrange" style="font-size: 13px; letter-spacing: 2px; font-weight: 500; cursor: pointer; color: var(--text-color); opacity: 0.3; transition: opacity 0.2s;">ARRANGE</div>
+    </div>
+
     <div id="style-menu-container" style="width: 100%;">
-      <div id="toggle-style-btn" style="width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 0 0 8px 0; opacity: 0.4; transition: opacity 0.3s;">
-        <svg id="style-arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-      </div>
-      <div id="style-menu-content" style="display: none; flex-direction: column; gap: 16px; margin-top: 16px;">
+      <div id="style-menu-content" style="display: flex; flex-direction: column; gap: 16px;">
         <div id="color-section">
           <div class="ui-label">COLOR</div>
           <div class="options-row" id="color-options"></div>
@@ -126,8 +132,7 @@
         </div>
       </div>
     </div>
-    <div id="arrange-tools" style="display: none; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px;">
-      <div class="ui-label">ARRANGE</div>
+    <div id="arrange-tools" style="display: none;">
         <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
           <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
             <button id="return-btn" class="undo-btn rollup-text-btn" style="width: 100%;" title="Undo (Ctrl+Z)" data-text="UNDO">
