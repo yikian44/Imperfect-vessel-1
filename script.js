@@ -1141,7 +1141,7 @@
 
       let targetCenterYOffset = window.innerWidth < 768 ? -120 : -80;
       if (uiPanel.classList.contains('visible') && window.innerWidth < 768) {
-        targetCenterYOffset = -140;
+        targetCenterYOffset = -240;
       }
       
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
@@ -1573,6 +1573,7 @@
       isFreeArrange = true;
       isCustomArranged = true;
       moveHistory = [];
+      document.body.classList.remove('kintsugi');
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       document.getElementById('style-menu-container').style.display = '';
