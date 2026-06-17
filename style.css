@@ -514,6 +514,15 @@
       filter: drop-shadow(0 0 4px rgba(255, 235, 133, 0.8)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
     }
 
+    body.is-dragging #ui-panel {
+      opacity: 0.1 !important;
+      pointer-events: none !important;
+    }
+    body.is-dragging #let-go-btn {
+      opacity: 0.1 !important;
+      pointer-events: none !important;
+    }
+
     /* Mobile Responsive Adjustments */
     @media (max-width: 768px) {
       #custom-cursor {
@@ -532,7 +541,7 @@
         transform: translateY(100%);
         width: 100%;
         border-radius: 20px 20px 0 0;
-        padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+        padding: 24px 16px calc(80px + env(safe-area-inset-bottom));
         gap: 20px;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
@@ -544,11 +553,17 @@
       #ui-panel.visible {
         transform: translateY(0);
       }
+      body.is-dragging #ui-panel {
+        transform: translateY(100%) !important;
+        opacity: 0 !important;
+      }
       #texture-section {
         margin-top: 16px;
       }
       #ui-panel.visible ~ #let-go-btn {
-        transform: translateX(50%) translateY(-220px) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
       }
       #ui-panel.visible ~ #final-message {
         opacity: 0 !important;

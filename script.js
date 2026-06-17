@@ -881,6 +881,7 @@
         div.style.zIndex = topZIndex;
 
         frag.isDragging = true;
+        document.body.classList.add('is-dragging');
         frag.dragStartX = frag.x;
         frag.dragStartY = frag.y;
         frag.dragStartRot = frag.rot;
@@ -907,6 +908,7 @@
       div.addEventListener('pointerup', (e) => {
         if (frag.isDragging) {
           frag.isDragging = false;
+          document.body.classList.remove('is-dragging');
           returningFragment = frag;
           
           if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY || frag.rot !== frag.dragStartRot) {
@@ -1463,6 +1465,7 @@
         f.impRot = 0;
         f.targetRot = undefined;
         f.isDragging = false;
+        document.body.classList.remove('is-dragging');
 
         // Semantic Coloring based on type
         if (piece.type === 'eye') {
