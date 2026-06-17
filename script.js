@@ -1405,6 +1405,10 @@
 
       // "Sigh" effect: outward push before settling
       fragments.forEach(f => {
+        // Clear manual target tracking to allow smooth assembling
+        f.targetRot = undefined;
+        f.targetScale = undefined;
+
         // Imperfections disabled to prevent overlapping
         f.impX = 0;
         f.impY = 0;
