@@ -313,6 +313,21 @@
       }
     }
 
+    @media (min-width: 769px) {
+      #color-options {
+        flex-direction: column;
+        overflow: visible;
+        gap: 16px;
+      }
+      #texture-options {
+        flex-wrap: wrap;
+        overflow: visible;
+      }
+      #color-swipe-hint, #texture-swipe-hint {
+        display: none !important;
+      }
+    }
+
     .color-btn {
       width: 24px;
       height: 24px;
