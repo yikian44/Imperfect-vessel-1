@@ -246,9 +246,7 @@
       visibility: hidden;
       transition: opacity 0.6s ease, transform 0.6s ease, visibility 0.6s;
       transform: translateY(-10px);
-      background: var(--panel-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: #fdfdfc;
       border: 1px solid var(--panel-border);
       border-radius: 20px;
       max-height: calc(100vh - 80px);
