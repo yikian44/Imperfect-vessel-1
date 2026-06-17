@@ -1034,10 +1034,11 @@
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
       
+      document.getElementById('style-menu-container').style.display = '';
       if (isFreeArrange && window.innerWidth < 768) {
-        document.getElementById('style-menu-container').style.display = 'none';
+        document.getElementById('style-menu-content').style.display = 'none';
+        document.getElementById('style-arrow-icon').classList.remove('expanded');
       } else {
-        document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }
@@ -1705,10 +1706,11 @@
 
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
+      document.getElementById('style-menu-container').style.display = '';
       if (window.innerWidth < 768) {
-        document.getElementById('style-menu-container').style.display = 'none';
+        document.getElementById('style-menu-content').style.display = 'none';
+        document.getElementById('style-arrow-icon').classList.remove('expanded');
       } else {
-        document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }
@@ -1789,31 +1791,7 @@
       }
     });
 
-    document.getElementById('rotate-left-btn').addEventListener('click', () => {
-      if (!isFreeArrange || !selectedFragment) return;
-      if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
-      moveHistory.push({
-        frag: selectedFragment,
-        oldX: selectedFragment.x,
-        oldY: selectedFragment.y,
-        oldRot: selectedFragment.targetRot,
-        type: 'spatial'
-      });
-      selectedFragment.targetRot -= 15;
-    });
 
-    document.getElementById('rotate-right-btn').addEventListener('click', () => {
-      if (!isFreeArrange || !selectedFragment) return;
-      if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
-      moveHistory.push({
-        frag: selectedFragment,
-        oldX: selectedFragment.x,
-        oldY: selectedFragment.y,
-        oldRot: selectedFragment.targetRot,
-        type: 'spatial'
-      });
-      selectedFragment.targetRot += 15;
-    });
 
     function generateTitle() {
       const adjs = ["Weeping", "Geometric", "Blue", "Shattered", "Silent", "Cubist", "Abstract", "Fragmented", "Angular"];
@@ -1901,17 +1879,7 @@
       img.src = url;
     });
 
-    // Keyboard Shortcuts
-    window.addEventListener('keydown', (e) => {
-      if (!isFreeArrange) return;
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) {
-        document.getElementById('return-btn').click();
-      } else if (!e.ctrlKey && !e.metaKey && (e.key === 'z' || e.key === 'Z')) {
-        document.getElementById('rotate-left-btn').click();
-      } else if (!e.ctrlKey && !e.metaKey && (e.key === 'x' || e.key === 'X')) {
-        document.getElementById('rotate-right-btn').click();
-      }
-    });
+
 
     // Start loop
     animate();

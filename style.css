@@ -566,6 +566,8 @@
 
     body.is-dragging #ui-panel {
       pointer-events: none !important;
+      opacity: 0 !important;
+      transform: translateY(20px) !important;
     }
     body.is-dragging #let-go-btn {
       opacity: 0.1 !important;
@@ -606,6 +608,8 @@
 
       body.is-dragging #ui-panel {
         pointer-events: none !important;
+        opacity: 0 !important;
+        transform: translateY(100%) !important;
       }
       #texture-section {
         margin-top: 16px;
