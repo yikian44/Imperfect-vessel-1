@@ -1034,11 +1034,10 @@
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
       
-      document.getElementById('style-menu-container').style.display = '';
       if (isFreeArrange && window.innerWidth < 768) {
-        document.getElementById('style-menu-content').style.display = 'none';
-        document.getElementById('style-arrow-icon').classList.remove('expanded');
+        document.getElementById('style-menu-container').style.display = 'none';
       } else {
+        document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }
@@ -1706,11 +1705,10 @@
 
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
-      document.getElementById('style-menu-container').style.display = '';
       if (window.innerWidth < 768) {
-        document.getElementById('style-menu-content').style.display = 'none';
-        document.getElementById('style-arrow-icon').classList.remove('expanded');
+        document.getElementById('style-menu-container').style.display = 'none';
       } else {
+        document.getElementById('style-menu-container').style.display = '';
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }

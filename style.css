@@ -603,9 +603,7 @@
       #ui-panel.visible {
         transform: translateY(0);
       }
-      #arrange-tools .undo-btn {
-        display: none !important;
-      }
+
       body.is-dragging #ui-panel {
         pointer-events: none !important;
       }
