@@ -412,7 +412,7 @@
           cy = poly.points[0].y;
         }
 
-        return { path: pathStr, type: poly.type, cx, cy };
+        return { path: pathStr, type: poly.type, cx, cy, area: Math.abs(twicearea) / 2 };
       });
 
       return generated;
@@ -519,6 +519,7 @@
         path: piece.path,
         cx: piece.cx,
         cy: piece.cy,
+        area: piece.area,
         type: piece.type,
         
         basex: 0,
@@ -969,9 +970,7 @@
       container.appendChild(div);
 
       // Give smaller fragments a higher initial z-index so they aren't swallowed by larger neighbors' invisible hit areas
-      const bbox = pathBg.getBBox();
-      const area = bbox.width * bbox.height;
-      div.style.zIndex = Math.floor(1000 - area / 100);
+      div.style.zIndex = Math.floor(1000 - frag.area / 100);
 
       // Initialize Tracing Path length for natural sweep
       const length = corePath.getTotalLength();
