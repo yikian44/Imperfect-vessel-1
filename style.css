@@ -598,8 +598,8 @@
       }
       .color-btn {
         flex: 0 0 auto;
-        width: 32px;
-        height: 32px;
+        width: 44px;
+        height: 44px;
         touch-action: pan-x;
       }
       .texture-btn, .undo-btn {
