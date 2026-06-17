@@ -240,7 +240,7 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      z-index: 1000;
+      z-index: 10;
       opacity: 0;
       pointer-events: none;
       visibility: hidden;
@@ -415,7 +415,7 @@
       letter-spacing: 3px;
       border-radius: 30px;
       transition: all 0.5s ease;
-      z-index: 1000;
+      z-index: 10;
     }
 
     #let-go-btn:hover {

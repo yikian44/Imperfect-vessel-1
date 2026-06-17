@@ -9,14 +9,6 @@
     let isPrologue = true;
     let topZIndex = 100;
 
-    window.baseScale = window.innerWidth < 768 ? 0.75 : 1.0;
-    
-    function triggerHaptic(pattern) {
-      if (navigator.vibrate) {
-        navigator.vibrate(pattern);
-      }
-    }
-
     // Prologue Sequence
     window.addEventListener('load', () => {
       // Pre-bake complex SVG filters into static image patterns to prevent lag on mobile while keeping the organic look
@@ -881,26 +873,6 @@
         if (isPrologue) return;
         if (isSettling && !isFreeArrange) return;
 
-        triggerHaptic([10]); // Haptic pickup
-
-        // Double Tap to Rotate
-        const now = Date.now();
-        if (frag.lastTapTime && (now - frag.lastTapTime) < 300) {
-          if (frag.targetRot === undefined) frag.targetRot = frag.rot;
-          moveHistory.push({
-            frag: frag,
-            oldX: frag.x,
-            oldY: frag.y,
-            oldRot: frag.targetRot,
-            type: 'spatial'
-          });
-          frag.targetRot += 45;
-          triggerHaptic([20]);
-          frag.lastTapTime = 0; // reset
-        } else {
-          frag.lastTapTime = now;
-        }
-
         playClink();
         selectFragment(frag);
 
@@ -935,7 +907,6 @@
 
       div.addEventListener('pointerup', (e) => {
         if (frag.isDragging) {
-          triggerHaptic([15]); // Haptic release
           frag.isDragging = false;
           document.body.classList.remove('is-dragging');
           returningFragment = frag;
@@ -1170,7 +1141,7 @@
 
       let targetCenterYOffset = window.innerWidth < 768 ? -120 : -80;
       if (uiPanel.classList.contains('visible') && window.innerWidth < 768) {
-        targetCenterYOffset = -240;
+        targetCenterYOffset = -140;
       }
       
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
@@ -1247,17 +1218,17 @@
             f.rot += (targetRot - f.rot) * 0.025;
           }
 
-          // Animate depth/scale to uniform baseScale
-          f.scale += (window.baseScale - f.scale) * 0.025;
+          // Animate depth/scale to uniform 1.0
+          f.scale += (1 - f.scale) * 0.025;
 
-          const dist = Math.abs(targetX - f.x) + Math.abs(targetY - f.y) + Math.abs(targetRot - f.rot) + Math.abs(window.baseScale - f.scale);
+          const dist = Math.abs(targetX - f.x) + Math.abs(targetY - f.y) + Math.abs(targetRot - f.rot) + Math.abs(1 - f.scale);
           if (dist > 0.5) {
             allSettled = false;
           } else {
             f.x = targetX;
             f.y = targetY;
             f.rot = targetRot;
-            f.scale = window.baseScale;
+            f.scale = 1;
           }
         }
 
@@ -1602,21 +1573,11 @@
       isFreeArrange = true;
       isCustomArranged = true;
       moveHistory = [];
-      document.body.classList.remove('kintsugi');
       document.getElementById('post-action-container').style.display = 'none';
-      
-      // Activate Arrange Tab
-      const tabs = document.querySelectorAll('.panel-tab');
-      tabs.forEach(t => {
-        t.classList.remove('active');
-        t.style.opacity = '0.3';
-        if (t.getAttribute('data-tab') === 'arrange') {
-          t.classList.add('active');
-          t.style.opacity = '1';
-        }
-      });
-      document.getElementById('style-menu-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
+      document.getElementById('style-menu-container').style.display = '';
+      document.getElementById('style-menu-content').style.display = 'none';
+      document.getElementById('style-arrow-icon').classList.remove('expanded');
       uiPanel.classList.add('visible');
       finalMessage.innerText = "Drag fragments to move. Shape it as you wish.";
       
@@ -1627,7 +1588,6 @@
     });
 
     document.getElementById('return-btn').addEventListener('click', () => {
-      triggerHaptic([20]);
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
         if (lastMove.type === 'color') {
@@ -1667,42 +1627,19 @@
       showFinalMessage();
     });
 
-    // Tab Switching Logic
-    const tabs = document.querySelectorAll('.panel-tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', (e) => {
-        const targetTab = e.target.getAttribute('data-tab');
-        
-        // Update active class
-        tabs.forEach(t => {
-          t.classList.remove('active');
-          t.style.opacity = '0.3';
-        });
-        e.target.classList.add('active');
-        e.target.style.opacity = '1';
-        
-        triggerHaptic([10]);
-
-        if (targetTab === 'style') {
-          document.getElementById('style-menu-container').style.display = 'block';
-          document.getElementById('arrange-tools').style.display = 'none';
-          isFreeArrange = false; // Disable arrange mode interactions if needed
-        } else if (targetTab === 'arrange') {
-          document.getElementById('style-menu-container').style.display = 'none';
-          document.getElementById('arrange-tools').style.display = 'block';
-          isFreeArrange = true;
-        }
-      });
-    });
-
-    // Close Button Logic
-    document.getElementById('close-panel-btn').addEventListener('click', () => {
-      deselectFragment();
-      triggerHaptic([15]);
+    document.getElementById('toggle-style-btn').addEventListener('click', () => {
+      const content = document.getElementById('style-menu-content');
+      const icon = document.getElementById('style-arrow-icon');
+      if (content.style.display === 'none') {
+        content.style.display = 'flex';
+        icon.classList.add('expanded');
+      } else {
+        content.style.display = 'none';
+        icon.classList.remove('expanded');
+      }
     });
 
     document.getElementById('rotate-left-btn').addEventListener('click', () => {
-      triggerHaptic([20]);
       if (!isFreeArrange || !selectedFragment) return;
       if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
@@ -1716,7 +1653,6 @@
     });
 
     document.getElementById('rotate-right-btn').addEventListener('click', () => {
-      triggerHaptic([20]);
       if (!isFreeArrange || !selectedFragment) return;
       if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
       moveHistory.push({
