@@ -192,6 +192,9 @@
     // DOM Elements
     const container = document.getElementById('canvas-container');
     const uiPanel = document.getElementById('ui-panel');
+    uiPanel.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+    });
     const colorOptions = document.getElementById('color-options');
     const letGoBtn = document.getElementById('let-go-btn');
     const finalMessage = document.getElementById('final-message');
