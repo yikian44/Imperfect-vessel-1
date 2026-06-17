@@ -905,6 +905,7 @@
 
       // Interaction
       div.addEventListener('pointerdown', (e) => {
+        if (!e.isPrimary) return; // Prevent second finger from dragging another fragment
         e.stopPropagation();
         if (isPrologue) return;
         if (isSettling && !isFreeArrange) return;
