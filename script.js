@@ -68,18 +68,18 @@
               const prologue = document.getElementById('prologue');
               
               if (text1 && text2 && prologue) {
-                setTimeout(() => { text1.classList.add('visible'); }, 500);
+                setTimeout(() => { text1.classList.add('visible'); }, 100);
                 
                 setTimeout(() => {
                   text2.style.display = 'block';
                   setTimeout(() => { text2.classList.add('visible'); }, 50);
-                }, 4000);
+                }, 1500);
 
                 setTimeout(() => {
                   prologue.style.opacity = '0';
                   isPrologue = false;
-                  setTimeout(() => { prologue.style.display = 'none'; }, 2000);
-                }, 8500);
+                  setTimeout(() => { prologue.style.display = 'none'; }, 1000);
+                }, 3500);
               } else {
                 isPrologue = false;
               }
@@ -844,6 +844,7 @@
       hitArea.setAttribute("stroke-width", "50");
       hitArea.setAttribute("stroke-linejoin", "round");
       hitArea.style.pointerEvents = "all";
+      frag.hitArea = hitArea;
 
       g.appendChild(hitArea);
       g.appendChild(clippedGroup);
@@ -1253,10 +1254,8 @@
           if (dist > 0.5) {
             allSettled = false;
           } else {
-            const ambientX = Math.sin(time * 0.5 + f.id) * 2.5;
-            const ambientY = Math.cos(time * 0.4 + f.id) * 2.5;
-            f.x = targetX + ambientX;
-            f.y = targetY + ambientY;
+            f.x = targetX;
+            f.y = targetY;
             f.rot = targetRot;
             f.scale = 1;
           }
@@ -1442,6 +1441,9 @@
         f.clipPathElem.setAttribute("d", f.path);
         f.glowPath.setAttribute("d", f.path);
         f.corePath.setAttribute("d", f.path);
+        if (f.hitArea) {
+          f.hitArea.setAttribute("d", f.path);
+        }
         
         const length = f.corePath.getTotalLength();
         f.glowPath.style.strokeDasharray = `${length} ${length}`;

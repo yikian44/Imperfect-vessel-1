@@ -67,7 +67,7 @@
       align-items: center;
       z-index: 100;
       opacity: 1;
-      transition: opacity 2s ease;
+      transition: opacity 1s ease;
       pointer-events: auto;
     }
 
@@ -109,7 +109,7 @@
       padding: 0 20px;
       line-height: 1.6;
       margin: 0;
-      transition: opacity 2s ease 1s;
+      transition: opacity 1s ease;
     }
 
     .prologue-quote.visible {
