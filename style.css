@@ -513,7 +513,6 @@
     }
 
     body.is-dragging #ui-panel {
-      opacity: 0.1 !important;
       pointer-events: none !important;
     }
     body.is-dragging #let-go-btn {
@@ -556,8 +555,7 @@
         display: none !important;
       }
       body.is-dragging #ui-panel {
-        transform: translateY(100%) !important;
-        opacity: 0 !important;
+        pointer-events: none !important;
       }
       #texture-section {
         margin-top: 16px;
