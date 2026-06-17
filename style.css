@@ -295,6 +295,24 @@
       display: flex;
     }
 
+    .color-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      #color-options {
+        scroll-snap-type: x mandatory;
+      }
+      .color-group {
+        width: 100%;
+        scroll-snap-align: start;
+      }
+    }
+
     .color-btn {
       width: 24px;
       height: 24px;

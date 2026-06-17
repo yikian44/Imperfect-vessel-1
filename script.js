@@ -217,17 +217,11 @@
 
     colorOptions.className = 'options-row';
     colorOptions.style.gap = '24px';
-    colorOptions.style.scrollSnapType = 'x mandatory';
 
     // Populate buttons by category
     Object.entries(colorCategories).forEach(([category, colors]) => {
       const group = document.createElement('div');
-      group.style.display = 'flex';
-      group.style.flexDirection = 'column';
-      group.style.gap = '6px';
-      group.style.width = '100%';
-      group.style.flexShrink = '0';
-      group.style.scrollSnapAlign = 'start';
+      group.className = 'color-group';
       
       const label = document.createElement('div');
       label.innerText = category;
@@ -949,6 +943,7 @@
         frag.dragStartX = frag.x;
         frag.dragStartY = frag.y;
         frag.dragStartRot = frag.rot;
+        frag.dragStartScale = frag.scale;
         returningFragment = null;
         customCursor.classList.remove('hover'); // hide hover ring while dragging
 
@@ -975,12 +970,13 @@
           document.body.classList.remove('is-dragging');
           returningFragment = frag;
           
-          if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY || frag.rot !== frag.dragStartRot) {
+          if (frag.x !== frag.dragStartX || frag.y !== frag.dragStartY || frag.rot !== frag.dragStartRot || frag.scale !== frag.dragStartScale) {
             moveHistory.push({
               frag: frag,
               oldX: frag.dragStartX,
               oldY: frag.dragStartY,
-              oldRot: frag.dragStartRot
+              oldRot: frag.dragStartRot,
+              oldScale: frag.dragStartScale
             });
             
             // Allow fragments to be placed anywhere and stay there
@@ -1127,6 +1123,32 @@
         });
 
         selectedFragment.targetRot += 15;
+      } else if (e.code === 'KeyA' || e.key.toLowerCase() === 'a') {
+        if (selectedFragment.targetScale === undefined) selectedFragment.targetScale = selectedFragment.scale;
+        
+        moveHistory.push({
+          frag: selectedFragment,
+          oldX: selectedFragment.x,
+          oldY: selectedFragment.y,
+          oldRot: selectedFragment.targetRot || selectedFragment.rot,
+          oldScale: selectedFragment.targetScale,
+          type: 'spatial'
+        });
+
+        selectedFragment.targetScale = Math.max(0.3, selectedFragment.targetScale - 0.1);
+      } else if (e.code === 'KeyS' || e.key.toLowerCase() === 's') {
+        if (selectedFragment.targetScale === undefined) selectedFragment.targetScale = selectedFragment.scale;
+        
+        moveHistory.push({
+          frag: selectedFragment,
+          oldX: selectedFragment.x,
+          oldY: selectedFragment.y,
+          oldRot: selectedFragment.targetRot || selectedFragment.rot,
+          oldScale: selectedFragment.targetScale,
+          type: 'spatial'
+        });
+
+        selectedFragment.targetScale = Math.min(4.0, selectedFragment.targetScale + 0.1);
       }
     });
 
@@ -1677,7 +1699,7 @@
         if (isMobile) {
           gestureHint.innerHTML = "Drag to move. Pinch & Twist to zoom and rotate.";
         } else {
-          gestureHint.innerHTML = "Drag to move. Use Z / X keys to rotate.";
+          gestureHint.innerHTML = "Drag to move. Use Z/X to rotate. A/S to scale.";
         }
       }
       
@@ -1706,6 +1728,9 @@
           lastMove.frag.y = lastMove.oldY;
           if (lastMove.oldRot !== undefined) {
             lastMove.frag.targetRot = lastMove.oldRot;
+          }
+          if (lastMove.oldScale !== undefined) {
+            lastMove.frag.targetScale = lastMove.oldScale;
           }
         }
       }
