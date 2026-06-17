@@ -553,6 +553,9 @@
       #ui-panel.visible {
         transform: translateY(0);
       }
+      #arrange-tools {
+        display: none !important;
+      }
       body.is-dragging #ui-panel {
         transform: translateY(100%) !important;
         opacity: 0 !important;
@@ -608,10 +611,16 @@
         touch-action: pan-x;
       }
       #let-go-btn {
-        bottom: calc(40px + env(safe-area-inset-bottom));
+        bottom: calc(50px + env(safe-area-inset-bottom));
         right: 50%;
         transform: translateX(50%);
-        padding: 12px 24px;
+        padding: 14px 28px;
+        font-size: 13px;
+        letter-spacing: 3px;
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--bg-color);
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       }
       #let-go-btn:hover {
         transform: translateX(50%) translateY(-2px);

@@ -60,12 +60,30 @@
           setTimeout(() => {
             loader.classList.add('slide-up');
             
-            // Allow interaction immediately
-            isPrologue = false;
-            
             setTimeout(() => {
               loader.style.display = 'none';
-            }, 1000); // match CSS transition duration
+              
+              const text1 = document.getElementById('prologue-text-1');
+              const text2 = document.getElementById('prologue-text-2');
+              const prologue = document.getElementById('prologue');
+              
+              if (text1 && text2 && prologue) {
+                setTimeout(() => { text1.classList.add('visible'); }, 500);
+                
+                setTimeout(() => {
+                  text2.style.display = 'block';
+                  setTimeout(() => { text2.classList.add('visible'); }, 50);
+                }, 4000);
+
+                setTimeout(() => {
+                  prologue.style.opacity = '0';
+                  isPrologue = false;
+                  setTimeout(() => { prologue.style.display = 'none'; }, 2000);
+                }, 8500);
+              } else {
+                isPrologue = false;
+              }
+            }, 1000); 
           }, 300); // dramatic pause at 100%
         }
       }
@@ -453,9 +471,9 @@
       const angle = index * ((Math.PI * 2) / pieces.length) * 1.8 + Math.random() * 0.5;
       
       const isMobile = window.innerWidth < 768;
-      const baseDist = isMobile ? 60 : 120;
-      const distStep = isMobile ? 12 : 20;
-      const distRand = isMobile ? 30 : 50;
+      const baseDist = isMobile ? 40 : 120;
+      const distStep = isMobile ? 8 : 20;
+      const distRand = isMobile ? 20 : 50;
       const dist = baseDist + index * distStep + Math.random() * distRand;
 
       let startX = Math.cos(angle) * dist;
@@ -472,9 +490,10 @@
       tdX /= tMag;
       tdY /= tMag;
 
-      // Intro Animation: start way outside the screen, but scaled moderately to prevent SVG filter lag
-      const initialX = tdX * 2500;
-      const initialY = tdY * 2500;
+      // Intro Animation: start closer on mobile so they are mostly visible, or fly in quickly
+      const initialDist = isMobile ? 300 : 2500;
+      const initialX = tdX * initialDist;
+      const initialY = tdY * initialDist;
       const initialScale = 1.5;
 
       // Pick initial colors semantically based on type
@@ -818,6 +837,15 @@
       
       drawFeatures(frag, clippedGroup, svgNS);
       
+      const hitArea = document.createElementNS(svgNS, "path");
+      hitArea.setAttribute("d", frag.path);
+      hitArea.setAttribute("fill", "transparent");
+      hitArea.setAttribute("stroke", "rgba(0,0,0,0.01)");
+      hitArea.setAttribute("stroke-width", "50");
+      hitArea.setAttribute("stroke-linejoin", "round");
+      hitArea.style.pointerEvents = "all";
+
+      g.appendChild(hitArea);
       g.appendChild(clippedGroup);
       svg.appendChild(g);
       div.appendChild(svg);
@@ -1225,8 +1253,10 @@
           if (dist > 0.5) {
             allSettled = false;
           } else {
-            f.x = targetX;
-            f.y = targetY;
+            const ambientX = Math.sin(time * 0.5 + f.id) * 2.5;
+            const ambientY = Math.cos(time * 0.4 + f.id) * 2.5;
+            f.x = targetX + ambientX;
+            f.y = targetY + ambientY;
             f.rot = targetRot;
             f.scale = 1;
           }
@@ -1313,49 +1343,12 @@
     });
 
     function showFinalMessage() {
-      let text = "";
-      let quote = "";
-      
-      const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-      if (editCount > 25) {
-        text = "Not everything needs to be fixed.";
-        quote = pickRandom([
-          "\"There is a crack in everything, that's how the light gets in.\" — Leonard Cohen",
-          "\"Have no fear of perfection - you'll never reach it.\" — Salvador Dali",
-          "\"To improve is to change; to be perfect is to change often.\" — Winston Churchill"
-        ]);
-      } else if (editCount > 15) {
-        text = "You tried to hold everything together.";
-        quote = pickRandom([
-          "\"Life is a balance of holding on and letting go.\" — Rumi",
-          "\"Let go of the battle. Breathe quietly and let it be.\" — Jack Kornfield",
-          "\"Sometimes letting things go is an act of far greater power than defending or hanging on.\" — Eckhart Tolle"
-        ]);
-      } else if (editCount >= 5) {
-        text = "You tried, and that is enough.";
-        quote = pickRandom([
-          "\"Success is not final, failure is not fatal: it is the courage to continue that counts.\" — Winston Churchill",
-          "\"Do what you can, with what you have, where you are.\" — Theodore Roosevelt",
-          "\"Ever tried. Ever failed. No matter. Try again. Fail again. Fail better.\" — Samuel Beckett"
-        ]);
-      } else if (editCount > 0) {
-        text = "You knew when to stop.";
-        quote = pickRandom([
-          "\"He who knows when to stop does not meet with danger.\" — Lao Tzu",
-          "\"Half of knowing what you want is knowing what you must give up before you get it.\" — Sidney Howard",
-          "\"Leave well enough alone.\" — Aesop"
-        ]);
-      } else {
-        text = "Sometimes, it's best to just watch.";
-        quote = pickRandom([
-          "\"You can see a lot by just observing.\" — Yogi Berra",
-          "\"The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.\" — Marcel Proust",
-          "\"To look at a thing is very different from seeing a thing.\" — Oscar Wilde"
-        ]);
-      }
-
-      finalMessage.innerHTML = `${text}<br><span style="font-size: 0.6em; opacity: 0.7; display: block; margin-top: 10px; font-weight: normal; font-style: italic;">${quote}</span>`;
+      const narrativeHTML = `
+        <span style="display: block; margin-bottom: 15px;">The cracks remain.</span>
+        <span style="display: block; margin-bottom: 15px;">They always will.</span>
+        <span style="display: block;">But they are now part of you.</span>
+      `;
+      finalMessage.innerHTML = narrativeHTML;
       finalMessage.classList.add('visible');
       const pac = document.getElementById('post-action-container');
       pac.style.display = 'flex';
@@ -1432,8 +1425,9 @@
 
         f.targetScale = 0.6 + Math.random() * 1.0;
         f.scale = 1.5; // reset scale on "Try Again", keep it moderate to prevent lag
-        f.x = f.tensionDirX * 2500; // reset far out
-        f.y = f.tensionDirY * 2500;
+        const initialDist = isMobile ? 300 : 2500;
+        f.x = f.tensionDirX * initialDist; 
+        f.y = f.tensionDirY * initialDist;
 
         // Generate new random presentation for this try
         const piece = pieces[index];
