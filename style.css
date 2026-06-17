@@ -274,19 +274,26 @@
     }
     .options-row {
       display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      max-width: 240px;
+      gap: 12px;
+      flex-wrap: nowrap;
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 8px;
       padding-top: 4px;
       margin-top: -4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.15) transparent;
     }
-    #color-options {
-      display: grid;
-      grid-template-columns: repeat(6, 24px);
+    .options-row::-webkit-scrollbar {
+      height: 4px;
     }
-    #texture-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+    .options-row::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.15);
+      border-radius: 4px;
+    }
+    #color-options, #texture-options {
+      display: flex;
     }
 
     .color-btn {
@@ -596,8 +603,8 @@
       }
       .color-btn {
         flex: 0 0 auto;
-        width: 44px;
-        height: 44px;
+        width: 32px;
+        height: 32px;
         touch-action: pan-x;
       }
       .texture-btn, .undo-btn {
