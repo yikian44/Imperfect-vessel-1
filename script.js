@@ -843,7 +843,7 @@
       const hitArea = document.createElementNS(svgNS, "path");
       hitArea.setAttribute("d", frag.path);
       hitArea.setAttribute("fill", "transparent");
-      hitArea.setAttribute("stroke", "rgba(0,0,0,0.01)");
+      hitArea.setAttribute("stroke", "transparent");
       hitArea.setAttribute("stroke-width", "50");
       hitArea.setAttribute("stroke-linejoin", "round");
       hitArea.style.pointerEvents = "all";
