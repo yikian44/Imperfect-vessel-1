@@ -326,6 +326,12 @@
       #color-swipe-hint, #texture-swipe-hint {
         display: none !important;
       }
+      #toggle-style-btn {
+        display: none !important;
+      }
+      #style-menu-content {
+        display: flex !important;
+      }
     }
 
     .color-btn {
