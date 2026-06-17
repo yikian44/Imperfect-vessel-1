@@ -217,6 +217,7 @@
 
     colorOptions.className = 'options-row';
     colorOptions.style.gap = '24px';
+    colorOptions.style.scrollSnapType = 'x mandatory';
 
     // Populate buttons by category
     Object.entries(colorCategories).forEach(([category, colors]) => {
@@ -224,6 +225,9 @@
       group.style.display = 'flex';
       group.style.flexDirection = 'column';
       group.style.gap = '6px';
+      group.style.width = '100%';
+      group.style.flexShrink = '0';
+      group.style.scrollSnapAlign = 'start';
       
       const label = document.createElement('div');
       label.innerText = category;
@@ -238,7 +242,7 @@
       row.style.display = 'flex';
       row.style.flexDirection = 'row';
       row.style.gap = '10px';
-      row.style.flexWrap = 'nowrap';
+      row.style.flexWrap = 'wrap';
       
       colors.forEach(color => {
         const btn = document.createElement('button');
@@ -793,6 +797,7 @@
       const div = document.createElement('div');
       div.className = 'fragment';
       div.style.transformOrigin = `${frag.cx}px ${frag.cy}px`;
+      div.style.opacity = '0'; // Hidden before prologue ends
 
       const svgNS = "http://www.w3.org/2000/svg";
       const svg = document.createElementNS(svgNS, "svg");
@@ -1097,9 +1102,11 @@
       }
     });
 
-    // Mobile Two-Finger Rotation
+    // Mobile Two-Finger Rotation & Zoom
     let initialTouchAngle = null;
     let initialFragRot = null;
+    let initialTouchDist = null;
+    let initialFragScale = null;
 
     document.addEventListener('touchstart', (e) => {
       if (!isFreeArrange || !selectedFragment) return;
@@ -1108,29 +1115,42 @@
         const dy = e.touches[1].clientY - e.touches[0].clientY;
         initialTouchAngle = Math.atan2(dy, dx) * 180 / Math.PI;
         initialFragRot = selectedFragment.rot;
+        initialTouchDist = Math.hypot(dx, dy);
+        initialFragScale = selectedFragment.scale;
       }
     }, {passive: false});
 
     document.addEventListener('touchmove', (e) => {
       if (!isFreeArrange || !selectedFragment) return;
-      if (e.touches.length === 2 && initialTouchAngle !== null) {
+      if (e.touches.length === 2 && initialTouchAngle !== null && initialTouchDist !== null) {
         e.preventDefault(); // prevent zoom/scroll
         const dx = e.touches[1].clientX - e.touches[0].clientX;
         const dy = e.touches[1].clientY - e.touches[0].clientY;
-        const currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
-        let delta = currentAngle - initialTouchAngle;
         
-        if (delta > 180) delta -= 360;
-        if (delta < -180) delta += 360;
-
-        selectedFragment.rot = initialFragRot + delta;
+        // Rotation
+        const currentAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+        let deltaAngle = currentAngle - initialTouchAngle;
+        if (deltaAngle > 180) deltaAngle -= 360;
+        if (deltaAngle < -180) deltaAngle += 360;
+        selectedFragment.rot = initialFragRot + deltaAngle;
         selectedFragment.targetRot = selectedFragment.rot;
+
+        // Scaling
+        const currentDist = Math.hypot(dx, dy);
+        if (initialTouchDist > 0) {
+          const scaleFactor = currentDist / initialTouchDist;
+          let newScale = initialFragScale * scaleFactor;
+          newScale = Math.max(0.3, Math.min(newScale, 4.0)); // Limit scale size
+          selectedFragment.scale = newScale;
+          selectedFragment.targetScale = newScale;
+        }
       }
     }, {passive: false});
 
     document.addEventListener('touchend', (e) => {
       if (e.touches.length < 2) {
         initialTouchAngle = null;
+        initialTouchDist = null;
       }
     });
 
@@ -1189,7 +1209,12 @@
 
       fragments.forEach(f => {
         if (!isSettling) {
-          if (isPrologue) return; // Wait off-screen during prologue
+          if (isPrologue) {
+            f.element.style.opacity = '0';
+            return; // Wait off-screen during prologue
+          } else {
+            f.element.style.opacity = '1';
+          }
 
           // Smooth shrink-in effect
           f.scale += (f.targetScale - f.scale) * 0.03;
