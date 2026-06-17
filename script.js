@@ -215,11 +215,8 @@
       ]
     };
 
-    colorOptions.style.display = 'flex';
-    colorOptions.style.flexDirection = 'column';
-    colorOptions.style.flexWrap = 'nowrap'; // Prevent wrapping into multiple columns
-    colorOptions.style.alignItems = 'flex-start';
-    colorOptions.style.gap = '12px';
+    colorOptions.className = 'options-row';
+    colorOptions.style.gap = '24px';
 
     // Populate buttons by category
     Object.entries(colorCategories).forEach(([category, colors]) => {
@@ -227,7 +224,6 @@
       group.style.display = 'flex';
       group.style.flexDirection = 'column';
       group.style.gap = '6px';
-      group.style.width = '100%';
       
       const label = document.createElement('div');
       label.innerText = category;
@@ -236,11 +232,13 @@
       label.style.opacity = '0.6';
       label.style.letterSpacing = '1px';
       label.style.textTransform = 'uppercase';
+      label.style.whiteSpace = 'nowrap';
       
       const row = document.createElement('div');
-      row.className = 'options-row';
+      row.style.display = 'flex';
+      row.style.flexDirection = 'row';
       row.style.gap = '10px';
-      row.style.maxWidth = '100%';
+      row.style.flexWrap = 'nowrap';
       
       colors.forEach(color => {
         const btn = document.createElement('button');
