@@ -1688,6 +1688,13 @@
       isFreeArrange = true;
       isCustomArranged = true;
       moveHistory = [];
+      
+      // Prevent fragments from jumping back to their initial floating scales/rotations
+      fragments.forEach(f => {
+        f.targetScale = f.scale;
+        f.targetRot = f.rot;
+      });
+
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       document.getElementById('style-menu-container').style.display = '';
