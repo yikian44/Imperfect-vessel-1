@@ -1035,8 +1035,13 @@
       uiPanel.classList.add('visible');
       
       document.getElementById('style-menu-container').style.display = '';
-      document.getElementById('style-menu-content').style.display = 'flex';
-      document.getElementById('style-arrow-icon').classList.add('expanded');
+      if (isFreeArrange && window.innerWidth < 768) {
+        document.getElementById('style-menu-content').style.display = 'none';
+        document.getElementById('style-arrow-icon').classList.remove('expanded');
+      } else {
+        document.getElementById('style-menu-content').style.display = 'flex';
+        document.getElementById('style-arrow-icon').classList.add('expanded');
+      }
       
       if (!isFreeArrange) {
         document.getElementById('arrange-tools').style.display = 'none';
@@ -1702,8 +1707,13 @@
       document.getElementById('post-action-container').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
       document.getElementById('style-menu-container').style.display = '';
-      document.getElementById('style-menu-content').style.display = 'flex';
-      document.getElementById('style-arrow-icon').classList.add('expanded');
+      if (window.innerWidth < 768) {
+        document.getElementById('style-menu-content').style.display = 'none';
+        document.getElementById('style-arrow-icon').classList.remove('expanded');
+      } else {
+        document.getElementById('style-menu-content').style.display = 'flex';
+        document.getElementById('style-arrow-icon').classList.add('expanded');
+      }
       uiPanel.classList.add('visible');
       const gestureHint = document.getElementById('gesture-hint');
       if (gestureHint) {
