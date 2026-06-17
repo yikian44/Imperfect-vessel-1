@@ -261,6 +261,33 @@
       btn.onclick = () => applyTexture(btn.dataset.texture);
     });
 
+    // Swipe Hint Logic
+    function setupSwipeHint(containerId, hintId) {
+      const container = document.getElementById(containerId);
+      const hint = document.getElementById(hintId);
+      if (!container || !hint) return;
+
+      const checkScroll = () => {
+        if (container.scrollWidth <= container.clientWidth + 5) {
+          hint.style.opacity = '0'; // Not scrollable
+        } else if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+          hint.style.opacity = '0'; // Scrolled to end
+        } else {
+          hint.style.opacity = '0.5'; // Scrollable
+        }
+      };
+
+      container.addEventListener('scroll', checkScroll);
+      window.addEventListener('resize', checkScroll);
+      
+      // Delay initial check to ensure DOM is fully rendered
+      setTimeout(checkScroll, 100);
+      setTimeout(checkScroll, 1000); 
+    }
+
+    setupSwipeHint('color-options', 'color-swipe-hint');
+    setupSwipeHint('texture-options', 'texture-swipe-hint');
+
     // Audio Context Setup
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx;
