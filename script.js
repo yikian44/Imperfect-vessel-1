@@ -1062,6 +1062,9 @@
 
       document.body.classList.add('has-selected');
       editCount += 0.5;
+
+      // Force swipe hints to recalculate after layout becomes visible
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
     }
 
     function deselectFragment() {
@@ -1796,6 +1799,7 @@
       if (content.style.display === 'none') {
         content.style.display = 'flex';
         icon.classList.add('expanded');
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
       } else {
         content.style.display = 'none';
         icon.classList.remove('expanded');
