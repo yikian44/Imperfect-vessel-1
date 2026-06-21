@@ -939,7 +939,7 @@
         div.style.zIndex = topZIndex;
 
         frag.isDragging = true;
-        document.body.classList.add('is-dragging');
+        frag.hasMoved = false;
         frag.dragStartX = frag.x;
         frag.dragStartY = frag.y;
         frag.dragStartRot = frag.rot;
@@ -960,13 +960,24 @@
         e.stopPropagation();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        frag.x = e.clientX - centerX - frag.dragOffsetX;
-        frag.y = e.clientY - centerY - frag.dragOffsetY;
+        const newX = e.clientX - centerX - frag.dragOffsetX;
+        const newY = e.clientY - centerY - frag.dragOffsetY;
+        
+        if (!frag.hasMoved) {
+          if (Math.abs(newX - frag.dragStartX) > 3 || Math.abs(newY - frag.dragStartY) > 3) {
+            frag.hasMoved = true;
+            document.body.classList.add('is-dragging');
+          }
+        }
+
+        frag.x = newX;
+        frag.y = newY;
       });
 
       div.addEventListener('pointerup', (e) => {
         if (frag.isDragging) {
           frag.isDragging = false;
+          frag.hasMoved = false;
           document.body.classList.remove('is-dragging');
           returningFragment = frag;
           
