@@ -1005,6 +1005,17 @@
         }
       });
 
+      div.addEventListener('pointercancel', (e) => {
+        if (frag.isDragging) {
+          frag.isDragging = false;
+          frag.hasMoved = false;
+          document.body.classList.remove('is-dragging');
+          returningFragment = frag;
+          div.releasePointerCapture(e.pointerId);
+          e.stopPropagation();
+        }
+      });
+
       container.appendChild(div);
 
       // Give smaller fragments a higher initial z-index so they aren't swallowed by larger neighbors' invisible hit areas
@@ -1427,6 +1438,10 @@
         // Clear manual target tracking to allow smooth assembling
         f.targetRot = undefined;
         f.targetScale = undefined;
+
+        // Force reset dragging state to prevent stuck pieces
+        f.isDragging = false;
+        f.hasMoved = false;
 
         // Imperfections disabled to prevent overlapping
         f.impX = 0;
