@@ -1746,11 +1746,12 @@
       uiPanel.classList.add('visible');
       const gestureHint = document.getElementById('gesture-hint');
       if (gestureHint) {
+        gestureHint.style.display = 'block';
         const isMobile = window.innerWidth < 768;
         if (isMobile) {
-          gestureHint.innerHTML = "Drag to move. Pinch & Twist to zoom and rotate.";
+          gestureHint.innerHTML = "Drag to move • Pinch/Twist to zoom & rotate";
         } else {
-          gestureHint.innerHTML = "Drag to move. Use Z/X to rotate. A/S to scale.";
+          gestureHint.innerHTML = "Drag to move • Z/X to rotate • A/S to scale";
         }
       }
       
@@ -1798,6 +1799,8 @@
       setTimeout(() => {
         if (!isFreeArrange) {
           document.getElementById('arrange-tools').style.display = 'none';
+          const gestureHint = document.getElementById('gesture-hint');
+          if (gestureHint) gestureHint.style.display = 'none';
           document.getElementById('style-menu-container').style.display = '';
           document.getElementById('style-menu-content').style.display = 'flex';
           document.getElementById('style-arrow-icon').classList.add('expanded');

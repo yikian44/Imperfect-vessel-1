@@ -574,6 +574,21 @@
       pointer-events: none !important;
     }
 
+    #gesture-hint {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-color);
+      opacity: 0.6;
+      letter-spacing: 1px;
+      z-index: 20;
+      pointer-events: none;
+    }
+
     /* Mobile Responsive Adjustments */
     @media (max-width: 768px) {
       #custom-cursor {
@@ -604,6 +619,10 @@
       }
       #ui-panel.visible {
         transform: translateY(0);
+      }
+
+      #gesture-hint {
+        bottom: 300px; /* Above the UI panel on mobile */
       }
 
       body.is-dragging #ui-panel {
