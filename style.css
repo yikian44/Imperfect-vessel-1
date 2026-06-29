@@ -690,8 +690,16 @@
       }
 
       #gesture-hint {
-        bottom: calc(160px + env(safe-area-inset-bottom));
+        bottom: calc(180px + env(safe-area-inset-bottom));
         top: auto;
+      }
+      
+      .controls-container {
+        gap: 10px;
+      }
+      
+      .controls-grid {
+        gap: 8px;
       }
 
       body.is-dragging #ui-panel {
