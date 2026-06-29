@@ -616,7 +616,6 @@
       gap: 10px;
       align-items: center;
       justify-content: flex-start;
-      width: 140px;
     }
 
     .control-action {
@@ -700,6 +699,10 @@
       
       .controls-grid {
         gap: 8px;
+      }
+
+      .control-row {
+        gap: 16px;
       }
 
       body.is-dragging #ui-panel {
