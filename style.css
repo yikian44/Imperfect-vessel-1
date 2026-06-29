@@ -143,6 +143,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      transform: translateY(-25px); /* Move sculpture up by 25px */
     }
 
     .fragment {
@@ -613,10 +614,10 @@
 
     .control-keys {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
       justify-content: flex-start;
-      width: 80px;
+      width: 140px;
     }
 
     .control-action {
@@ -645,14 +646,16 @@
       justify-content: center;
       width: 28px;
       height: 28px;
-      border: 1px solid rgba(90, 88, 84, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.06);
       border-radius: 6px;
       font-size: 10px;
       font-weight: 400;
       color: var(--text-color);
       opacity: 0.6;
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
     }
 
     /* Mobile Responsive Adjustments */

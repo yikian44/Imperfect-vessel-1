@@ -1775,7 +1775,7 @@
               <div class="controls-grid">
                 <div class="control-row">
                   <div class="control-action">Move</div>
-                  <div class="control-keys"><span class="control-text">Drag</span></div>
+                  <div class="control-keys"><span class="control-text">CLICK + DRAG</span></div>
                 </div>
                 <div class="control-row">
                   <div class="control-action">Rotate</div>
