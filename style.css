@@ -143,7 +143,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transform: translateY(-25px); /* Move sculpture up by 25px */
     }
 
     .fragment {
@@ -690,12 +689,8 @@
         transform: translateY(0);
       }
 
-      #canvas-container {
-        transform: translateY(-80px); /* Move face up more on mobile to avoid panel */
-      }
-
       #gesture-hint {
-        bottom: 380px; /* Safely above the UI panel on mobile */
+        bottom: 300px; /* Above the UI panel on mobile */
       }
 
       body.is-dragging #ui-panel {
