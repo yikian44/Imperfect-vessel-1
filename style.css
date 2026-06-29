@@ -576,7 +576,7 @@
 
     #gesture-hint {
       position: fixed;
-      bottom: 80px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
@@ -587,72 +587,72 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .controls-title {
-      font-size: 9px;
-      letter-spacing: 4px;
-      font-weight: 500;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      font-weight: 400;
       color: var(--text-color);
-      opacity: 0.5;
+      opacity: 0.4;
       text-transform: uppercase;
     }
 
     .controls-grid {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 12px;
     }
 
     .control-row {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 24px;
     }
 
     .control-keys {
       display: flex;
-      gap: 4px;
+      gap: 8px;
       align-items: center;
       justify-content: flex-start;
-      width: 70px;
+      width: 80px;
     }
 
     .control-action {
       font-size: 11px;
-      letter-spacing: 2px;
+      letter-spacing: 0.25em;
       text-align: left;
-      width: 60px;
+      width: 75px;
       color: var(--text-color);
-      opacity: 0.7;
+      opacity: 0.5;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 300;
     }
 
     .control-text {
       font-size: 11px;
-      letter-spacing: 1px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      font-weight: 500;
+      font-weight: 300;
       color: var(--text-color);
-      opacity: 0.7;
+      opacity: 0.5;
     }
 
     .keycap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 22px;
-      height: 22px;
-      border: 1px solid rgba(90, 88, 84, 0.3);
-      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(90, 88, 84, 0.15);
+      border-radius: 6px;
       font-size: 10px;
-      font-weight: 500;
+      font-weight: 400;
       color: var(--text-color);
-      opacity: 0.7;
-      background: rgba(255, 255, 255, 0.4);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      opacity: 0.6;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
     /* Mobile Responsive Adjustments */
