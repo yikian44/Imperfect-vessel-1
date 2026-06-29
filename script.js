@@ -1749,9 +1749,45 @@
         gestureHint.style.display = 'block';
         const isMobile = window.innerWidth < 768;
         if (isMobile) {
-          gestureHint.innerHTML = "Drag to move • Pinch/Twist to zoom & rotate";
+          gestureHint.innerHTML = `
+            <div class="controls-container">
+              <div class="controls-title">CONTROLS</div>
+              <div class="controls-grid">
+                <div class="control-row">
+                  <div class="control-keys"><span class="control-text">Drag</span></div>
+                  <div class="control-action">Move</div>
+                </div>
+                <div class="control-row">
+                  <div class="control-keys"><span class="control-text">Pinch</span></div>
+                  <div class="control-action">Scale</div>
+                </div>
+                <div class="control-row">
+                  <div class="control-keys"><span class="control-text">Twist</span></div>
+                  <div class="control-action">Rotate</div>
+                </div>
+              </div>
+            </div>
+          `;
         } else {
-          gestureHint.innerHTML = "Drag to move • Z/X to rotate • A/S to scale";
+          gestureHint.innerHTML = `
+            <div class="controls-container">
+              <div class="controls-title">CONTROLS</div>
+              <div class="controls-grid">
+                <div class="control-row">
+                  <div class="control-keys"><span class="control-text">Drag</span></div>
+                  <div class="control-action">Move</div>
+                </div>
+                <div class="control-row">
+                  <div class="control-keys"><span class="keycap">Z</span><span class="keycap">X</span></div>
+                  <div class="control-action">Rotate</div>
+                </div>
+                <div class="control-row">
+                  <div class="control-keys"><span class="keycap">A</span><span class="keycap">S</span></div>
+                  <div class="control-action">Scale</div>
+                </div>
+              </div>
+            </div>
+          `;
         }
       }
       
