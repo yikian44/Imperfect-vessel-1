@@ -690,7 +690,8 @@
       }
 
       #gesture-hint {
-        bottom: calc(110px + env(safe-area-inset-bottom)); /* Just above the arrange-tools panel on mobile */
+        bottom: auto;
+        top: calc(60px + env(safe-area-inset-top)); /* Move to top on mobile due to lack of space at bottom */
       }
 
       body.is-dragging #ui-panel {
