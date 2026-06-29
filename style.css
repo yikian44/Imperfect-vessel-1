@@ -615,7 +615,7 @@
       display: flex;
       gap: 4px;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       width: 70px;
     }
 
@@ -627,7 +627,7 @@
       color: var(--text-color);
       opacity: 0.7;
       text-transform: uppercase;
-      font-weight: 400;
+      font-weight: 500;
     }
 
     .control-text {

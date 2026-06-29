@@ -1754,16 +1754,16 @@
               <div class="controls-title">CONTROLS</div>
               <div class="controls-grid">
                 <div class="control-row">
-                  <div class="control-keys"><span class="control-text">Drag</span></div>
                   <div class="control-action">Move</div>
+                  <div class="control-keys"><span class="control-text">Drag</span></div>
                 </div>
                 <div class="control-row">
-                  <div class="control-keys"><span class="control-text">Pinch</span></div>
                   <div class="control-action">Scale</div>
+                  <div class="control-keys"><span class="control-text">Pinch</span></div>
                 </div>
                 <div class="control-row">
-                  <div class="control-keys"><span class="control-text">Twist</span></div>
                   <div class="control-action">Rotate</div>
+                  <div class="control-keys"><span class="control-text">Twist</span></div>
                 </div>
               </div>
             </div>
@@ -1774,16 +1774,16 @@
               <div class="controls-title">CONTROLS</div>
               <div class="controls-grid">
                 <div class="control-row">
-                  <div class="control-keys"><span class="control-text">Drag</span></div>
                   <div class="control-action">Move</div>
+                  <div class="control-keys"><span class="control-text">Drag</span></div>
                 </div>
                 <div class="control-row">
-                  <div class="control-keys"><span class="keycap">Z</span><span class="keycap">X</span></div>
                   <div class="control-action">Rotate</div>
+                  <div class="control-keys"><span class="keycap">Z</span><span class="keycap">X</span></div>
                 </div>
                 <div class="control-row">
-                  <div class="control-keys"><span class="keycap">A</span><span class="keycap">S</span></div>
                   <div class="control-action">Scale</div>
+                  <div class="control-keys"><span class="keycap">A</span><span class="keycap">S</span></div>
                 </div>
               </div>
             </div>
