@@ -690,7 +690,7 @@
       }
 
       #gesture-hint {
-        bottom: calc(230px + env(safe-area-inset-bottom)); /* Just above the UI panel on mobile */
+        bottom: calc(110px + env(safe-area-inset-bottom)); /* Just above the arrange-tools panel on mobile */
       }
 
       body.is-dragging #ui-panel {
