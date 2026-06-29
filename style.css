@@ -690,7 +690,7 @@
       }
 
       #gesture-hint {
-        bottom: 300px; /* Above the UI panel on mobile */
+        bottom: calc(230px + env(safe-area-inset-bottom)); /* Just above the UI panel on mobile */
       }
 
       body.is-dragging #ui-panel {
