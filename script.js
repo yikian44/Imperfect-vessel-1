@@ -1850,13 +1850,20 @@
     document.getElementById('toggle-style-btn').addEventListener('click', () => {
       const content = document.getElementById('style-menu-content');
       const icon = document.getElementById('style-arrow-icon');
+      const gestureHint = document.getElementById('gesture-hint');
       if (content.style.display === 'none') {
         content.style.display = 'flex';
         icon.classList.add('expanded');
+        if (isFreeArrange && gestureHint) {
+          gestureHint.style.opacity = '0';
+        }
         setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
       } else {
         content.style.display = 'none';
         icon.classList.remove('expanded');
+        if (isFreeArrange && gestureHint) {
+          gestureHint.style.opacity = '1';
+        }
       }
     });
 

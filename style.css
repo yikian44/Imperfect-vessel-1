@@ -581,6 +581,7 @@
       transform: translateX(-50%);
       z-index: 20;
       pointer-events: none;
+      transition: opacity 0.3s ease;
     }
 
     .controls-container {
