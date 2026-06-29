@@ -690,8 +690,8 @@
       }
 
       #gesture-hint {
-        bottom: auto;
-        top: calc(60px + env(safe-area-inset-top)); /* Move to top on mobile due to lack of space at bottom */
+        bottom: calc(160px + env(safe-area-inset-bottom));
+        top: auto;
       }
 
       body.is-dragging #ui-panel {
