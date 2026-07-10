@@ -14,15 +14,26 @@
 
 <body>
   <div id="ll-loader">
-    <div id="ll-progress-bar"></div>
-    <div id="ll-counter">0%</div>
+    <video id="loader-video" autoplay muted playsinline>
+      <source src="im logo video.mp4" type="video/mp4">
+    </video>
   </div>
 
   <!-- Narrative Prologue -->
   <div id="prologue">
     <div class="prologue-content">
-      <p id="prologue-text-1" class="prologue-quote">Perfection is not the absence of flaws.</p>
-      <p id="prologue-text-2" class="prologue-quote" style="display:none; margin-top: 10px;">It is the acceptance of them.</p>
+      <div id="prologue-logo" class="logo-container">
+        <svg class="site-logo-svg" width="180" height="50" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="20" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="300" fill="currentColor">Imperfection</text>
+          <text x="40" y="38" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="300" fill="currentColor">Vessel</text>
+          <g transform="translate(125, 8)">
+            <polygon points="0,0 24,0 12,18" fill="currentColor" />
+            <polygon points="24,0 48,0 36,18" fill="currentColor" />
+            <polygon points="24,20 24,26 42,26" fill="currentColor" />
+            <polygon points="18,32 30,32 24,38" fill="currentColor" />
+          </g>
+        </svg>
+      </div>
     </div>
   </div>
 
@@ -34,6 +45,11 @@
   <svg id="crack-canvas"></svg>
 
   <div id="custom-cursor"></div>
+
+  <!-- Persistent Site Logo -->
+  <div id="site-logo" class="logo-container position-left">
+    <img src="logo.jpg" alt="Logo" class="site-logo-img">
+  </div>
 
 
 

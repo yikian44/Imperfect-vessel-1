@@ -230,10 +230,58 @@
       transition: opacity 3s ease;
     }
 
+    /* Logos */
+    .logo-container {
+      color: var(--text-color);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.5s ease, transform 1.5s ease;
+    }
+
+    .logo-container.visible {
+      opacity: 1;
+    }
+
+    /* Prologue Logo (Centered, scaled slightly larger) */
+    #prologue-logo {
+      margin-bottom: 24px;
+      transform: scale(1.15);
+      transition: opacity 1.5s ease;
+    }
+    
+    #prologue-logo.visible {
+      opacity: 1;
+    }
+
+    /* Persistent Site Logo (Top-left) */
+    #site-logo.position-left {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      z-index: 10;
+      mix-blend-mode: multiply;
+    }
+
+    .site-logo-img {
+      height: 36px;
+      width: auto;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      #site-logo.position-left {
+        top: 24px;
+        left: 24px;
+        transform: scale(0.85);
+        transform-origin: top left;
+      }
+    }
+
     /* UI Panel */
     #ui-panel {
       position: absolute;
-      top: 40px;
+      top: 120px; /* Shifted down from 40px to clear the top-left logo */
       left: 40px;
       padding: 20px 24px;
       display: flex;
@@ -248,8 +296,8 @@
       background: #fdfdfc;
       border: 1px solid var(--panel-border);
       border-radius: 20px;
-      max-height: calc(100vh - 80px);
-      max-height: calc(100dvh - 80px);
+      max-height: calc(100vh - 160px);
+      max-height: calc(100dvh - 160px);
     }
 
     #ui-panel.visible {
@@ -809,7 +857,7 @@
 
 
 
-    /* Lama Lama Style Loader */
+    /* Typewriter Style Loader */
     #ll-loader {
       position: fixed;
       inset: 0;
@@ -819,11 +867,8 @@
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      background-color: #000;
-      color: #FFF;
-      font-size: 14px;
-      font-family: 'Space Grotesk', monospace;
-      font-weight: 400;
+      background-color: #fff;
+      color: #111;
       transition: transform 1s cubic-bezier(0.8, 0, 0.2, 1);
     }
 
@@ -831,21 +876,13 @@
       transform: translateY(-100%);
     }
 
-    #ll-progress-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background-color: #FFF;
-      transform-origin: left;
-      transform: scaleX(0);
-      /* Smooth transitions for the progress bar */
-      transition: transform 0.1s linear;
-    }
-
-    #ll-counter {
-      letter-spacing: 2px;
+    #loader-video {
+      width: 100%;
+      height: 100%;
+      max-width: 900px; /* limit size on desktop so it looks crisp */
+      max-height: 500px;
+      object-fit: contain;
+      pointer-events: none;
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */

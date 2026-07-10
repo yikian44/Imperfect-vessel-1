@@ -34,61 +34,56 @@
       );
 
       const loader = document.getElementById('ll-loader');
-      const counterElem = document.getElementById('ll-counter');
-      const progressBar = document.getElementById('ll-progress-bar');
-      
-      let progress = 0;
-      let startTime = performance.now();
-      
-      function animateLoader(time) {
-        const elapsed = time - startTime;
-        const duration = 1800; // 1.8 seconds
-        let t = Math.min(elapsed / duration, 1.0);
-        
-        // Ease out quadratic: t * (2 - t)
-        progress = Math.floor(t * (2 - t) * 100);
-        
-        counterElem.innerText = progress + '%';
-        progressBar.style.transform = `scaleX(${progress / 100})`;
-        
-        if (elapsed < duration) {
-          requestAnimationFrame(animateLoader);
-        } else {
-          counterElem.innerText = '100%';
-          progressBar.style.transform = 'scaleX(1)';
-          
-          setTimeout(() => {
-            loader.classList.add('slide-up');
-            
-            setTimeout(() => {
-              loader.style.display = 'none';
-              
-              const text1 = document.getElementById('prologue-text-1');
-              const text2 = document.getElementById('prologue-text-2');
-              const prologue = document.getElementById('prologue');
-              
-              if (text1 && text2 && prologue) {
-                setTimeout(() => { text1.classList.add('visible'); }, 100);
-                
-                setTimeout(() => {
-                  text2.style.display = 'block';
-                  setTimeout(() => { text2.classList.add('visible'); }, 50);
-                }, 1500);
+      const video = document.getElementById('loader-video');
+      const siteLogo = document.getElementById('site-logo');
+      const prologue = document.getElementById('prologue');
 
-                setTimeout(() => {
-                  prologue.style.opacity = '0';
-                  isPrologue = false;
-                  setTimeout(() => { prologue.style.display = 'none'; }, 1000);
-                }, 3500);
-              } else {
-                isPrologue = false;
-              }
-            }, 1000); 
-          }, 300); // dramatic pause at 100%
+      if (video) {
+        // Force play programmatically (handles some browsers' autoplay quirks)
+        video.play().catch(e => {
+          console.log("Autoplay blocked, fallback to timer");
+          triggerFallback();
+        });
+
+        // 9-second fallback timer so the user is never stuck if the video fails to load/play
+        let fallbackTimer = setTimeout(triggerFallback, 9000);
+
+        function triggerFallback() {
+          clearTimeout(fallbackTimer);
+          if (loader && loader.style.display !== 'none') {
+            loader.classList.add('slide-up');
+            isPrologue = false;
+            if (prologue) prologue.style.display = 'none';
+            if (siteLogo) siteLogo.classList.add('visible');
+            setTimeout(() => { loader.style.display = 'none'; }, 1200);
+          }
         }
+
+        // Slide up when the video ends natively
+        video.addEventListener('ended', () => {
+          clearTimeout(fallbackTimer);
+          triggerFallback();
+        });
+        
+        // Sync crystalline chime clink sound to play at exactly 5.0 seconds
+        let chimePlayed = false;
+        video.addEventListener('timeupdate', () => {
+          if (video.currentTime >= 5.0 && !chimePlayed) {
+            chimePlayed = true;
+            try {
+              if (typeof playClink === 'function') {
+                playClink();
+              }
+            } catch(e) {}
+          }
+        });
+      } else {
+        // Instant fallback if video element isn't in DOM
+        isPrologue = false;
+        if (prologue) prologue.style.display = 'none';
+        if (siteLogo) siteLogo.classList.add('visible');
+        if (loader) loader.style.display = 'none';
       }
-      
-      requestAnimationFrame(animateLoader);
     });
 
     // Custom Cursor Logic
