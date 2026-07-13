@@ -984,39 +984,39 @@
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */
-    .action-btn:not(.icon-btn), .texture-btn {
-      position: relative;
-    }
-    .action-btn:not(.icon-btn), #let-go-btn, .texture-btn {
-      overflow: hidden;
-      color: transparent !important; /* Hide original text */
-    }
-
-    .action-btn:not(.icon-btn)::before, #let-go-btn::before, .texture-btn::before,
-    .action-btn:not(.icon-btn)::after, #let-go-btn::after, .texture-btn::after {
-      content: attr(data-text);
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e8e6e1; /* cream text */
-      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1), color 0.4s ease;
-    }
-
-    .action-btn:not(.icon-btn)::after, #let-go-btn::after, .texture-btn::after {
-      transform: translateY(100%);
-    }
-
-    .action-btn:not(.icon-btn):hover::before, #let-go-btn:hover::before, .texture-btn:hover::before {
-      transform: translateY(-100%);
-      color: #1e1d1a; /* dark text on hover */
-    }
-
-    .action-btn:not(.icon-btn):hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
-      transform: translateY(0);
-      color: #1e1d1a; /* dark text on hover */
-    }
+     .action-btn:not(.icon-btn) {
+       position: relative;
+     }
+     .action-btn:not(.icon-btn), #let-go-btn {
+       overflow: hidden;
+       color: transparent !important; /* Hide original text */
+     }
+ 
+     .action-btn:not(.icon-btn)::before, #let-go-btn::before,
+     .action-btn:not(.icon-btn)::after, #let-go-btn::after {
+       content: attr(data-text);
+       position: absolute;
+       top: 0; left: 0; right: 0; bottom: 0;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       color: #e8e6e1; /* cream text */
+       transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1), color 0.4s ease;
+     }
+ 
+     .action-btn:not(.icon-btn)::after, #let-go-btn::after {
+       transform: translateY(100%);
+     }
+ 
+     .action-btn:not(.icon-btn):hover::before, #let-go-btn:hover::before {
+       transform: translateY(-100%);
+       color: #1e1d1a; /* dark text on hover */
+     }
+ 
+     .action-btn:not(.icon-btn):hover::after, #let-go-btn:hover::after {
+       transform: translateY(0);
+       color: #1e1d1a; /* dark text on hover */
+     }
 
     /* Circular Icon Buttons */
     .action-btn.icon-btn {
