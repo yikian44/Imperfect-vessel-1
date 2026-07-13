@@ -890,16 +890,16 @@
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */
-    .action-btn, .texture-btn {
+    .action-btn:not(.icon-btn), .texture-btn {
       position: relative;
     }
-    .action-btn, #let-go-btn, .texture-btn {
+    .action-btn:not(.icon-btn), #let-go-btn, .texture-btn {
       overflow: hidden;
       color: transparent !important; /* Hide original text */
     }
 
-    .action-btn::before, #let-go-btn::before, .texture-btn::before,
-    .action-btn::after, #let-go-btn::after, .texture-btn::after {
+    .action-btn:not(.icon-btn)::before, #let-go-btn::before, .texture-btn::before,
+    .action-btn:not(.icon-btn)::after, #let-go-btn::after, .texture-btn::after {
       content: attr(data-text);
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -910,16 +910,82 @@
       transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
     }
 
-    .action-btn::after, #let-go-btn::after, .texture-btn::after {
+    .action-btn:not(.icon-btn)::after, #let-go-btn::after, .texture-btn::after {
       transform: translateY(100%);
     }
 
-    .action-btn:hover::before, #let-go-btn:hover::before, .texture-btn:hover::before {
+    .action-btn:not(.icon-btn):hover::before, #let-go-btn:hover::before, .texture-btn:hover::before {
       transform: translateY(-100%);
     }
 
-    .action-btn:hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
+    .action-btn:not(.icon-btn)::hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
       transform: translateY(0);
+    }
+
+    /* Circular Icon Buttons */
+    .action-btn.icon-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      position: relative;
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--panel-border);
+      color: var(--text-color);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .action-btn.icon-btn:hover {
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(90, 88, 84, 0.08);
+      border-color: rgba(90, 88, 84, 0.15);
+    }
+
+    .action-btn.icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-color);
+      stroke-width: 2px;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .action-btn.icon-btn:hover svg {
+      transform: scale(1.1);
+    }
+
+    /* CSS Tooltips for Icon Buttons */
+    .action-btn.icon-btn::before {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: rgba(90, 88, 84, 0.95);
+      color: #e8e6e1;
+      padding: 6px 12px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border-radius: 6px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      z-index: 999;
+    }
+
+    .action-btn.icon-btn:hover::before {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     /* Mouse Trail Fracture Canvas */
