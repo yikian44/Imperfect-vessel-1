@@ -939,6 +939,8 @@
         frag.dragStartY = frag.y;
         frag.dragStartRot = frag.rot;
         frag.dragStartScale = frag.scale;
+        frag.targetDragX = frag.x;
+        frag.targetDragY = frag.y;
         returningFragment = null;
         customCursor.classList.remove('hover'); // hide hover ring while dragging
 
@@ -965,8 +967,8 @@
           }
         }
 
-        frag.x = newX;
-        frag.y = newY;
+        frag.targetDragX = newX;
+        frag.targetDragY = newY;
       });
 
       div.addEventListener('pointerup', (e) => {
@@ -1270,12 +1272,21 @@
         }
       });
 
-      let targetCenterYOffset = window.innerWidth < 768 ? -120 : -80;
+      let targetCenterYOffset = window.innerWidth < 768 ? 0 : -80;
       if (uiPanel.classList.contains('visible') && window.innerWidth < 768) {
         targetCenterYOffset = -140;
       }
       
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
+
+      if (typeof window.parallaxX === 'undefined') {
+        window.parallaxX = 0;
+        window.parallaxY = 0;
+      }
+      const targetParallaxX = ((hardwareX || window.innerWidth / 2) / window.innerWidth - 0.5) * 6;
+      const targetParallaxY = ((hardwareY || window.innerHeight / 2) / window.innerHeight - 0.5) * 6;
+      window.parallaxX += (targetParallaxX - window.parallaxX) * 0.05;
+      window.parallaxY += (targetParallaxY - window.parallaxY) * 0.05;
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2 + centerYOffset;
@@ -1317,7 +1328,12 @@
           targetX = Math.max(-marginW, Math.min(marginW, targetX));
           targetY = Math.max(-marginH, Math.min(marginH, targetY));
 
-          if (!f.isDragging) {
+          if (f.isDragging) {
+            if (typeof f.targetDragX !== 'undefined') {
+              f.x += (f.targetDragX - f.x) * 0.15;
+              f.y += (f.targetDragY - f.y) * 0.15;
+            }
+          } else {
             f.x += (targetX - f.x) * 0.05;
             f.y += (targetY - f.y) * 0.05;
             f.rot += (targetRot - f.rot) * 0.05;
@@ -1330,7 +1346,7 @@
         } else {
           // Assembling State ("Let Go")
           if (isFreeArrange || isCustomArranged) {
-            f.element.style.transform = `translate(${centerX + f.x}px, ${centerY + f.y}px) rotate(${f.rot}deg) scale(${f.scale})`;
+            f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
             return;
           }
 
@@ -1348,7 +1364,12 @@
           const targetY = f.basey + finalChaosY;
           const targetRot = f.baseRot + finalChaosRot;
 
-          if (!f.isDragging) {
+          if (f.isDragging) {
+            if (typeof f.targetDragX !== 'undefined') {
+              f.x += (f.targetDragX - f.x) * 0.15;
+              f.y += (f.targetDragY - f.y) * 0.15;
+            }
+          } else {
             f.x += (targetX - f.x) * 0.025;
             f.y += (targetY - f.y) * 0.025;
             f.rot += (targetRot - f.rot) * 0.025;
@@ -1368,7 +1389,7 @@
           }
         }
 
-        f.element.style.transform = `translate(${centerX + f.x}px, ${centerY + f.y}px) rotate(${f.rot}deg) scale(${f.scale})`;
+        f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
@@ -1400,7 +1421,7 @@
 
       if (document.getElementById('gold-underlay-svg')) {
         const goldSvg = document.getElementById('gold-underlay-svg');
-        const targetTransform = `translate(${centerX}px, ${centerY}px)`;
+        const targetTransform = `translate(${centerX + window.parallaxX}px, ${centerY + window.parallaxY}px)`;
         if (goldSvg.style.transform !== targetTransform) {
           goldSvg.style.transform = targetTransform;
         }
@@ -1876,81 +1897,699 @@
       return Math.random() > 0.3 ? `Portrait of a ${a} ${n}` : `The ${a} ${n}, ${s}`;
     }
 
+    function generateVesselBlob(userTitle) {
+      return new Promise((resolve, reject) => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const bg = getComputedStyle(document.body).backgroundColor;
+        const svgFilters = document.getElementById('filter-defs').innerHTML;
+
+        let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+          ${svgFilters}
+          <defs>
+            <filter id="bgNoise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
+            </filter>
+          </defs>
+          <rect width="100%" height="100%" fill="${bg}"/>
+          <rect width="100%" height="100%" filter="url(#bgNoise)" opacity="0.04"/>
+          
+          <!-- Gold Underlay Export -->
+          <g transform="translate(${w / 2}, ${h / 2})">
+            ${(!isCustomArranged && document.getElementById('gold-underlay-svg') && document.getElementById('gold-underlay-svg').style.display !== 'none') ? document.getElementById('gold-underlay-svg').innerHTML : ''}
+          </g>`;
+
+        fragments.forEach(f => {
+          const clipId = `save-clip-${f.id}`;
+          const textureOverlayString = f.texture !== 'none' ? `<path d="${f.path}" fill="url(#${f.texture})" pointer-events="none" />` : '';
+          
+          svgContent += `
+            <g transform="translate(${w / 2 + f.x + f.cx}, ${h / 2 + f.y + f.cy}) rotate(${f.rot}) scale(${f.scale}) translate(${-f.cx}, ${-f.cy})">
+              <!-- Fragment Content -->
+              <clipPath id="${clipId}">
+                <path d="${f.path}" />
+              </clipPath>
+              <g clip-path="url(#${clipId})">
+                <path d="${f.path}" fill="${f.color}" />
+                ${textureOverlayString}
+                ${f.featureSvgString || ''}
+              </g>
+            </g>`;
+        });
+
+        if (userTitle && userTitle.trim().length > 0) {
+          svgContent += `<text x="${w / 2}" y="${h - 60}" font-family="'Clash Grotesk', 'Space Grotesk', Helvetica, sans-serif" font-size="14" font-weight="400" letter-spacing="6" fill="#5a5854" text-anchor="middle">${userTitle.trim().toUpperCase()}</text>`;
+        }
+
+        svgContent += `</svg>`;
+
+        const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          canvas.toBlob((pngBlob) => {
+            URL.revokeObjectURL(url);
+            if (pngBlob) {
+              resolve(pngBlob);
+            } else {
+              reject(new Error("Canvas toBlob failed"));
+            }
+          }, 'image/png');
+        };
+        img.onerror = (e) => {
+          URL.revokeObjectURL(url);
+          reject(e);
+        };
+        img.src = url;
+      });
+    }
+
     document.getElementById('save-btn').addEventListener('click', () => {
       const suggestedTitle = generateTitle();
       const userTitle = prompt("Name your artwork:", suggestedTitle);
       
       if (userTitle === null) return; // User cancelled save
 
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const bg = getComputedStyle(document.body).backgroundColor;
-      const svgFilters = document.getElementById('filter-defs').innerHTML;
-
-      let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
-        ${svgFilters}
-        <defs>
-          <filter id="bgNoise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/>
-          </filter>
-        </defs>
-        <rect width="100%" height="100%" fill="${bg}"/>
-        <rect width="100%" height="100%" filter="url(#bgNoise)" opacity="0.04"/>
-        
-        <!-- Gold Underlay Export -->
-        <g transform="translate(${w / 2}, ${h / 2})">
-          ${(!isCustomArranged && document.getElementById('gold-underlay-svg') && document.getElementById('gold-underlay-svg').style.display !== 'none') ? document.getElementById('gold-underlay-svg').innerHTML : ''}
-        </g>`;
-
-      fragments.forEach(f => {
-        const clipId = `save-clip-${f.id}`;
-        const textureOverlayString = f.texture !== 'none' ? `<path d="${f.path}" fill="url(#${f.texture})" pointer-events="none" />` : '';
-        
-        svgContent += `
-          <g transform="translate(${w / 2 + f.x + f.cx}, ${h / 2 + f.y + f.cy}) rotate(${f.rot}) scale(${f.scale}) translate(${-f.cx}, ${-f.cy})">
-            <!-- Fragment Content -->
-            <clipPath id="${clipId}">
-              <path d="${f.path}" />
-            </clipPath>
-            <g clip-path="url(#${clipId})">
-              <path d="${f.path}" fill="${f.color}" />
-              ${textureOverlayString}
-              ${f.featureSvgString || ''}
-            </g>
-          </g>`;
-      });
-
-      if (userTitle && userTitle.trim().length > 0) {
-        svgContent += `<text x="${w / 2}" y="${h - 60}" font-family="'Space Grotesk', Helvetica, sans-serif" font-size="14" font-weight="300" letter-spacing="6" fill="#5a5854" text-anchor="middle">${userTitle.trim().toUpperCase()}</text>`;
-      }
-
-      svgContent += `</svg>`;
-
-      const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-
-        const pngUrl = canvas.toDataURL('image/png');
+      generateVesselBlob(userTitle).then(pngBlob => {
+        const pngUrl = URL.createObjectURL(pngBlob);
         const a = document.createElement('a');
         a.href = pngUrl;
         a.download = 'imperfect_vessel.png';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        URL.revokeObjectURL(pngUrl);
+      }).catch(err => {
+        console.error("Save error:", err);
+        alert("Failed to save image.");
+      });
+    });
 
-        URL.revokeObjectURL(url);
-      };
-      img.src = url;
+    // -------------------------------------------------------------
+    // Firebase & Mock Service Layer for Gallery of Flaws
+    // -------------------------------------------------------------
+    const FIREBASE_CONFIG = {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
+    };
+
+    class MockDBService {
+      constructor() {
+        console.log("Gallery of Flaws: Operating in Mock Mode (using localStorage).");
+        this.storageKey = "imperfect_vessel_gallery";
+        this.likesKey = "imperfect_vessel_likes";
+        this._initMockData();
+      }
+
+      _initMockData() {
+        let items = [];
+        try {
+          items = JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+        } catch (e) {
+          items = [];
+        }
+        
+        // Filter out legacy mock items immediately
+        const filteredItems = items.filter(item => item.id !== "mock_vessel_1" && item.id !== "mock_vessel_2");
+        if (items.length !== filteredItems.length || !localStorage.getItem(this.storageKey)) {
+          localStorage.setItem(this.storageKey, JSON.stringify(filteredItems));
+        }
+      }
+
+      async publishVessel(title, creatorName, blob, vesselData) {
+        const items = JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+        const reader = new FileReader();
+        const dataUrl = await new Promise(resolve => {
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        const newItem = {
+          id: "local_" + Math.random().toString(36).substr(2, 9),
+          title: title || "UNTITLED VESSEL",
+          creatorName: creatorName || "ANONYMOUS",
+          creatorId: "local_user",
+          likes: 0,
+          createdAt: new Date().toISOString(),
+          imageUrl: dataUrl,
+          vesselData: vesselData
+        };
+        items.unshift(newItem);
+        localStorage.setItem(this.storageKey, JSON.stringify(items));
+        return newItem;
+      }
+
+      async fetchGallery(sortBy = "newest") {
+        let items = JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+        if (sortBy === "popular") {
+          items.sort((a, b) => b.likes - a.likes);
+        } else {
+          items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
+        return items;
+      }
+
+      async likeVessel(vesselId) {
+        const items = JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+        const item = items.find(i => i.id === vesselId);
+        if (!item) return false;
+        
+        const likesList = JSON.parse(localStorage.getItem(this.likesKey) || "[]");
+        if (likesList.includes(vesselId)) {
+          return false;
+        }
+        
+        item.likes += 1;
+        likesList.push(vesselId);
+        localStorage.setItem(this.likesKey, JSON.stringify(likesList));
+        localStorage.setItem(this.storageKey, JSON.stringify(items));
+        return true;
+      }
+    }
+
+    class FirebaseDBService {
+      constructor(config, auth, db, storage, authModule, dbModule, storageModule) {
+        this.config = config;
+        this.auth = auth;
+        this.db = db;
+        this.storage = storage;
+        this.authModule = authModule;
+        this.dbModule = dbModule;
+        this.storageModule = storageModule;
+        this.currentUser = null;
+        this._initAuth();
+      }
+
+      async _initAuth() {
+        try {
+          const userCredential = await this.authModule.signInAnonymously(this.auth);
+          this.currentUser = userCredential.user;
+          console.log("Firebase: Authenticated anonymously as:", this.currentUser.uid);
+        } catch (error) {
+          console.error("Firebase auth initialization failed:", error);
+        }
+      }
+
+      async publishVessel(title, creatorName, blob, vesselData) {
+        if (!this.currentUser) {
+          throw new Error("User not authenticated.");
+        }
+        
+        const galleryRef = this.dbModule.collection(this.db, "gallery");
+        const newDocRef = this.dbModule.doc(galleryRef);
+        const vesselId = newDocRef.id;
+
+        // Upload PNG Blob
+        const storageRef = this.storageModule.ref(this.storage, `gallery/${vesselId}.png`);
+        await this.storageModule.uploadBytes(storageRef, blob);
+        const imageUrl = await this.storageModule.getDownloadURL(storageRef);
+
+        // Save metadata and coordinates
+        const itemData = {
+          id: vesselId,
+          title: title || "UNTITLED VESSEL",
+          creatorName: creatorName || "ANONYMOUS",
+          creatorId: this.currentUser.uid,
+          likes: 0,
+          likedBy: [],
+          createdAt: new Date().toISOString(),
+          imageUrl: imageUrl,
+          vesselData: vesselData
+        };
+
+        await this.dbModule.setDoc(newDocRef, itemData);
+        return itemData;
+      }
+
+      async fetchGallery(sortBy = "newest") {
+        const galleryRef = this.dbModule.collection(this.db, "gallery");
+        
+        let q;
+        if (sortBy === "popular") {
+          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("likes", "desc"));
+        } else {
+          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("createdAt", "desc"));
+        }
+        
+        const snap = await this.dbModule.getDocs(q);
+        const items = [];
+        snap.forEach(doc => {
+          items.push(doc.data());
+        });
+        return items;
+      }
+
+      async likeVessel(vesselId) {
+        if (!this.currentUser) return false;
+        const docRef = this.dbModule.doc(this.db, "gallery", vesselId);
+        const docSnap = await this.dbModule.getDoc(docRef);
+        if (!docSnap.exists()) return false;
+
+        const data = docSnap.data();
+        if (data.likedBy && data.likedBy.includes(this.currentUser.uid)) {
+          return false;
+        }
+
+        await this.dbModule.updateDoc(docRef, {
+          likes: this.dbModule.increment(1),
+          likedBy: this.dbModule.arrayUnion(this.currentUser.uid)
+        });
+        return true;
+      }
+    }
+
+    let dbService;
+    async function initDatabaseService() {
+      const isFirebaseConfigured = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.trim().length > 0 && !FIREBASE_CONFIG.apiKey.includes("YOUR_");
+
+      if (isFirebaseConfigured) {
+        try {
+          console.log("Firebase: Loading CDN modules...");
+          const [appModule, authModule, dbModule, storageModule] = await Promise.all([
+            import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"),
+            import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"),
+            import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"),
+            import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js")
+          ]);
+
+          const app = appModule.initializeApp(FIREBASE_CONFIG);
+          const auth = authModule.getAuth(app);
+          const db = dbModule.getFirestore(app);
+          const storage = storageModule.getStorage(app);
+
+          dbService = new FirebaseDBService(FIREBASE_CONFIG, auth, db, storage, authModule, dbModule, storageModule);
+        } catch (err) {
+          console.error("Failed to initialize Firebase, falling back to mock database:", err);
+          dbService = new MockDBService();
+        }
+      } else {
+        dbService = new MockDBService();
+      }
+    }
+
+    // Trigger Service Init
+    initDatabaseService();
+
+    // -------------------------------------------------------------
+    // Gallery & Publish Modal Handlers
+    // -------------------------------------------------------------
+    const publishModal = document.getElementById('publish-modal');
+    const galleryOverlay = document.getElementById('gallery-overlay');
+    const galleryGrid = document.getElementById('gallery-grid');
+    const publishBtn = document.getElementById('publish-btn');
+    const galleryBtn = document.getElementById('gallery-btn');
+
+    // Open Publish Modal
+    if (publishBtn) {
+      publishBtn.addEventListener('click', () => {
+        if (typeof playClink === 'function') playClink();
+        document.getElementById('publish-art-title').value = generateTitle();
+        document.getElementById('publish-creator-name').value = localStorage.getItem("im_creator_name") || "";
+        publishModal.classList.add('visible');
+      });
+    }
+
+    // Cancel Publish
+    document.getElementById('publish-cancel-btn').addEventListener('click', () => {
+      if (typeof playClink === 'function') playClink();
+      publishModal.classList.remove('visible');
+    });
+
+    // Close Gallery
+    document.getElementById('gallery-close-btn').addEventListener('click', () => {
+      if (typeof playClink === 'function') playClink();
+      galleryOverlay.classList.remove('visible');
+    });
+
+    // Toggle Filters
+    let currentFilter = "newest";
+    const filterNew = document.getElementById('gallery-filter-new');
+    const filterPopular = document.getElementById('gallery-filter-popular');
+
+    if (filterNew && filterPopular) {
+      filterNew.addEventListener('click', () => {
+        if (typeof playClink === 'function') playClink();
+        filterNew.classList.add('active');
+        filterPopular.classList.remove('active');
+        currentFilter = "newest";
+        loadGalleryItems();
+      });
+
+      filterPopular.addEventListener('click', () => {
+        if (typeof playClink === 'function') playClink();
+        filterPopular.classList.add('active');
+        filterNew.classList.remove('active');
+        currentFilter = "popular";
+        loadGalleryItems();
+      });
+    }
+
+    // Submit Publish
+    document.getElementById('publish-submit-btn').addEventListener('click', async () => {
+      if (typeof playClink === 'function') playClink();
+      
+      const title = document.getElementById('publish-art-title').value.trim();
+      const creatorName = document.getElementById('publish-creator-name').value.trim();
+      
+      if (!title) {
+        alert("Please enter a title for your artwork.");
+        return;
+      }
+
+      // Save creator name preference
+      if (creatorName) {
+        localStorage.setItem("im_creator_name", creatorName);
+      }
+
+      const submitBtn = document.getElementById('publish-submit-btn');
+      submitBtn.innerText = "PUBLISHING...";
+      submitBtn.disabled = true;
+
+      try {
+        const pngBlob = await generateVesselBlob(title);
+        
+        // Structure coordinates
+        const vesselData = {
+          backgroundColor: getComputedStyle(document.body).backgroundColor,
+          fragments: fragments.map(f => ({
+            id: f.id,
+            x: f.x,
+            y: f.y,
+            rot: f.rot,
+            scale: f.scale,
+            color: f.color,
+            texture: f.texture,
+            path: f.path,
+            featureSvgString: f.featureSvgString || ""
+          }))
+        };
+
+        await dbService.publishVessel(title, creatorName, pngBlob, vesselData);
+        
+        // Hide publish modal
+        publishModal.classList.remove('visible');
+        
+        // Start Publish Ritual Sequence
+        // 1. Fade out active page UI elements
+        const postActionContainer = document.getElementById('post-action-container');
+        const headerNavGroup = document.querySelector('.header-nav-group');
+        const siteLogo = document.getElementById('site-logo');
+        const finalMessage = document.getElementById('final-message');
+        
+        if (postActionContainer) {
+          postActionContainer.style.opacity = '0';
+          postActionContainer.style.pointerEvents = 'none';
+        }
+        if (headerNavGroup) {
+          headerNavGroup.style.opacity = '0';
+          headerNavGroup.style.pointerEvents = 'none';
+        }
+        if (siteLogo) {
+          siteLogo.style.opacity = '0';
+          siteLogo.style.pointerEvents = 'none';
+        }
+        if (finalMessage) {
+          finalMessage.style.opacity = '0';
+          finalMessage.style.pointerEvents = 'none';
+        }
+
+        // 2. Select and show emotional message
+        const messages = [
+          "Every crack deserves a place.",
+          "Your vessel has found a home."
+        ];
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+        const ritualOverlay = document.getElementById('ritual-overlay');
+        if (ritualOverlay) {
+          const msgEl = ritualOverlay.querySelector('.ritual-message');
+          if (msgEl) msgEl.innerText = randomMsg;
+          
+          // Fade in message after modal hides
+          setTimeout(() => {
+            ritualOverlay.classList.add('visible');
+          }, 300);
+        }
+
+        // 3. Pause, then transition to Gallery
+        setTimeout(() => {
+          if (ritualOverlay) {
+            ritualOverlay.classList.remove('visible');
+          }
+          
+          // Open Gallery overlay smoothly
+          const galleryOverlay = document.getElementById('gallery-overlay');
+          if (galleryOverlay) {
+            loadGalleryItems();
+            galleryOverlay.classList.add('visible');
+          }
+          
+          // 4. Restore main UI styles behind the scenes
+          setTimeout(() => {
+            if (postActionContainer) {
+              postActionContainer.style.opacity = '';
+              postActionContainer.style.pointerEvents = '';
+            }
+            if (headerNavGroup) {
+              headerNavGroup.style.opacity = '';
+              headerNavGroup.style.pointerEvents = '';
+            }
+            if (siteLogo) {
+              siteLogo.style.opacity = '';
+              siteLogo.style.pointerEvents = '';
+            }
+            if (finalMessage) {
+              finalMessage.style.opacity = '';
+              finalMessage.style.pointerEvents = '';
+            }
+          }, 1000);
+        }, 2600);
+      } catch (err) {
+        console.error("Publishing error:", err);
+        alert("Failed to publish artwork. Please verify your connection.");
+      } finally {
+        submitBtn.innerText = "PUBLISH";
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Fetch and Render Gallery items
+    async function loadGalleryItems() {
+      galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">Loading gallery...</div>`;
+      try {
+        const items = await dbService.fetchGallery(currentFilter);
+        galleryGrid.innerHTML = "";
+        
+        if (items.length === 0) {
+          galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">The gallery is currently empty. Be the first to publish!</div>`;
+          return;
+        }
+
+        items.forEach((item, index) => {
+          const card = document.createElement('div');
+          card.className = 'gallery-card';
+          card.style.animationDelay = `${index * 0.08}s`;
+          
+          const escapedTitle = (item.title || "UNTITLED").replace(/"/g, '&quot;');
+          const escapedCreator = (item.creatorName || "ANONYMOUS").replace(/"/g, '&quot;');
+          
+          const isLiked = localStorage.getItem(`liked_${item.id}`) === "true";
+          const likeClass = isLiked ? "like-btn liked" : "like-btn";
+
+          card.innerHTML = `
+            <div class="card-preview-container">
+              <img class="card-preview" src="${item.imageUrl}" alt="${escapedTitle}">
+            </div>
+            <div class="card-info">
+              <h3 class="card-title">${escapedTitle}</h3>
+              <p class="card-creator">BY ${escapedCreator}</p>
+            </div>
+            <div class="card-footer">
+              <div class="card-likes">
+                <button class="${likeClass}" data-id="${item.id}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                  </svg>
+                </button>
+                <span class="likes-count" id="likes-count-${item.id}">${item.likes || 0}</span>
+              </div>
+            </div>
+          `;
+
+          // Bind Like action
+          const likeBtn = card.querySelector('.like-btn');
+          likeBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (typeof playClink === 'function') playClink();
+            
+            if (localStorage.getItem(`liked_${item.id}`) === "true") {
+              return;
+            }
+
+            const success = await dbService.likeVessel(item.id);
+            if (success) {
+              localStorage.setItem(`liked_${item.id}`, "true");
+              likeBtn.classList.add('liked');
+              const likesSpan = document.getElementById(`likes-count-${item.id}`);
+              if (likesSpan) {
+                likesSpan.innerText = parseInt(likesSpan.innerText, 10) + 1;
+              }
+            }
+          });
+
+          galleryGrid.appendChild(card);
+        });
+
+
+
+      } catch (err) {
+        console.error("Failed to load gallery items:", err);
+        galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px; color: red;">Failed to load gallery cards.</div>`;
+      }
+    }
+
+    // Remix Loader Function
+    function loadVesselState(vesselData) {
+      if (!vesselData || !vesselData.fragments) return;
+      
+      // Close gallery
+      if (galleryOverlay) {
+        galleryOverlay.classList.remove('visible');
+      }
+
+      // Reset state variables
+      isSettling = false;
+      isFreeArrange = true;
+      isCustomArranged = true;
+      
+      document.getElementById('free-arrange-btn').style.display = 'none';
+      document.getElementById('arrange-tools').style.display = 'block';
+      
+      // Show action buttons container
+      document.getElementById('post-action-container').classList.add('visible');
+      document.getElementById('let-go-btn').classList.add('hidden');
+      
+      const goldSvg = document.getElementById('gold-underlay-svg');
+      if (goldSvg) {
+        goldSvg.style.display = 'none';
+      }
+      
+      const finalMessage = document.getElementById('final-message');
+      if (finalMessage) {
+        finalMessage.classList.remove('visible');
+        finalMessage.innerHTML = '';
+      }
+
+      editCount = 5; // Allow styling adjustments immediately
+
+      vesselData.fragments.forEach((savedFrag) => {
+        const f = fragments.find(frag => frag.id === savedFrag.id);
+        if (f) {
+          f.x = savedFrag.x;
+          f.y = savedFrag.y;
+          f.rot = savedFrag.rot;
+          f.scale = savedFrag.scale;
+          
+          f.targetRot = savedFrag.rot;
+          f.targetScale = savedFrag.scale;
+          
+          f.color = savedFrag.color;
+          f.texture = savedFrag.texture;
+          
+          // Re-apply path if shape varies
+          if (savedFrag.path) {
+            f.path = savedFrag.path;
+            f.pathElement.setAttribute("d", f.path);
+            f.textureOverlay.setAttribute("d", f.path);
+            f.clipPathElem.setAttribute("d", f.path);
+            if (f.glowPath) f.glowPath.setAttribute("d", f.path);
+            if (f.corePath) f.corePath.setAttribute("d", f.path);
+          }
+
+          f.pathElement.setAttribute("fill", f.color);
+          
+          if (f.texture === 'none') {
+            f.textureOverlay.setAttribute("fill", "none");
+          } else {
+            f.textureOverlay.setAttribute("fill", `url(#${f.texture})`);
+          }
+          
+          // Draw internal features
+          drawFeatures(f, f.clippedGroup, "http://www.w3.org/2000/svg");
+          
+          f.startX = f.x;
+          f.startY = f.y;
+          f.startRot = f.rot;
+          f.tensionDirX = 0;
+          f.tensionDirY = 0;
+        }
+      });
+      
+      deselectFragment();
+    }
+
+    // Open Gallery Handler
+    if (galleryBtn) {
+      galleryBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof playClink === 'function') playClink();
+        galleryOverlay.classList.add('visible');
+        loadGalleryItems();
+      });
+    }
+
+    // Escape Key Handler for Overlays
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (publishModal && publishModal.classList.contains('visible')) {
+          if (typeof playClink === 'function') playClink();
+          publishModal.classList.remove('visible');
+        }
+        if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
+          if (typeof playClink === 'function') playClink();
+          galleryOverlay.classList.remove('visible');
+        }
+      }
     });
 
 
 
     // Start loop
     animate();
+
+    // About Overlay Interaction
+    const aboutBtn = document.getElementById('about-btn');
+    const aboutOverlay = document.getElementById('about-overlay');
+    const aboutCloseBtn = document.getElementById('about-close-btn');
+
+    if (aboutBtn && aboutOverlay && aboutCloseBtn) {
+      aboutBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof playClink === 'function') playClink();
+        aboutOverlay.classList.add('visible');
+      });
+
+      aboutCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof playClink === 'function') playClink();
+        aboutOverlay.classList.remove('visible');
+      });
+      
+      // Close overlay on Escape key press
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
+          if (typeof playClink === 'function') playClink();
+          aboutOverlay.classList.remove('visible');
+        }
+      });
+    }
+

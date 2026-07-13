@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=4.7">
   <link rel="icon" href="data:,">
 </head>
@@ -24,13 +25,13 @@
     <div class="prologue-content">
       <div id="prologue-logo" class="logo-container">
         <svg class="site-logo-svg" width="180" height="50" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="20" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="300" fill="currentColor">Imperfection</text>
-          <text x="40" y="38" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="300" fill="currentColor">Vessel</text>
-          <g transform="translate(125, 8)">
-            <polygon points="0,0 24,0 12,18" fill="currentColor" />
-            <polygon points="24,0 48,0 36,18" fill="currentColor" />
-            <polygon points="24,20 24,26 42,26" fill="currentColor" />
-            <polygon points="18,32 30,32 24,38" fill="currentColor" />
+          <text x="0" y="20" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16" font-weight="400" fill="currentColor">Imperfection</text>
+          <text x="40" y="38" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16" font-weight="400" fill="currentColor">Vessel</text>
+          <g transform="translate(125, 8) scale(0.5)">
+            <polygon points="0,0 48,0 24,24" fill="currentColor" />
+            <polygon points="50,0 98,0 74,24" fill="currentColor" />
+            <polygon points="50,29 50,43 81,36" fill="currentColor" />
+            <polygon points="42,55 63,55 52.5,66" fill="currentColor" />
           </g>
         </svg>
       </div>
@@ -48,7 +49,13 @@
 
   <!-- Persistent Site Logo -->
   <div id="site-logo" class="logo-container position-left">
-    <img src="logo.jpg" alt="Logo" class="site-logo-img">
+    <img src="logo.svg" alt="Logo" class="site-logo-img">
+  </div>
+
+  <!-- Navigation Group -->
+  <div class="header-nav-group">
+    <button id="gallery-btn" class="action-btn header-nav-btn" data-text="GALLERY">GALLERY</button>
+    <button id="about-btn" class="action-btn header-nav-btn" data-text="ABOUT">ABOUT</button>
   </div>
 
 
@@ -184,8 +191,94 @@
     <button id="try-again-btn" class="action-btn" data-text="TRY AGAIN">TRY AGAIN</button>
     <button id="change-shape-btn" class="action-btn" data-text="CHANGE SHAPE">CHANGE SHAPE</button>
     <button id="free-arrange-btn" class="action-btn" data-text="REARRANGE">REARRANGE</button>
+    <button id="publish-btn" class="action-btn" data-text="PUBLISH">PUBLISH</button>
     <button id="save-btn" class="action-btn" data-text="SAVE (PNG)">SAVE (PNG)</button>
   </div>
+
+  <!-- About Page Overlay -->
+  <div id="about-overlay">
+    <div class="about-nav">
+      <button id="about-close-btn" class="action-btn" data-text="CLOSE">CLOSE</button>
+    </div>
+    
+    <div class="about-container">
+      <!-- Premium Visual Element: Logo -->
+      <div class="about-visual">
+        <img src="logo.svg" alt="Logo" class="about-logo-img">
+      </div>
+
+      <h1 class="about-title">Imperfect Vessel</h1>
+      <p class="about-subtitle">A digital meditation on wabi-sabi and the beauty of healing.</p>
+      
+      <div class="about-grid">
+        <div class="about-col">
+          <div class="about-label">01 / PHILOSOPHY</div>
+          <h3>Wabi-Sabi & Kintsugi</h3>
+          <p>This project is inspired by the traditional Japanese aesthetics of finding beauty in imperfection, impermanence, and simplicity. Through kintsugi, broken pottery is repaired with gold lacquer—treating breakage and repair as part of the object's history, rather than something to disguise.</p>
+        </div>
+        
+        <div class="about-col">
+          <div class="about-label">02 / EXPERIMENT</div>
+          <h3>Digital Fracture</h3>
+          <p>Fragments are procedurally generated and suspended in an anti-gravity field. By dragging, rotating, and scaling the ceramic shards, you participate in the restoration process. Once released, the shards reassemble, sealing the seams with gold leaf underlays and ambient soundscapes.</p>
+        </div>
+        
+        <div class="about-col">
+          <div class="about-label">03 / THE MAKER</div>
+          <h3>Sole Creator</h3>
+          <p>Conceptualized, designed, and developed entirely by a single creator. Focused on merging interactive physics, generative aesthetics, and meditative soundscapes into a tactile browser experience.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gallery Overlay -->
+  <div id="gallery-overlay">
+    <div class="gallery-nav">
+      <div class="gallery-filters">
+        <button id="gallery-filter-new" class="filter-btn active" data-text="NEWEST">NEWEST</button>
+        <button id="gallery-filter-popular" class="filter-btn" data-text="MOST LIKED">MOST LIKED</button>
+      </div>
+      <button id="gallery-close-btn" class="action-btn" data-text="CLOSE">CLOSE</button>
+    </div>
+    
+    <div class="gallery-container">
+      <h1 class="gallery-title">Gallery of Flaws</h1>
+      <p class="gallery-subtitle">A collection of mended vessels, celebrated for their breaks.</p>
+      
+      <div id="gallery-grid" class="gallery-grid">
+        <!-- Dynamically loaded cards -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Publish Ritual Overlay -->
+  <div id="ritual-overlay">
+    <div class="ritual-message">Your vessel has found a home.</div>
+  </div>
+
+  <!-- Publish Modal -->
+  <div id="publish-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2 class="modal-title">Publish to Gallery</h2>
+      <p class="modal-subtitle">Share your unique configuration with the world.</p>
+      
+      <div class="modal-form-group">
+        <label for="publish-art-title">ARTWORK TITLE</label>
+        <input type="text" id="publish-art-title" autocomplete="off" placeholder="e.g. Portrait of a Shattered Woman">
+      </div>
+      <div class="modal-form-group">
+        <label for="publish-creator-name">CREATOR NAME</label>
+        <input type="text" id="publish-creator-name" autocomplete="off" placeholder="e.g. Anonymous">
+      </div>
+      
+      <div class="modal-actions">
+        <button id="publish-cancel-btn" class="action-btn" data-text="CANCEL">CANCEL</button>
+        <button id="publish-submit-btn" class="action-btn primary-btn" data-text="PUBLISH">PUBLISH</button>
+      </div>
+    </div>
+  </div>
+
   <script src="script.js?v=4.1"></script>
 </body>
 
