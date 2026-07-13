@@ -1411,6 +1411,10 @@
       background: var(--text-color);
       color: var(--bg-color);
     }
+    .modal-actions button.primary-btn::before,
+    .modal-actions button.primary-btn::after {
+      color: var(--bg-color) !important;
+    }
 
     .modal-actions button.primary-btn:hover {
       background: #4a4844;
