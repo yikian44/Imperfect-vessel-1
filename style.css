@@ -885,6 +885,7 @@
       max-height: 500px;
       object-fit: contain;
       pointer-events: none;
+      mix-blend-mode: multiply;
     }
 
     /* Lama Lama Text Roll-Up Hover Effect for Buttons */
