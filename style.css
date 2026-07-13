@@ -256,8 +256,8 @@
 
     /* Navigation Dock (Awwwards Style) */
     #site-logo.nav-dock-container {
-      position: absolute;
-      top: 40px;
+      position: fixed;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -273,7 +273,7 @@
 
     @media (max-width: 768px) {
       #site-logo.nav-dock-container {
-        top: 24px;
+        bottom: 24px;
         transform: translateX(-50%) scale(0.9);
       }
     }
@@ -634,8 +634,8 @@
     }
 
     #post-action-container {
-      position: absolute;
-      bottom: 40px;
+      position: fixed;
+      bottom: 104px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -654,6 +654,12 @@
       opacity: 1;
       pointer-events: auto;
       visibility: visible;
+    }
+
+    @media (max-width: 768px) {
+      #post-action-container {
+        bottom: 84px;
+      }
     }
 
     .action-btn {
