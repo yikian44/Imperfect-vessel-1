@@ -277,15 +277,20 @@
       }
     }
 
-    /* Header Nav Group placement */
+    /* Header Nav Group placement (Awwwards Style Capsule Dock) */
     .header-nav-group {
       position: absolute;
       top: 40px;
       right: 40px;
       z-index: 99;
       display: flex;
-      gap: 16px;
+      gap: 4px;
       align-items: center;
+      background: #1e1d1a; /* dark charcoal */
+      padding: 5px;
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1);
     }
     
@@ -463,17 +468,23 @@
       font-weight: 500;
       letter-spacing: 2px;
       border-radius: 20px;
-      border: 1px solid var(--text-color);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      background: var(--text-color);
-      color: #fff;
+      background: #1e1d1a; /* dark charcoal */
+      color: #e8e6e1;
       transition: all 0.3s ease;
       forced-color-adjust: none;
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
+    }
+    
+    #done-arrange-btn:hover {
+      background: #e8e6e1;
+      color: #1e1d1a;
+      border-color: rgba(255, 255, 255, 0.15);
     }
     
 
@@ -515,24 +526,25 @@
     /* Let Go Button */
     #let-go-btn {
       position: absolute;
-      bottom: 50px;
-      right: 50px;
-      padding: 16px 32px;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--panel-border);
-      color: var(--text-color);
-      font-size: 12px;
+      bottom: 40px;
+      right: 40px;
+      padding: 12px 28px;
+      background: #1e1d1a; /* dark charcoal */
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e8e6e1;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       border-radius: 30px;
-      transition: all 0.5s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 10;
     }
 
     #let-go-btn:hover {
-      background: rgba(255, 255, 255, 0.7);
+      background: #e8e6e1;
+      color: #1e1d1a;
+      transform: translateY(-2px);
     }
 
     #let-go-btn.hidden {
@@ -665,12 +677,10 @@
     }
 
     .action-btn {
-      padding: 8px 24px;
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--panel-border);
-      color: var(--text-color);
+      padding: 10px 24px;
+      background: #1e1d1a; /* dark charcoal */
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e8e6e1;
       font-size: 11px;
       font-weight: 500;
       letter-spacing: 2px;
@@ -679,10 +689,13 @@
       forced-color-adjust: none;
       -webkit-print-color-adjust: exact;
       color-adjust: exact;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     }
 
     .action-btn:hover {
-      background: rgba(255, 255, 255, 0.8);
+      background: #e8e6e1;
+      color: #1e1d1a;
+      transform: translateY(-2px);
     }
 
     .tracing-path {
@@ -987,8 +1000,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-color);
-      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1);
+      color: #e8e6e1; /* cream text */
+      transition: transform 0.4s cubic-bezier(0.8, 0, 0.2, 1), color 0.4s ease;
     }
 
     .action-btn:not(.icon-btn)::after, #let-go-btn::after, .texture-btn::after {
@@ -997,10 +1010,12 @@
 
     .action-btn:not(.icon-btn):hover::before, #let-go-btn:hover::before, .texture-btn:hover::before {
       transform: translateY(-100%);
+      color: #1e1d1a; /* dark text on hover */
     }
 
-    .action-btn:not(.icon-btn)::hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
+    .action-btn:not(.icon-btn):hover::after, #let-go-btn:hover::after, .texture-btn:hover::after {
       transform: translateY(0);
+      color: #1e1d1a; /* dark text on hover */
     }
 
     /* Circular Icon Buttons */
@@ -1565,6 +1580,29 @@
 
     .modal-actions button.primary-btn:hover {
       background: #4a4844;
+    }
+
+    /* Modal Cancel button overrides to look light and clean */
+    .modal-actions .action-btn:not(.primary-btn) {
+      background: transparent;
+      border: 1px solid rgba(90, 88, 84, 0.2);
+      color: var(--text-color);
+      box-shadow: none;
+    }
+    
+    .modal-actions .action-btn:not(.primary-btn)::before,
+    .modal-actions .action-btn:not(.primary-btn)::after {
+      color: var(--text-color) !important;
+    }
+
+    .modal-actions .action-btn:not(.primary-btn):hover {
+      background: rgba(90, 88, 84, 0.05);
+      color: var(--text-color);
+    }
+
+    .modal-actions .action-btn:not(.primary-btn):hover::before,
+    .modal-actions .action-btn:not(.primary-btn):hover::after {
+      color: var(--text-color) !important;
     }
 
     @media (max-width: 768px) {
