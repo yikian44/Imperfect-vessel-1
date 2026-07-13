@@ -885,6 +885,7 @@
       max-height: 500px;
       object-fit: contain;
       pointer-events: none;
+      filter: brightness(1.25) contrast(1.2);
       mix-blend-mode: multiply;
     }
 
