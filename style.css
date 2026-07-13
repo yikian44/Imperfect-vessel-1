@@ -254,99 +254,48 @@
       opacity: 1;
     }
 
-    /* Navigation Dock (Awwwards Style) */
-    #site-logo.nav-dock-container {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      background: #1e1d1a; /* dark charcoal */
-      padding: 5px;
-      border-radius: 10px;
-      z-index: 99;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.5s ease;
+    /* Persistent Site Logo (Top-left) */
+    #site-logo.position-left {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      z-index: 10;
+    }
+
+    .site-logo-img {
+      height: 36px;
+      width: auto;
+      display: block;
     }
 
     @media (max-width: 768px) {
-      #site-logo.nav-dock-container {
-        bottom: 24px;
-        transform: translateX(-50%) scale(0.9);
+      #site-logo.position-left {
+        top: 24px;
+        left: 24px;
+        transform: scale(0.85);
+        transform-origin: top left;
       }
     }
 
-    /* Logo Block inside Dock */
-    .nav-dock-logo {
-      width: 38px;
-      height: 38px;
-      background: #121110;
-      border-radius: 6px;
+    /* Header Nav Group placement */
+    .header-nav-group {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      z-index: 99;
       display: flex;
+      gap: 16px;
       align-items: center;
-      justify-content: center;
-      margin-right: 6px;
+      transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1);
     }
-
-    .dock-logo-img {
-      height: 24px;
-      width: auto;
-      filter: invert(1) brightness(1.2);
-    }
-
-    /* Tabs Group */
-    .nav-dock-tabs {
-      display: flex;
-      gap: 4px;
-      margin-right: 6px;
-    }
-
-    /* Base button inside Dock */
-    .dock-btn {
-      height: 38px;
-      padding: 0 20px;
-      border-radius: 6px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Middle Tab Button */
-    .dock-btn.tab-btn {
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: rgba(232, 230, 225, 0.7);
-    }
-
-    .dock-btn.tab-btn:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.15);
-      color: #e8e6e1;
-      transform: translateY(-2px);
-    }
-
-    /* Right Highlight Button */
-    .dock-btn.primary-dock-btn {
-      background: #e8e6e1;
-      color: #1e1d1a;
-      border: 1px solid transparent;
-    }
-
-    .dock-btn.primary-dock-btn:hover {
-      background: #1e1d1a;
-      color: #e8e6e1;
-      border-color: rgba(255, 255, 255, 0.15);
-      transform: translateY(-2px);
+    
+    @media (max-width: 768px) {
+      .header-nav-group {
+        top: 24px;
+        right: 24px;
+        transform: scale(0.85);
+        transform-origin: top right;
+      }
     }
 
     /* UI Panel */
@@ -635,7 +584,7 @@
 
     #post-action-container {
       position: fixed;
-      bottom: 104px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -658,7 +607,7 @@
 
     @media (max-width: 768px) {
       #post-action-container {
-        bottom: 84px;
+        bottom: 24px;
       }
     }
 
