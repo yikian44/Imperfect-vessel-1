@@ -1053,6 +1053,10 @@
       frag.element.classList.add('selected');
       uiPanel.classList.add('visible');
       
+      if (!isFreeArrange) {
+        letGoBtn.classList.add('hidden');
+      }
+      
       document.getElementById('style-menu-container').style.display = '';
       if (isFreeArrange && window.innerWidth < 768) {
         document.getElementById('style-menu-content').style.display = 'none';
@@ -1084,6 +1088,10 @@
         uiPanel.classList.remove('visible');
       }
       document.body.classList.remove('has-selected');
+
+      if (!isFreeArrange && !isSettling) {
+        letGoBtn.classList.remove('hidden');
+      }
     }
 
     function applyColor(color) {
@@ -1346,6 +1354,10 @@
         } else {
           // Assembling State ("Let Go")
           if (isFreeArrange || isCustomArranged) {
+            if (f.isDragging && typeof f.targetDragX !== 'undefined') {
+              f.x += (f.targetDragX - f.x) * 0.15;
+              f.y += (f.targetDragY - f.y) * 0.15;
+            }
             f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
             return;
           }
@@ -1449,6 +1461,14 @@
       returningFragment = null;
       letGoBtn.classList.add('hidden');
 
+      // Hide gallery and about buttons
+      const headerNavGroup = document.querySelector('.header-nav-group');
+      if (headerNavGroup) {
+        headerNavGroup.style.transitionDelay = '0s'; // immediate hide
+        headerNavGroup.style.opacity = '0';
+        headerNavGroup.style.pointerEvents = 'none';
+      }
+
       // "Sigh" effect: outward push before settling
       fragments.forEach(f => {
         // Clear manual target tracking to allow smooth assembling
@@ -1523,8 +1543,19 @@
       finalMessage.innerHTML = `${text}<br><span style="font-size: 0.6em; opacity: 0.7; display: block; margin-top: 10px; font-weight: normal; font-style: italic;">${quote}</span>`;
       finalMessage.classList.add('visible');
       const pac = document.getElementById('post-action-container');
-      pac.style.display = 'flex';
-      pac.classList.add('visible');
+      if (pac) {
+        pac.style.transitionDelay = '0s'; // immediate show
+        pac.style.display = 'flex';
+        pac.classList.add('visible');
+      }
+
+      // Re-show gallery and about buttons immediately with quotes (0s delay)
+      const headerNavGroup = document.querySelector('.header-nav-group');
+      if (headerNavGroup) {
+        headerNavGroup.style.transitionDelay = '0s'; // immediate show
+        headerNavGroup.style.opacity = '';
+        headerNavGroup.style.pointerEvents = '';
+      }
     }
 
     document.getElementById('try-again-btn').addEventListener('click', () => {
@@ -1556,6 +1587,14 @@
       pac.style.transitionDuration = '';
       document.getElementById('free-arrange-btn').style.display = '';
       letGoBtn.classList.remove('hidden');
+
+      // Show gallery and about buttons
+      const headerNavGroup = document.querySelector('.header-nav-group');
+      if (headerNavGroup) {
+        headerNavGroup.style.transitionDelay = '';
+        headerNavGroup.style.opacity = '';
+        headerNavGroup.style.pointerEvents = '';
+      }
 
       if (droneGain && audioCtx) {
         droneGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1);
@@ -1666,6 +1705,7 @@
     document.getElementById('change-shape-btn').addEventListener('click', () => {
       isFreeArrange = false;
       isCustomArranged = false;
+      document.body.classList.remove('kintsugi');
       document.getElementById('free-arrange-btn').style.display = '';
       document.getElementById('arrange-tools').style.display = 'none';
       const goldSvg = document.getElementById('gold-underlay-svg');
@@ -1674,8 +1714,13 @@
         goldSvg.style.transition = 'none';
         goldSvg.style.opacity = '0';
       }
-      // Regenerate the paths and face pattern
-      pieces = generatePieces();
+
+      // Regenerate the paths and face pattern safely (matching fragments count)
+      let newPieces = [];
+      do {
+        newPieces = generatePieces();
+      } while (newPieces.length !== fragments.length);
+      pieces = newPieces;
       updateGoldUnderlay(pieces);
       
       const skinPalette = ['#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92', '#d95b27'];
@@ -1714,12 +1759,20 @@
           f.corePath.getAnimations().forEach(a => a.cancel());
         }
         
+        // Instant update to new target coordinates (remain assembled)
+        const gapScale = 0.03;
+        f.x = f.basex + f.cx * gapScale;
+        f.y = f.basey + f.cy * gapScale;
+        f.rot = f.baseRot;
+        f.scale = 1;
+
         // Imperfections disabled to prevent overlapping
         f.impX = 0;
         f.impY = 0;
         f.impRot = 0;
         f.targetRot = undefined;
         f.isDragging = false;
+        f.hasMoved = false;
         
         // Semantic Coloring based on type
         if (piece.type === 'eye') {
@@ -1749,8 +1802,21 @@
         f.targetRot = f.rot;
       });
 
-      document.getElementById('post-action-container').style.display = 'none';
+      const pac = document.getElementById('post-action-container');
+      if (pac) {
+        pac.style.transitionDelay = '0s'; // immediate hide
+        pac.classList.remove('visible');
+      }
       document.getElementById('arrange-tools').style.display = 'block';
+
+      // Hide gallery and about buttons when entering rearrange
+      const headerNavGroup = document.querySelector('.header-nav-group');
+      if (headerNavGroup) {
+        headerNavGroup.style.transitionDelay = '0s'; // immediate hide
+        headerNavGroup.style.opacity = '0';
+        headerNavGroup.style.pointerEvents = 'none';
+      }
+
       document.getElementById('style-menu-container').style.display = '';
       if (window.innerWidth < 768) {
         document.getElementById('style-menu-content').style.display = 'none';

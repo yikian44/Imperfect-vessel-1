@@ -224,6 +224,10 @@
       opacity: 1;
     }
 
+    body.has-selected #ui-panel {
+      opacity: 1 !important;
+    }
+
     /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
     body.kintsugi .fragment {
       opacity: 0.85;
@@ -707,9 +711,8 @@
     body.is-dragging #ui-panel {
       pointer-events: none !important;
       opacity: 0 !important;
-      transform: translateY(20px) !important;
     }
-    body.is-dragging #let-go-btn {
+    body.is-dragging #let-go-btn:not(.hidden) {
       opacity: 0.1 !important;
       pointer-events: none !important;
     }
