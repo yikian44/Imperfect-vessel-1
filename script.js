@@ -1315,14 +1315,8 @@
       
       centerYOffset += (targetCenterYOffset - centerYOffset) * 0.1;
 
-      if (typeof window.parallaxX === 'undefined') {
-        window.parallaxX = 0;
-        window.parallaxY = 0;
-      }
-      const targetParallaxX = ((hardwareX || window.innerWidth / 2) / window.innerWidth - 0.5) * 6;
-      const targetParallaxY = ((hardwareY || window.innerHeight / 2) / window.innerHeight - 0.5) * 6;
-      window.parallaxX += (targetParallaxX - window.parallaxX) * 0.05;
-      window.parallaxY += (targetParallaxY - window.parallaxY) * 0.05;
+      window.parallaxX = 0;
+      window.parallaxY = 0;
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2 + centerYOffset;
@@ -1576,13 +1570,6 @@
         pac.classList.add('visible');
       }
 
-      // Re-show gallery and about buttons immediately with quotes (0s delay)
-      const headerNavGroup = document.querySelector('.header-nav-group');
-      if (headerNavGroup) {
-        headerNavGroup.style.transitionDelay = '0s'; // immediate show
-        headerNavGroup.style.opacity = '';
-        headerNavGroup.style.pointerEvents = '';
-      }
     }
 
     document.getElementById('try-again-btn').addEventListener('click', () => {

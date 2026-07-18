@@ -326,7 +326,7 @@
       -webkit-backdrop-filter: blur(18px);
       border: 1px solid rgba(255, 255, 255, 0.45);
       border-radius: 24px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+      box-shadow: none;
       max-height: calc(100vh - 180px);
       max-height: calc(100dvh - 180px);
       overflow-y: auto;
@@ -1208,24 +1208,26 @@
 
     /* Shared overlay close button */
     .overlay-close-btn {
-      background: transparent;
+      background: #1e1d1a;
       border: none;
       cursor: pointer;
-      color: var(--text-color);
-      font-size: 18px;
+      color: #e8e6e1;
+      font-size: 14px;
       line-height: 1;
-      padding: 6px;
-      opacity: 0.5;
-      transition: opacity 0.2s ease;
+      opacity: 0.9;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     .overlay-close-btn:hover {
       opacity: 1;
+      background: #000000;
+      transform: scale(1.08);
     }
 
     .about-container {
