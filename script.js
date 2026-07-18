@@ -2677,7 +2677,7 @@
     // Close Gallery
     document.getElementById('gallery-close-btn').addEventListener('click', () => {
       galleryOverlay.classList.remove('visible');
-      document.body.classList.remove('overlay-open');
+      document.documentElement.classList.remove('overlay-open');
     });
 
     // Toggle Filters
@@ -2797,7 +2797,7 @@
           if (galleryOverlay) {
             loadGalleryItems();
             galleryOverlay.classList.add('visible');
-            document.body.classList.add('overlay-open');
+            document.documentElement.classList.add('overlay-open');
           }
           
           // 4. Restore main UI styles behind the scenes
@@ -2963,7 +2963,7 @@
       galleryBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         galleryOverlay.classList.add('visible');
-        document.body.classList.add('overlay-open');
+        document.documentElement.classList.add('overlay-open');
         loadGalleryItems();
       });
     }
@@ -2976,7 +2976,7 @@
         }
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
           galleryOverlay.classList.remove('visible');
-          document.body.classList.remove('overlay-open');
+          document.documentElement.classList.remove('overlay-open');
         }
       }
     });
@@ -2995,20 +2995,20 @@
       aboutBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         aboutOverlay.classList.add('visible');
-        document.body.classList.add('overlay-open');
+        document.documentElement.classList.add('overlay-open');
       });
 
       aboutCloseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         aboutOverlay.classList.remove('visible');
-        document.body.classList.remove('overlay-open');
+        document.documentElement.classList.remove('overlay-open');
       });
       
       // Close overlay on Escape key press
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
           aboutOverlay.classList.remove('visible');
-          document.body.classList.remove('overlay-open');
+          document.documentElement.classList.remove('overlay-open');
         }
       });
     }
