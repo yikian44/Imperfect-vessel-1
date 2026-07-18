@@ -2418,14 +2418,17 @@
           throw new Error("User not authenticated.");
         }
         
+        // Convert Blob to Base64 Data URL to completely bypass Storage CORS issues
+        const reader = new FileReader();
+        const dataUrl = await new Promise((resolve, reject) => {
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+
         const galleryRef = this.dbModule.collection(this.db, "gallery");
         const newDocRef = this.dbModule.doc(galleryRef);
         const vesselId = newDocRef.id;
-
-        // Upload PNG Blob
-        const storageRef = this.storageModule.ref(this.storage, `gallery/${vesselId}.png`);
-        await this.storageModule.uploadBytes(storageRef, blob);
-        const imageUrl = await this.storageModule.getDownloadURL(storageRef);
 
         // Save metadata and coordinates
         const itemData = {
@@ -2436,7 +2439,7 @@
           likes: 0,
           likedBy: [],
           createdAt: new Date().toISOString(),
-          imageUrl: imageUrl,
+          imageUrl: dataUrl,
           vesselData: vesselData
         };
 
