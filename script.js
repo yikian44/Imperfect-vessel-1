@@ -341,6 +341,12 @@
     function playClink() {
       initAudio();
       if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      try {
+        initDrone();
+      } catch(e) {}
       const t = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       osc.type = 'sine';
