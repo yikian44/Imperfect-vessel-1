@@ -203,6 +203,15 @@
       "Wabi-Sabi": [
         '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78'
       ],
+      "Terracotta Sand": [
+        '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b'
+      ],
+      "Indigo & Moss": [
+        '#2b3e50', '#1c3a27', '#5c6b55', '#e3dbcc', '#426375'
+      ],
+      "Picasso Pastel": [
+        '#d9c8c0', '#b8c5b9', '#eae3cf', '#c5bedb', '#3c3c3e'
+      ],
       "Cubist Vibrant": [
         '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3'
       ],
@@ -473,8 +482,15 @@
     let pieces = generatePieces();
     updateGoldUnderlay(pieces);
     
-    // Initial Semantic Colors - Vibrant Picasso Cubist Palette
-    const skinPalette = ['#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92', '#d95b27'];
+    // Initial Semantic Colors - Curated Multi-palette
+    const skinPalette = [
+      '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78',
+      '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b',
+      '#2b3e50', '#1c3a27', '#5c6b55', '#e3dbcc', '#426375',
+      '#d9c8c0', '#b8c5b9', '#eae3cf', '#c5bedb', '#3c3c3e',
+      '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3',
+      '#ffffff', '#888888', '#222222'
+    ];
     const initSkinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
     let initSkinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
     if (initSkinColor === initSkinColor2) initSkinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
@@ -530,7 +546,7 @@
         initialColor = Math.random() > 0.4 ? initSkinColor : initSkinColor2;
       }
       
-      const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
+      const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen'];
       const initialTexture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
       return {
@@ -1623,7 +1639,14 @@
 
 
       
-      const skinPalette = ['#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92', '#d95b27'];
+      const skinPalette = [
+        '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78',
+        '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b',
+        '#2b3e50', '#1c3a27', '#5c6b55', '#e3dbcc', '#426375',
+        '#d9c8c0', '#b8c5b9', '#eae3cf', '#c5bedb', '#3c3c3e',
+        '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3',
+        '#ffffff', '#888888', '#222222'
+      ];
       const skinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
       let skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
       if (skinColor === skinColor2) skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
@@ -1707,7 +1730,7 @@
           f.color = Math.random() > 0.4 ? skinColor : skinColor2;
         }
 
-        const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled'];
+        const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen'];
         f.texture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
         f.pathElement.setAttribute("fill", f.color);
@@ -1744,7 +1767,14 @@
       pieces = newPieces;
       updateGoldUnderlay(pieces);
       
-      const skinPalette = ['#1d70b8', '#3e9c35', '#e8b923', '#c92a2a', '#7c2ac9', '#e05c9f', '#1e9e92', '#d95b27'];
+      const skinPalette = [
+        '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78',
+        '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b',
+        '#2b3e50', '#1c3a27', '#5c6b55', '#e3dbcc', '#426375',
+        '#d9c8c0', '#b8c5b9', '#eae3cf', '#c5bedb', '#3c3c3e',
+        '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3',
+        '#ffffff', '#888888', '#222222'
+      ];
       const skinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
       let skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
       if (skinColor === skinColor2) skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];

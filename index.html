@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=5.8">
+  <link rel="stylesheet" href="style.css?v=5.9">
   <link rel="icon" href="data:,">
 </head>
 
@@ -124,9 +124,24 @@
         <image id="img-grainy" href="" width="256" height="256" />
       </pattern>
 
-      <!-- Speckled Texture -->
-      <pattern id="texture-speckled" width="256" height="256" patternUnits="userSpaceOnUse">
-        <image id="img-speckled" href="" width="256" height="256" />
+      <!-- Cracked Glaze / Ruwen Texture -->
+      <pattern id="texture-cracked" width="60" height="60" patternUnits="userSpaceOnUse">
+        <path d="M 0,10 L 10,25 L 30,30 L 40,15 L 60,20 M 20,40 L 30,55 L 45,50 M 10,25 L 20,40 M 30,30 L 30,55 M 40,15 L 45,50" stroke="rgba(90, 88, 84, 0.22)" stroke-width="0.8" fill="none"/>
+      </pattern>
+
+      <!-- Gold Dust / Maki-e Flakes -->
+      <pattern id="texture-gold-dust" width="64" height="64" patternUnits="userSpaceOnUse">
+        <circle cx="10" cy="15" r="1.5" fill="#d4af37" opacity="0.85"/>
+        <circle cx="28" cy="45" r="1" fill="#e5c158" opacity="0.75"/>
+        <circle cx="50" cy="25" r="2.2" fill="#d4af37" opacity="0.9"/>
+        <circle cx="40" cy="55" r="1.2" fill="#e5c158" opacity="0.8"/>
+        <circle cx="18" cy="35" r="0.8" fill="#d4af37" opacity="0.6"/>
+      </pattern>
+
+      <!-- Woven Linen / Fiber Texture -->
+      <pattern id="texture-linen" width="12" height="12" patternUnits="userSpaceOnUse">
+        <path d="M 0 3 L 12 3 M 0 9 L 12 9" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1"/>
+        <path d="M 3 0 L 3 12 M 9 0 L 9 12" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1"/>
       </pattern>
     </defs>
   </svg>
@@ -161,6 +176,9 @@
             <button class="texture-btn" data-texture="texture-glaze" data-text="Glaze">Glaze</button>
             <button class="texture-btn" data-texture="texture-grainy" data-text="Grainy">Grainy</button>
             <button class="texture-btn" data-texture="texture-speckled" data-text="Speckled">Speckled</button>
+            <button class="texture-btn" data-texture="texture-cracked" data-text="Cracks">Cracks</button>
+            <button class="texture-btn" data-texture="texture-gold-dust" data-text="Gold Dust">Gold Dust</button>
+            <button class="texture-btn" data-texture="texture-linen" data-text="Linen">Linen</button>
           </div>
         </div>
       </div>
