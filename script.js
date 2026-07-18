@@ -1506,37 +1506,37 @@
       if (editCount > 25) {
         text = "Not everything needs to be fixed.";
         quote = pickRandom([
-          "\"There is a crack in everything, that's how the light gets in.\" — Leonard Cohen",
-          "\"Have no fear of perfection - you'll never reach it.\" — Salvador Dali",
-          "\"To improve is to change; to be perfect is to change often.\" — Winston Churchill"
+          "\"Have no fear of perfection — you'll never reach it.\" — Salvador Dalí",
+          "\"The object isn't to make art, it's to be in that wonderful state which makes art inevitable.\" — Robert Henri",
+          "\"Art is never finished, only abandoned.\" — Leonardo da Vinci"
         ]);
       } else if (editCount > 15) {
         text = "You tried to hold everything together.";
         quote = pickRandom([
-          "\"Life is a balance of holding on and letting go.\" — Rumi",
-          "\"Let go of the battle. Breathe quietly and let it be.\" — Jack Kornfield",
-          "\"Sometimes letting things go is an act of far greater power than defending or hanging on.\" — Eckhart Tolle"
+          "\"Creativity is allowing yourself to make mistakes. Design is knowing which ones to keep.\" — Scott Adams",
+          "\"Design is not just what it looks like and feels like. Design is how it works.\" — Steve Jobs",
+          "\"Good design is as little design as possible.\" — Dieter Rams"
         ]);
       } else if (editCount >= 5) {
         text = "You tried, and that is enough.";
         quote = pickRandom([
-          "\"Success is not final, failure is not fatal: it is the courage to continue that counts.\" — Winston Churchill",
-          "\"Do what you can, with what you have, where you are.\" — Theodore Roosevelt",
-          "\"Ever tried. Ever failed. No matter. Try again. Fail again. Fail better.\" — Samuel Beckett"
+          "\"An essential aspect of creativity is not being afraid to fail.\" — Edwin Land",
+          "\"Ever tried. Ever failed. No matter. Try again. Fail again. Fail better.\" — Samuel Beckett",
+          "\"The artist is nothing without the gift, but the gift is nothing without work.\" — Émile Zola"
         ]);
       } else if (editCount > 0) {
         text = "You knew when to stop.";
         quote = pickRandom([
-          "\"He who knows when to stop does not meet with danger.\" — Lao Tzu",
-          "\"Half of knowing what you want is knowing what you must give up before you get it.\" — Sidney Howard",
-          "\"Leave well enough alone.\" — Aesop"
+          "\"Simplicity is the ultimate sophistication.\" — Leonardo da Vinci",
+          "\"Less is more.\" — Ludwig Mies van der Rohe",
+          "\"The details are not the details. They make the design.\" — Charles Eames"
         ]);
       } else {
         text = "Sometimes, it's best to just watch.";
         quote = pickRandom([
-          "\"You can see a lot by just observing.\" — Yogi Berra",
+          "\"To see we must forget the name of the thing we are looking at.\" — Claude Monet",
           "\"The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.\" — Marcel Proust",
-          "\"To look at a thing is very different from seeing a thing.\" — Oscar Wilde"
+          "\"Drawing is the honesty of the art. There is no possibility of cheating.\" — Salvador Dalí"
         ]);
       }
 
