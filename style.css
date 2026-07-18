@@ -1690,9 +1690,9 @@
     /* Publish Ritual Overlay */
     #ritual-overlay {
       position: fixed;
-      top: 50%;
+      bottom: 120px;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       z-index: 50;
       pointer-events: none;
       opacity: 0;

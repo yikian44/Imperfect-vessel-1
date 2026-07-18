@@ -2707,8 +2707,8 @@
               postActionContainer.style.pointerEvents = '';
             }
             if (headerNavGroup) {
-              headerNavGroup.style.opacity = '';
-              headerNavGroup.style.pointerEvents = '';
+              headerNavGroup.style.opacity = '1';
+              headerNavGroup.style.pointerEvents = 'auto';
             }
             if (siteLogo) {
               siteLogo.style.opacity = '';
