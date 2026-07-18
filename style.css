@@ -814,12 +814,19 @@
 
     #gesture-hint {
       position: fixed;
-      bottom: 20px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 20;
+      z-index: 105;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 16px 24px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
     }
 
     .controls-container {
@@ -912,7 +919,7 @@
       }
 
       #gesture-hint {
-        bottom: calc(180px + env(safe-area-inset-bottom));
+        bottom: calc(90px + env(safe-area-inset-bottom));
         top: auto;
       }
       

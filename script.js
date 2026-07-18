@@ -1058,6 +1058,15 @@
         if (isPrologue) return;
         if (isSettling && !isFreeArrange) return;
 
+        // Instantly fade out gesture hint on interaction
+        const gestureHint = document.getElementById('gesture-hint');
+        if (gestureHint && gestureHint.style.opacity !== '0') {
+          gestureHint.style.opacity = '0';
+          setTimeout(() => {
+            if (gestureHint.style.opacity === '0') gestureHint.style.display = 'none';
+          }, 800);
+        }
+
         playClink();
         selectFragment(frag);
 
@@ -1996,6 +2005,10 @@
       const gestureHint = document.getElementById('gesture-hint');
       if (gestureHint) {
         gestureHint.style.display = 'block';
+        // Force browser to register display: block before setting opacity
+        void gestureHint.offsetWidth;
+        gestureHint.style.opacity = '1';
+        
         const isMobile = window.innerWidth < 768;
         if (isMobile) {
           gestureHint.innerHTML = `
@@ -2038,6 +2051,15 @@
             </div>
           `;
         }
+
+        // Auto fade out after 4.5 seconds
+        if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
+        window.gestureHintTimer = setTimeout(() => {
+          gestureHint.style.opacity = '0';
+          setTimeout(() => {
+            if (gestureHint.style.opacity === '0') gestureHint.style.display = 'none';
+          }, 800);
+        }, 4500);
       }
       
       const goldSvg = document.getElementById('gold-underlay-svg');
