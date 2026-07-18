@@ -311,7 +311,7 @@
       position: absolute;
       top: 140px; /* Shifted down to clear the logo at top 56px */
       left: 56px;
-      padding: 16px 20px; /* Reduced by 10-15% padding for slimmer look */
+      padding: 18px 20px; /* Slim, breathing padding */
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -327,8 +327,20 @@
       border: 1px solid rgba(255, 255, 255, 0.45);
       border-radius: 24px;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
-      max-height: calc(100vh - 200px);
-      max-height: calc(100dvh - 200px);
+      max-height: calc(100vh - 180px);
+      max-height: calc(100dvh - 180px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(90, 88, 84, 0.15) transparent;
+    }
+
+    #ui-panel::-webkit-scrollbar {
+      width: 4px;
+    }
+    #ui-panel::-webkit-scrollbar-thumb {
+      background: rgba(90, 88, 84, 0.15);
+      border-radius: 2px;
     }
 
     #ui-panel.visible {
@@ -344,7 +356,7 @@
       font-weight: 500;
       text-transform: uppercase;
       color: #888681;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
     }
 
     #texture-section {
@@ -396,7 +408,7 @@
       #color-options {
         flex-direction: column;
         overflow: visible;
-        gap: 16px;
+        gap: 12px;
       }
       #texture-options {
         display: grid !important;
