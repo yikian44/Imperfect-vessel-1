@@ -721,7 +721,7 @@
     /* Base button inside Dock */
     .dock-btn {
       height: 38px;
-      padding: 0 20px;
+      padding: 0 16px;
       border-radius: 6px;
       font-family: 'Space Grotesk', sans-serif;
       font-size: 11px;
@@ -732,8 +732,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      gap: 6px;
       box-sizing: border-box;
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-icon {
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .btn-label {
+      display: inline;
     }
 
     /* Middle Tab Button */
@@ -992,26 +1002,26 @@
       #post-action-container {
         flex-direction: row;
         flex-wrap: nowrap;
-        justify-content: flex-start;
-        bottom: calc(24px + env(safe-area-inset-bottom));
-        width: 92%;
+        justify-content: center;
+        bottom: calc(20px + env(safe-area-inset-bottom));
+        width: auto;
         gap: 6px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 5px;
-        /* hide scrollbar visually */
-        scrollbar-width: none;
+        padding: 6px;
       }
-      #post-action-container::-webkit-scrollbar {
+      /* Icon-only buttons on mobile */
+      #post-action-container .btn-label {
         display: none;
       }
-      .action-btn {
-        width: auto;
-        padding: 8px 12px;
-        font-size: 9.5px;
-        flex: 0 0 auto;
-        text-align: center;
-        white-space: nowrap;
+      #post-action-container .dock-btn {
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border-radius: 8px;
+        flex: 0 0 42px;
+      }
+      #post-action-container .btn-icon {
+        width: 17px;
+        height: 17px;
       }
       .prologue-quote {
         font-size: 12px;
