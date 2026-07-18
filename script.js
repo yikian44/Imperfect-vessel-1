@@ -1401,7 +1401,7 @@
     function updateCursor() {
       if (returningFragment) {
         const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
+        const centerY = window.innerHeight / 2 + (centerYOffset || 0);
         cursorX = centerX + returningFragment.x + returningFragment.dragOffsetX;
         cursorY = centerY + returningFragment.y + returningFragment.dragOffsetY;
       } else if (!fragments.some(f => f.isDragging)) {
@@ -2731,13 +2731,13 @@
 
     // Fetch and Render Gallery items
     async function loadGalleryItems() {
-      galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">Loading gallery...</div>`;
+      galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">Loading community...</div>`;
       try {
         const items = await dbService.fetchGallery(currentFilter);
         galleryGrid.innerHTML = "";
         
         if (items.length === 0) {
-          galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">The gallery is currently empty. Be the first to publish!</div>`;
+          galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">The community is currently empty. Be the first to publish!</div>`;
           return;
         }
 
@@ -2774,7 +2774,7 @@
 
       } catch (err) {
         console.error("Failed to load gallery items:", err);
-        galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px; color: red;">Failed to load gallery cards.</div>`;
+        galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px; color: red;">Failed to load community cards.</div>`;
       }
     }
 
