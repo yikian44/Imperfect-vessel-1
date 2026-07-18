@@ -561,7 +561,7 @@
         initialColor = Math.random() > 0.4 ? initSkinColor : initSkinColor2;
       }
       
-      const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen'];
+      const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen', 'texture-scales', 'texture-ripple'];
       const initialTexture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
       return {
@@ -1839,7 +1839,7 @@
           f.color = Math.random() > 0.4 ? skinColor : skinColor2;
         }
 
-        const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen'];
+        const texturesList = ['none', 'texture-matte', 'texture-glaze', 'texture-grainy', 'texture-speckled', 'texture-cracked', 'texture-gold-dust', 'texture-linen', 'texture-scales', 'texture-ripple'];
         f.texture = texturesList[Math.floor(Math.random() * texturesList.length)];
 
         f.pathElement.setAttribute("fill", f.color);

@@ -482,6 +482,8 @@
     .texture-btn:nth-child(7) { transform: rotate(1.2deg) translateY(2px); border-radius: 12px 16px 10px 14px; }
     .texture-btn:nth-child(8) { transform: rotate(-0.8deg) translateX(-2px); border-radius: 14px 10px 16px 12px; }
     .texture-btn:nth-child(9) { transform: rotate(1deg) translateY(-1px); border-radius: 10px 14px 12px 16px; }
+    .texture-btn:nth-child(10) { transform: rotate(-1.5deg) translateY(1px); border-radius: 16px 12px 14px 10px; }
+    .texture-btn:nth-child(11) { transform: rotate(0.8deg) translateX(2px); border-radius: 12px 14px 10px 16px; }
 
     .texture-btn:hover {
       background: rgba(255, 255, 255, 0.95);
