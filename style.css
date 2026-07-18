@@ -980,9 +980,11 @@
         padding: 14px 28px;
         font-size: 13px;
         letter-spacing: 3px;
-        background: rgba(255, 255, 255, 0.85);
-        color: var(--bg-color);
-        border: none;
+        background: #1e1d1a;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
       }
       #let-go-btn:hover {
         transform: translateX(50%) translateY(-2px);
@@ -1009,7 +1011,7 @@
         font-size: clamp(1.5rem, 8vw, 3rem);
       }
       #final-message {
-        bottom: 120px;
+        bottom: 175px;
         font-size: 14px;
         width: 100%;
       }
