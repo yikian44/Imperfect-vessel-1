@@ -739,7 +739,7 @@
 
     .btn-icon {
       flex-shrink: 0;
-      display: block;
+      display: none;
     }
 
     .btn-label {
@@ -1082,6 +1082,7 @@
         flex: 0 0 48px;
       }
       #post-action-container .btn-icon {
+        display: block !important;
         width: 20px;
         height: 20px;
       }
