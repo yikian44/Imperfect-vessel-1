@@ -2308,12 +2308,13 @@
     // Firebase & Mock Service Layer for Gallery of Flaws
     // -------------------------------------------------------------
     const FIREBASE_CONFIG = {
-      apiKey: "",
-      authDomain: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: "",
-      appId: ""
+      apiKey: "AIzaSyBz1sS-xPhk5w141qI9jk4_oiFqIDCUz88",
+      authDomain: "imperfect-vessel.firebaseapp.com",
+      projectId: "imperfect-vessel",
+      storageBucket: "imperfect-vessel.firebasestorage.app",
+      messagingSenderId: "663544579803",
+      appId: "1:663544579803:web:be1503f41176b1cc372efe",
+      measurementId: "G-RVMPLEP4VP"
     };
 
     class MockDBService {
