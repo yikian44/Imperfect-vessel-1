@@ -977,32 +977,41 @@
         bottom: calc(50px + env(safe-area-inset-bottom));
         right: 50%;
         transform: translateX(50%);
-        padding: 14px 28px;
-        font-size: 13px;
+        padding: 12px 32px;
+        font-size: 11px;
         letter-spacing: 3px;
         background: #1e1d1a;
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e8e6e1;
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 30px;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
       }
       #let-go-btn:hover {
         transform: translateX(50%) translateY(-2px);
       }
       #post-action-container {
         flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        bottom: calc(30px + env(safe-area-inset-bottom));
-        width: 90%;
-        gap: 10px;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        bottom: calc(24px + env(safe-area-inset-bottom));
+        width: 92%;
+        gap: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px;
+        /* hide scrollbar visually */
+        scrollbar-width: none;
+      }
+      #post-action-container::-webkit-scrollbar {
+        display: none;
       }
       .action-btn {
         width: auto;
-        padding: 10px 16px;
-        font-size: 10px;
-        flex: 1 1 40%;
+        padding: 8px 12px;
+        font-size: 9.5px;
+        flex: 0 0 auto;
         text-align: center;
+        white-space: nowrap;
       }
       .prologue-quote {
         font-size: 12px;
@@ -1011,7 +1020,7 @@
         font-size: clamp(1.5rem, 8vw, 3rem);
       }
       #final-message {
-        bottom: 175px;
+        bottom: 130px;
         font-size: 14px;
         width: 100%;
       }
