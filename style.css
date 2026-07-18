@@ -861,8 +861,10 @@
     /* Mobile Responsive Adjustments */
     @media (max-width: 768px) {
       #loader-video {
-        max-height: 100%;
-        max-width: 100%;
+        width: 100%;
+        height: auto;
+        max-height: 60dvh;
+        object-fit: contain;
       }
       #custom-cursor {
         display: none !important;
@@ -1022,8 +1024,9 @@
     #ll-loader {
       position: fixed;
       inset: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1039,7 +1042,7 @@
 
     #loader-video {
       width: 100%;
-      height: 100%;
+      height: auto;
       max-width: 900px; /* limit size on desktop so it looks crisp */
       max-height: 500px;
       object-fit: contain;
