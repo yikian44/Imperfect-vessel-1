@@ -368,7 +368,7 @@
       };
 
       // 2. Generate randomized Picasso face archetypes
-      const styleType = Math.floor(Math.random() * 4);
+      const styleType = Math.floor(Math.random() * 7);
       let scaleX = 1.0;
       let scaleY = 1.0;
       
@@ -378,6 +378,21 @@
       } else if (styleType === 2) { 
         // Type 2: Elongated & Narrow
         scaleX = 0.7; scaleY = 1.15;
+      } else if (styleType === 4) {
+        // Type 4: Heart / Wide top, narrow chin
+        v.TL.x -= 30; v.TR.x += 30;
+        v.BL.x += 20; v.BR.x -= 20;
+      } else if (styleType === 5) {
+        // Type 5: Diamond / Wide cheeks, narrow forehead and chin
+        v.FL.x -= 40; v.FR.x += 40;
+        v.EL.x -= 50; v.ER.x += 50;
+        v.TL.x += 20; v.TR.x -= 20;
+        v.BL.x += 15; v.BR.x -= 15;
+      } else if (styleType === 6) {
+        // Type 6: Heavy Jaw / Narrow forehead, wide bottom jaw
+        v.TL.x += 30; v.TR.x -= 30;
+        v.BL.x -= 40; v.BR.x += 40;
+        v.ML.x -= 30; v.MR.x += 30;
       }
 
       // Apply modifiers and dramatic random jitter
@@ -607,7 +622,7 @@
       frag.featureSvgString = ""; 
 
       if (frag.type === 'eye') {
-        const eyeStyle = Math.floor(Math.random() * 4);
+        const eyeStyle = Math.floor(Math.random() * 6);
         if (eyeStyle === 0) {
           // Style 0: Original slanted line with off-center pupil
           const pupil = document.createElementNS(svgNS, "circle");
@@ -671,7 +686,7 @@
 
           frag.featureSvgString = `<path d="M ${frag.cx - 30} ${frag.cy} Q ${frag.cx} ${frag.cy - 25} ${frag.cx + 30} ${frag.cy} Q ${frag.cx} ${frag.cy + 25} ${frag.cx - 30} ${frag.cy}" stroke="#111111" stroke-width="5" fill="none" />
                                    <circle cx="${frag.cx}" cy="${frag.cy}" r="10" fill="#111111" />`;
-        } else {
+        } else if (eyeStyle === 3) {
           // Style 3: Closed eye arc with lashes
           const arc = document.createElementNS(svgNS, "path");
           arc.setAttribute("d", `M ${frag.cx - 25} ${frag.cy - 5} Q ${frag.cx} ${frag.cy + 15} ${frag.cx + 25} ${frag.cy - 5}`);
@@ -698,9 +713,46 @@
             featureGroup.appendChild(lash);
             frag.featureSvgString += `<line x1="${lx}" y1="${ly}" x2="${lx + i * 5}" y2="${ly + 12}" stroke="#111111" stroke-width="4" stroke-linecap="round" />`;
           }
+        } else if (eyeStyle === 4) {
+          // Style 4: Rectangular cubist block eye
+          const outer = document.createElementNS(svgNS, "rect");
+          outer.setAttribute("x", frag.cx - 20);
+          outer.setAttribute("y", frag.cy - 12);
+          outer.setAttribute("width", "40");
+          outer.setAttribute("height", "24");
+          outer.setAttribute("stroke", "#111111");
+          outer.setAttribute("stroke-width", "5");
+          outer.setAttribute("fill", "none");
+          outer.setAttribute("transform", `rotate(15, ${frag.cx}, ${frag.cy})`);
+
+          const inner = document.createElementNS(svgNS, "rect");
+          inner.setAttribute("x", frag.cx - 8);
+          inner.setAttribute("y", frag.cy - 8);
+          inner.setAttribute("width", "16");
+          inner.setAttribute("height", "16");
+          inner.setAttribute("fill", "#111111");
+          inner.setAttribute("transform", `rotate(15, ${frag.cx}, ${frag.cy})`);
+
+          featureGroup.appendChild(outer);
+          featureGroup.appendChild(inner);
+          
+          frag.featureSvgString = `<rect x="${frag.cx - 20}" y="${frag.cy - 12}" width="40" height="24" stroke="#111111" stroke-width="5" fill="none" transform="rotate(15, ${frag.cx}, ${frag.cy})" />
+                                   <rect x="${frag.cx - 8}" y="${frag.cy - 8}" width="16" height="16" fill="#111111" transform="rotate(15, ${frag.cx}, ${frag.cy})" />`;
+        } else {
+          // Style 5: Hypnotic Zen spiral
+          const spiral = document.createElementNS(svgNS, "path");
+          spiral.setAttribute("d", `M ${frag.cx} ${frag.cy} A 6 6 0 0 1 ${frag.cx + 6} ${frag.cy} A 12 12 0 0 1 ${frag.cx - 6} ${frag.cy} A 18 18 0 0 1 ${frag.cx + 12} ${frag.cy} A 24 24 0 0 1 ${frag.cx - 18} ${frag.cy}`);
+          spiral.setAttribute("stroke", "#111111");
+          spiral.setAttribute("stroke-width", "5");
+          spiral.setAttribute("fill", "none");
+          spiral.setAttribute("stroke-linecap", "round");
+
+          featureGroup.appendChild(spiral);
+          
+          frag.featureSvgString = `<path d="M ${frag.cx} ${frag.cy} A 6 6 0 0 1 ${frag.cx + 6} ${frag.cy} A 12 12 0 0 1 ${frag.cx - 6} ${frag.cy} A 18 18 0 0 1 ${frag.cx + 12} ${frag.cy} A 24 24 0 0 1 ${frag.cx - 18} ${frag.cy}" stroke="#111111" stroke-width="5" fill="none" stroke-linecap="round" />`;
         }
       } else if (frag.type === 'nose') {
-        const noseStyle = Math.floor(Math.random() * 3);
+        const noseStyle = Math.floor(Math.random() * 5);
         if (noseStyle === 0) {
           // Style 0: Original hooked line
           const line = document.createElementNS(svgNS, "path");
@@ -736,7 +788,7 @@
           featureGroup.appendChild(n1);
           featureGroup.appendChild(n2);
           frag.featureSvgString = `<circle cx="${frag.cx - 12}" cy="${frag.cy + 15}" r="6" fill="#111111" /><circle cx="${frag.cx + 12}" cy="${frag.cy + 15}" r="6" fill="#111111" />`;
-        } else {
+        } else if (noseStyle === 2) {
           // Style 2: Sharp triangle outline
           const tri = document.createElementNS(svgNS, "polygon");
           tri.setAttribute("points", `${frag.cx},${frag.cy - 25} ${frag.cx - 20},${frag.cy + 25} ${frag.cx + 20},${frag.cy + 25}`);
@@ -747,9 +799,45 @@
           
           featureGroup.appendChild(tri);
           frag.featureSvgString = `<polygon points="${frag.cx},${frag.cy - 25} ${frag.cx - 20},${frag.cy + 25} ${frag.cx + 20},${frag.cy + 25}" stroke="#111111" stroke-width="5" fill="none" stroke-linejoin="round" />`;
+        } else if (noseStyle === 3) {
+          // Style 3: Abstract L-shape nose
+          const line = document.createElementNS(svgNS, "path");
+          line.setAttribute("d", `M ${frag.cx - 8} ${frag.cy - 25} L ${frag.cx - 8} ${frag.cy + 15} L ${frag.cx + 16} ${frag.cy + 15}`);
+          line.setAttribute("stroke", "#111111");
+          line.setAttribute("stroke-width", "6");
+          line.setAttribute("fill", "none");
+          line.setAttribute("stroke-linejoin", "round");
+          line.setAttribute("stroke-linecap", "round");
+
+          featureGroup.appendChild(line);
+          frag.featureSvgString = `<path d="M ${frag.cx - 8} ${frag.cy - 25} L ${frag.cx - 8} ${frag.cy + 15} L ${frag.cx + 16} ${frag.cy + 15}" stroke="#111111" stroke-width="6" fill="none" stroke-linejoin="round" stroke-linecap="round" />`;
+        } else {
+          // Style 4: Minimal parallel lines
+          const l1 = document.createElementNS(svgNS, "line");
+          l1.setAttribute("x1", frag.cx - 7);
+          l1.setAttribute("y1", frag.cy - 20);
+          l1.setAttribute("x2", frag.cx - 7);
+          l1.setAttribute("y2", frag.cy + 20);
+          l1.setAttribute("stroke", "#111111");
+          l1.setAttribute("stroke-width", "5");
+          l1.setAttribute("stroke-linecap", "round");
+
+          const l2 = document.createElementNS(svgNS, "line");
+          l2.setAttribute("x1", frag.cx + 7);
+          l2.setAttribute("y1", frag.cy - 20);
+          l2.setAttribute("x2", frag.cx + 7);
+          l2.setAttribute("y2", frag.cy + 20);
+          l2.setAttribute("stroke", "#111111");
+          l2.setAttribute("stroke-width", "5");
+          l2.setAttribute("stroke-linecap", "round");
+
+          featureGroup.appendChild(l1);
+          featureGroup.appendChild(l2);
+          frag.featureSvgString = `<line x1="${frag.cx - 7}" y1="${frag.cy - 20}" x2="${frag.cx - 7}" y2="${frag.cy + 20}" stroke="#111111" stroke-width="5" stroke-linecap="round" />
+                                   <line x1="${frag.cx + 7}" y1="${frag.cy - 20}" x2="${frag.cx + 7}" y2="${frag.cy + 20}" stroke="#111111" stroke-width="5" stroke-linecap="round" />`;
         }
       } else if (frag.type === 'mouth') {
-        const mouthStyle = Math.floor(Math.random() * 4);
+        const mouthStyle = Math.floor(Math.random() * 6);
         if (mouthStyle === 0) {
           // Style 0: Original wavy with lip
           const line = document.createElementNS(svgNS, "path");
@@ -809,7 +897,7 @@
           mouth.setAttribute("stroke-linejoin", "round");
           featureGroup.appendChild(mouth);
           frag.featureSvgString = `<path d="M ${frag.cx - 25} ${frag.cy - 5} L ${frag.cx + 25} ${frag.cy - 5} Q ${frag.cx} ${frag.cy + 30} ${frag.cx - 25} ${frag.cy - 5}" stroke="#111111" stroke-width="5" fill="none" stroke-linejoin="round" />`;
-        } else {
+        } else if (mouthStyle === 3) {
           // Style 3: Squiggly line
           const squiggle = document.createElementNS(svgNS, "path");
           squiggle.setAttribute("d", `M ${frag.cx - 30} ${frag.cy} Q ${frag.cx - 15} ${frag.cy - 15} ${frag.cx} ${frag.cy} T ${frag.cx + 30} ${frag.cy}`);
@@ -819,6 +907,27 @@
           squiggle.setAttribute("stroke-linecap", "round");
           featureGroup.appendChild(squiggle);
           frag.featureSvgString = `<path d="M ${frag.cx - 30} ${frag.cy} Q ${frag.cx - 15} ${frag.cy - 15} ${frag.cx} ${frag.cy} T ${frag.cx + 30} ${frag.cy}" stroke="#111111" stroke-width="6" fill="none" stroke-linecap="round" />`;
+        } else if (mouthStyle === 4) {
+          // Style 4: Puckered O-mouth
+          const oMouth = document.createElementNS(svgNS, "circle");
+          oMouth.setAttribute("cx", frag.cx);
+          oMouth.setAttribute("cy", frag.cy);
+          oMouth.setAttribute("r", "12");
+          oMouth.setAttribute("stroke", "#111111");
+          oMouth.setAttribute("stroke-width", "6");
+          oMouth.setAttribute("fill", "none");
+          featureGroup.appendChild(oMouth);
+          frag.featureSvgString = `<circle cx="${frag.cx}" cy="${frag.cy}" r="12" stroke="#111111" stroke-width="6" fill="none" />`;
+        } else {
+          // Style 5: Drama Frown
+          const frown = document.createElementNS(svgNS, "path");
+          frown.setAttribute("d", `M ${frag.cx - 30} ${frag.cy + 15} Q ${frag.cx} ${frag.cy - 10} ${frag.cx + 30} ${frag.cy + 15}`);
+          frown.setAttribute("stroke", "#111111");
+          frown.setAttribute("stroke-width", "6");
+          frown.setAttribute("fill", "none");
+          frown.setAttribute("stroke-linecap", "round");
+          featureGroup.appendChild(frown);
+          frag.featureSvgString = `<path d="M ${frag.cx - 30} ${frag.cy + 15} Q ${frag.cx} ${frag.cy - 10} ${frag.cx + 30} ${frag.cy + 15}" stroke="#111111" stroke-width="6" fill="none" stroke-linecap="round" />`;
         }
       }
 
