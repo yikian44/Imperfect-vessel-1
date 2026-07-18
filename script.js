@@ -1087,9 +1087,7 @@
         selectedFragment.element.classList.remove('selected');
         selectedFragment = null;
       }
-      if (!isFreeArrange) {
-        uiPanel.classList.remove('visible');
-      }
+      uiPanel.classList.remove('visible');
       document.body.classList.remove('has-selected');
 
       if (!isFreeArrange && !isSettling) {
@@ -1850,7 +1848,6 @@
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }
-      uiPanel.classList.add('visible');
       const gestureHint = document.getElementById('gesture-hint');
       if (gestureHint) {
         gestureHint.style.display = 'block';

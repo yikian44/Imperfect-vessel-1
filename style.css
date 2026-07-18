@@ -217,18 +217,7 @@
       opacity: 0.85; /* Dim the background to 85% opacity over the woven texture */
     }
 
-    body.kintsugi #ui-panel {
-      opacity: 0.2;
-      transition: opacity 3s ease;
-    }
 
-    body.kintsugi #ui-panel:hover {
-      opacity: 1;
-    }
-
-    body.has-selected #ui-panel {
-      opacity: 1 !important;
-    }
 
     /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
     body.kintsugi .fragment {
@@ -265,7 +254,7 @@
       position: absolute;
       top: 56px;
       left: 56px;
-      z-index: 101; /* Layer over the slide-in sidebar */
+      z-index: 10; /* Coverable by slide-in sidebar */
     }
 
     .site-logo-img {
@@ -363,11 +352,7 @@
       transform: translateX(0);
     }
 
-    @media (min-width: 769px) {
-      #style-menu-container {
-        margin-top: 80px; /* Leave space for the logo */
-      }
-    }
+
 
     .ui-label {
       font-size: 10px;
