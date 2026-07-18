@@ -2525,10 +2525,21 @@
     // Open Publish Modal
     if (publishBtn) {
       publishBtn.addEventListener('click', () => {
-        if (typeof playClink === 'function') playClink();
-        document.getElementById('publish-art-title').value = generateTitle();
-        document.getElementById('publish-creator-name').value = localStorage.getItem("im_creator_name") || "";
-        publishModal.classList.add('visible');
+        try {
+          if (typeof playClink === 'function') playClink();
+          const titleEl = document.getElementById('publish-art-title');
+          const nameEl = document.getElementById('publish-creator-name');
+          if (titleEl && typeof generateTitle === 'function') titleEl.value = generateTitle();
+          if (nameEl) nameEl.value = localStorage.getItem("im_creator_name") || "";
+          if (publishModal) {
+            publishModal.classList.add('visible');
+          } else {
+            alert("Publish modal not found. Please refresh the page.");
+          }
+        } catch(err) {
+          console.error("Publish modal error:", err);
+          alert("Error opening publish dialog: " + err.message);
+        }
       });
     }
 
