@@ -1059,13 +1059,7 @@
         if (isSettling && !isFreeArrange) return;
 
         // Instantly fade out gesture hint on interaction
-        const gestureHint = document.getElementById('gesture-hint');
-        if (gestureHint && gestureHint.style.opacity !== '0') {
-          gestureHint.style.opacity = '0';
-          setTimeout(() => {
-            if (gestureHint.style.opacity === '0') gestureHint.style.display = 'none';
-          }, 800);
-        }
+        if (typeof hideGestureHint === 'function') hideGestureHint();
 
         playClink();
         selectFragment(frag);
@@ -2002,66 +1996,13 @@
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
       }
-      const gestureHint = document.getElementById('gesture-hint');
-      if (gestureHint) {
-        gestureHint.style.display = 'block';
-        // Force browser to register display: block before setting opacity
-        void gestureHint.offsetWidth;
-        gestureHint.style.opacity = '1';
-        
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) {
-          gestureHint.innerHTML = `
-            <div class="controls-container">
-              <div class="controls-title">CONTROLS</div>
-              <div class="controls-grid">
-                <div class="control-row">
-                  <div class="control-icon-desc">👆 Drag</div>
-                  <div class="control-info-sub">Move object</div>
-                </div>
-                <div class="control-row">
-                  <div class="control-icon-desc">✌️ Pinch</div>
-                  <div class="control-info-sub">Scale</div>
-                </div>
-                <div class="control-row">
-                  <div class="control-icon-desc">🔄 Twist</div>
-                  <div class="control-info-sub">Rotate</div>
-                </div>
-              </div>
-            </div>
-          `;
-        } else {
-          gestureHint.innerHTML = `
-            <div class="controls-container">
-              <div class="controls-title">CONTROLS</div>
-              <div class="controls-grid">
-                <div class="control-row">
-                  <div class="control-icon-desc">🖱 Drag</div>
-                  <div class="control-info-sub">Move object</div>
-                </div>
-                <div class="control-row">
-                  <div class="control-icon-desc">⌨ Z / X</div>
-                  <div class="control-info-sub">Rotate</div>
-                </div>
-                <div class="control-row">
-                  <div class="control-icon-desc">⌨ A / S</div>
-                  <div class="control-info-sub">Scale</div>
-                </div>
-              </div>
-            </div>
-          `;
-        }
 
-        // Auto fade out after 4.5 seconds
-        if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
-        window.gestureHintTimer = setTimeout(() => {
-          gestureHint.style.opacity = '0';
-          setTimeout(() => {
-            if (gestureHint.style.opacity === '0') gestureHint.style.display = 'none';
-          }, 800);
-        }, 4500);
-      }
-      
+      // Show info exclamation button
+      const infoBtn = document.getElementById('info-btn');
+      if (infoBtn) infoBtn.style.display = 'inline-flex';
+
+      showGestureHint();
+
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
         goldSvg.style.display = 'none';
@@ -2072,6 +2013,112 @@
         finalMessage.classList.remove('visible');
       }
     });
+
+    function showGestureHint() {
+      const gestureHint = document.getElementById('gesture-hint');
+      if (!gestureHint) return;
+
+      const isMobile = window.innerWidth < 768;
+      let hintHTML = '';
+      if (isMobile) {
+        hintHTML = `
+          <div class="controls-container">
+            <div class="controls-title" style="margin-bottom:12px; font-size:11px; letter-spacing:0.2em; font-weight:600; color:#1e1d1a; opacity:0.4;">CONTROLS</div>
+            <div class="controls-grid" style="display:flex; flex-direction:column; gap:14px; width:100%;">
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">👆</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Drag Shard</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Move shard freely</div>
+                </div>
+              </div>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">✌️</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Pinch / Stretch</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Scale shard size</div>
+                </div>
+              </div>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">🔄</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Two-Finger Twist</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Rotate shard</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        hintHTML = `
+          <div class="controls-container">
+            <div class="controls-title" style="margin-bottom:12px; font-size:11px; letter-spacing:0.2em; font-weight:600; color:#1e1d1a; opacity:0.4;">CONTROLS</div>
+            <div class="controls-grid" style="display:flex; flex-direction:column; gap:14px; width:100%;">
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">🖱</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Drag Mouse</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Move shard freely</div>
+                </div>
+              </div>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:14px; font-weight:600; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">Z/X</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Rotate Keys</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Spin shard</div>
+                </div>
+              </div>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
+                <span style="font-size:14px; font-weight:600; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">A/S</span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Scale Keys</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Resize shard</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      gestureHint.innerHTML = `
+        ${hintHTML}
+        <button id="close-hint-btn" class="primary-done-btn" style="width: 100%; height: 38px; font-size: 11px; margin-top: 20px; border-radius: 20px; text-align: center; justify-content: center; background:#1e1d1a; color:#e8e6e1; border:none; cursor:pointer;">GOT IT</button>
+      `;
+
+      gestureHint.style.display = 'block';
+      gestureHint.classList.remove('shrinking');
+      // Force reflow
+      void gestureHint.offsetWidth;
+      gestureHint.classList.add('visible');
+
+      const closeBtn = document.getElementById('close-hint-btn');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', hideGestureHint);
+      }
+
+      // Auto dismiss after 4 seconds
+      if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
+      window.gestureHintTimer = setTimeout(() => {
+        hideGestureHint();
+      }, 4000);
+    }
+
+    function hideGestureHint() {
+      const gestureHint = document.getElementById('gesture-hint');
+      if (!gestureHint || !gestureHint.classList.contains('visible')) return;
+
+      if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
+      if (typeof playClink === 'function') playClink();
+      gestureHint.classList.remove('visible');
+      gestureHint.classList.add('shrinking');
+
+      setTimeout(() => {
+        if (gestureHint.classList.contains('shrinking')) {
+          gestureHint.style.display = 'none';
+          gestureHint.classList.remove('shrinking');
+        }
+      }, 600);
+    }
 
     function updateHistoryButtons() {
       const undoBtn = document.getElementById('return-btn');
@@ -2182,11 +2229,14 @@
     document.getElementById('done-arrange-btn').addEventListener('click', () => {
       isFreeArrange = false;
       uiPanel.classList.remove('visible');
+      
+      const infoBtn = document.getElementById('info-btn');
+      if (infoBtn) infoBtn.style.display = 'none';
+      hideGestureHint();
+
       setTimeout(() => {
         if (!isFreeArrange) {
           document.getElementById('arrange-tools').style.display = 'none';
-          const gestureHint = document.getElementById('gesture-hint');
-          if (gestureHint) gestureHint.style.display = 'none';
           document.getElementById('style-menu-container').style.display = '';
           document.getElementById('style-menu-content').style.display = 'flex';
           document.getElementById('style-arrow-icon').classList.add('expanded');
@@ -2197,23 +2247,24 @@
       showFinalMessage();
     });
 
+    const infoBtn = document.getElementById('info-btn');
+    if (infoBtn) {
+      infoBtn.addEventListener('click', () => {
+        if (typeof playClink === 'function') playClink();
+        showGestureHint();
+      });
+    }
+
     document.getElementById('toggle-style-btn').addEventListener('click', () => {
       const content = document.getElementById('style-menu-content');
       const icon = document.getElementById('style-arrow-icon');
-      const gestureHint = document.getElementById('gesture-hint');
       if (content.style.display === 'none') {
         content.style.display = 'flex';
         icon.classList.add('expanded');
-        if (isFreeArrange && gestureHint) {
-          gestureHint.style.opacity = '0';
-        }
         setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
       } else {
         content.style.display = 'none';
         icon.classList.remove('expanded');
-        if (isFreeArrange && gestureHint) {
-          gestureHint.style.opacity = '1';
-        }
       }
     });
 
