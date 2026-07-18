@@ -150,6 +150,7 @@
       align-items: center;
       transform: scale(1.15);
       transform-origin: center center;
+      pointer-events: none;
     }
 
     .fragment {
@@ -159,6 +160,7 @@
       transform-origin: center;
       will-change: transform;
       transform: translateZ(0);
+      pointer-events: auto;
     }
 
     .fragment svg {
@@ -171,6 +173,10 @@
     .fragment.selected {
       z-index: 999;
       transition: opacity 0s !important;
+    }
+
+    body.has-selected #canvas-container {
+      z-index: 200;
     }
     
     body.kintsugi .fragment.selected {
