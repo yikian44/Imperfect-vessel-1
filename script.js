@@ -1061,7 +1061,6 @@
         // Instantly fade out gesture hint on interaction
         if (typeof hideGestureHint === 'function') hideGestureHint();
 
-        playClink();
         selectFragment(frag);
 
         // Bring to front safely without detaching DOM node
@@ -1609,6 +1608,8 @@
       e.stopPropagation();
       if (isPrologue) return;
 
+      if (typeof playClink === 'function') playClink();
+
       deselectFragment();
       isSettling = true;
       returningFragment = null;
@@ -2024,22 +2025,28 @@
           <div class="controls-container">
             <div class="controls-title" style="margin-bottom:12px; font-size:11px; letter-spacing:0.2em; font-weight:600; color:#1e1d1a; opacity:0.4;">CONTROLS</div>
             <div class="controls-grid" style="display:flex; flex-direction:column; gap:14px; width:100%;">
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">👆</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+                </span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Drag Shard</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Move shard freely</div>
                 </div>
               </div>
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">✌️</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                </span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Pinch / Stretch</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Scale shard size</div>
                 </div>
               </div>
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">🔄</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6"></path><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                </span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Two-Finger Twist</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Rotate shard</div>
@@ -2053,22 +2060,24 @@
           <div class="controls-container">
             <div class="controls-title" style="margin-bottom:12px; font-size:11px; letter-spacing:0.2em; font-weight:600; color:#1e1d1a; opacity:0.4;">CONTROLS</div>
             <div class="controls-grid" style="display:flex; flex-direction:column; gap:14px; width:100%;">
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:18px; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">🖱</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"></polyline><polyline points="9 5 12 2 15 5"></polyline><polyline points="15 19 12 22 9 19"></polyline><polyline points="19 9 22 12 19 15"></polyline><line x1="2" y1="12" x2="22" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>
+                </span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Drag Mouse</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Move shard freely</div>
                 </div>
               </div>
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:14px; font-weight:600; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">Z/X</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="font-size:11px; font-weight:600; width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0; letter-spacing:-0.5px;">Z/X</span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Rotate Keys</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Spin shard</div>
                 </div>
               </div>
-              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:12px; text-align:left;">
-                <span style="font-size:14px; font-weight:600; width:32px; height:32px; background:#f4f3ef; border-radius:50%; display:flex; align-items:center; justify-content:center;">A/S</span>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="font-size:11px; font-weight:600; width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0; letter-spacing:-0.5px;">A/S</span>
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Scale Keys</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Resize shard</div>
@@ -2240,10 +2249,9 @@
     });
 
     const infoBtn = document.getElementById('info-btn');
-    const gestureHint = document.getElementById('gesture-hint');
+    const gHint = document.getElementById('gesture-hint');
     if (infoBtn) {
       infoBtn.addEventListener('click', () => {
-        if (typeof playClink === 'function') playClink();
         if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
         showGestureHint();
       });
@@ -2265,11 +2273,11 @@
       });
     }
 
-    if (gestureHint) {
-      gestureHint.addEventListener('pointerenter', () => {
+    if (gHint) {
+      gHint.addEventListener('pointerenter', () => {
         if (window.gestureHintLeaveTimer) clearTimeout(window.gestureHintLeaveTimer);
       });
-      gestureHint.addEventListener('pointerleave', () => {
+      gHint.addEventListener('pointerleave', () => {
         if (window.innerWidth >= 768) {
           window.gestureHintLeaveTimer = setTimeout(() => {
             hideGestureHint();
@@ -2645,7 +2653,6 @@
     if (publishBtn) {
       publishBtn.addEventListener('click', () => {
         try {
-          if (typeof playClink === 'function') playClink();
           const titleEl = document.getElementById('publish-art-title');
           const nameEl = document.getElementById('publish-creator-name');
           if (titleEl && typeof generateTitle === 'function') titleEl.value = generateTitle();
@@ -2664,14 +2671,13 @@
 
     // Cancel Publish
     document.getElementById('publish-cancel-btn').addEventListener('click', () => {
-      if (typeof playClink === 'function') playClink();
       publishModal.classList.remove('visible');
     });
 
     // Close Gallery
     document.getElementById('gallery-close-btn').addEventListener('click', () => {
-      if (typeof playClink === 'function') playClink();
       galleryOverlay.classList.remove('visible');
+      document.body.classList.remove('overlay-open');
     });
 
     // Toggle Filters
@@ -2681,7 +2687,6 @@
 
     if (filterNew && filterPopular) {
       filterNew.addEventListener('click', () => {
-        if (typeof playClink === 'function') playClink();
         filterNew.classList.add('active');
         filterPopular.classList.remove('active');
         currentFilter = "newest";
@@ -2689,7 +2694,6 @@
       });
 
       filterPopular.addEventListener('click', () => {
-        if (typeof playClink === 'function') playClink();
         filterPopular.classList.add('active');
         filterNew.classList.remove('active');
         currentFilter = "popular";
@@ -2699,7 +2703,6 @@
 
     // Submit Publish
     document.getElementById('publish-submit-btn').addEventListener('click', async () => {
-      if (typeof playClink === 'function') playClink();
       
       const title = document.getElementById('publish-art-title').value.trim();
       const creatorName = document.getElementById('publish-creator-name').value.trim();
@@ -2794,6 +2797,7 @@
           if (galleryOverlay) {
             loadGalleryItems();
             galleryOverlay.classList.add('visible');
+            document.body.classList.add('overlay-open');
           }
           
           // 4. Restore main UI styles behind the scenes
@@ -2958,8 +2962,8 @@
     if (galleryBtn) {
       galleryBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (typeof playClink === 'function') playClink();
         galleryOverlay.classList.add('visible');
+        document.body.classList.add('overlay-open');
         loadGalleryItems();
       });
     }
@@ -2968,12 +2972,11 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (publishModal && publishModal.classList.contains('visible')) {
-          if (typeof playClink === 'function') playClink();
           publishModal.classList.remove('visible');
         }
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
-          if (typeof playClink === 'function') playClink();
           galleryOverlay.classList.remove('visible');
+          document.body.classList.remove('overlay-open');
         }
       }
     });
@@ -2991,21 +2994,21 @@
     if (aboutBtn && aboutOverlay && aboutCloseBtn) {
       aboutBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (typeof playClink === 'function') playClink();
         aboutOverlay.classList.add('visible');
+        document.body.classList.add('overlay-open');
       });
 
       aboutCloseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (typeof playClink === 'function') playClink();
         aboutOverlay.classList.remove('visible');
+        document.body.classList.remove('overlay-open');
       });
       
       // Close overlay on Escape key press
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
-          if (typeof playClink === 'function') playClink();
           aboutOverlay.classList.remove('visible');
+          document.body.classList.remove('overlay-open');
         }
       });
     }

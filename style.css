@@ -30,6 +30,11 @@
         repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px);
     }
 
+    body.overlay-open {
+      touch-action: auto !important;
+      overflow-y: auto !important;
+    }
+
     /* Custom Cursor */
     #custom-cursor {
       position: fixed;
