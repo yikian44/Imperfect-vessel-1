@@ -40,12 +40,6 @@
       const prologue = document.getElementById('prologue');
 
       if (video) {
-        // Force play programmatically (handles some browsers' autoplay quirks)
-        video.play().catch(e => {
-          console.log("Autoplay blocked, fallback to timer");
-          triggerFallback();
-        });
-
         // 9-second fallback timer so the user is never stuck if the video fails to load/play
         let fallbackTimer = setTimeout(triggerFallback, 9000);
 
@@ -60,9 +54,21 @@
           }
         }
 
+        // Force play programmatically (handles some browsers' autoplay quirks)
+        try {
+          const playPromise = video.play();
+          if (playPromise !== undefined && typeof playPromise.catch === 'function') {
+            playPromise.catch(e => {
+              console.log("Autoplay blocked, fallback to timer");
+              triggerFallback();
+            });
+          }
+        } catch(err) {
+          console.log("Play failed, relying on fallback timer", err);
+        }
+
         // Slide up when the video ends natively
         video.addEventListener('ended', () => {
-          clearTimeout(fallbackTimer);
           triggerFallback();
         });
         
