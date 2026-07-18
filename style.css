@@ -38,6 +38,16 @@
       min-height: 100dvh !important;
     }
 
+    html.overlay-open #canvas-container,
+    html.overlay-open #ui-panel,
+    html.overlay-open #post-action-container,
+    html.overlay-open #site-logo,
+    html.overlay-open .header-nav-group,
+    html.overlay-open #crack-canvas,
+    html.overlay-open #custom-cursor {
+      display: none !important;
+    }
+
     /* Custom Cursor */
     #custom-cursor {
       position: fixed;
