@@ -1194,7 +1194,7 @@
         redoHistory = [];
         updateHistoryButtons();
 
-        selectedFragment.targetScale = Math.max(0.3, selectedFragment.targetScale - 0.1);
+        selectedFragment.targetScale = Math.min(4.0, selectedFragment.targetScale + 0.1);
       } else if (e.code === 'KeyS' || e.key.toLowerCase() === 's') {
         if (selectedFragment.targetScale === undefined) selectedFragment.targetScale = selectedFragment.scale;
         
@@ -1209,7 +1209,7 @@
         redoHistory = [];
         updateHistoryButtons();
 
-        selectedFragment.targetScale = Math.min(4.0, selectedFragment.targetScale + 0.1);
+        selectedFragment.targetScale = Math.max(0.3, selectedFragment.targetScale - 0.1);
       }
     });
 
