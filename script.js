@@ -947,8 +947,8 @@
 
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        frag.dragOffsetX = e.clientX - (centerX + frag.x * 1.18);
-        frag.dragOffsetY = e.clientY - (centerY + frag.y * 1.18);
+        frag.dragOffsetX = e.clientX - (centerX + frag.x * 1.15);
+        frag.dragOffsetY = e.clientY - (centerY + frag.y * 1.15);
 
         div.setPointerCapture(e.pointerId);
       });
@@ -958,8 +958,8 @@
         e.stopPropagation();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        const newX = (e.clientX - centerX - frag.dragOffsetX) / 1.18;
-        const newY = (e.clientY - centerY - frag.dragOffsetY) / 1.18;
+        const newX = (e.clientX - centerX - frag.dragOffsetX) / 1.15;
+        const newY = (e.clientY - centerY - frag.dragOffsetY) / 1.15;
         
         if (!frag.hasMoved) {
           if (Math.abs(newX - frag.dragStartX) > 3 || Math.abs(newY - frag.dragStartY) > 3) {
@@ -1379,7 +1379,7 @@
               f.x += (f.targetDragX - f.x) * 0.15;
               f.y += (f.targetDragY - f.y) * 0.15;
             }
-            f.element.style.transform = `translate(${centerX + f.x * 1.18 + window.parallaxX}px, ${centerY + f.y * 1.18 + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * 1.18})`;
+            f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
             return;
           }
 
@@ -1422,7 +1422,7 @@
           }
         }
 
-        f.element.style.transform = `translate(${centerX + f.x * 1.18 + window.parallaxX}px, ${centerY + f.y * 1.18 + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * 1.18})`;
+        f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
@@ -1570,6 +1570,13 @@
         pac.classList.add('visible');
       }
 
+      // Re-show gallery and about buttons immediately with quotes (0s delay)
+      const headerNavGroup = document.querySelector('.header-nav-group');
+      if (headerNavGroup) {
+        headerNavGroup.style.transitionDelay = '0s'; // immediate show
+        headerNavGroup.style.opacity = '1';
+        headerNavGroup.style.pointerEvents = 'auto';
+      }
     }
 
     document.getElementById('try-again-btn').addEventListener('click', () => {
@@ -1604,12 +1611,12 @@
       document.getElementById('free-arrange-btn').style.display = '';
       letGoBtn.classList.remove('hidden');
 
-      // Show gallery and about buttons
+      // Hide gallery and about buttons
       const headerNavGroup = document.querySelector('.header-nav-group');
       if (headerNavGroup) {
-        headerNavGroup.style.transitionDelay = '';
-        headerNavGroup.style.opacity = '';
-        headerNavGroup.style.pointerEvents = '';
+        headerNavGroup.style.transitionDelay = '0s';
+        headerNavGroup.style.opacity = '0';
+        headerNavGroup.style.pointerEvents = 'none';
       }
 
       if (droneGain && audioCtx) {
