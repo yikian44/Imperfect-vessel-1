@@ -148,6 +148,7 @@
           </div>
           <div class="options-row" id="color-options"></div>
         </div>
+        <div class="panel-divider"></div>
         <div id="texture-section">
           <div class="ui-label" style="display: flex; justify-content: space-between; align-items: center; padding-right: 4px;">
             <span>TEXTURE</span>
@@ -165,21 +166,28 @@
       </div>
     </div>
     <div id="arrange-tools" style="display: none;">
-        <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-          <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-            <button id="return-btn" class="undo-btn rollup-text-btn" style="width: 100%;" title="Undo (Cmd/Ctrl+Z)" data-text="UNDO">
-              <div class="original-content" style="padding: 8px 16px; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"></path></svg>
-                UNDO
-                <span class="keyboard-shortcut" style="font-size: 10px; opacity: 0.6;">(Cmd/Ctrl+Z)</span>
-              </div>
-            </button>
-
-          </div>
-          <button id="done-arrange-btn" class="rollup-text-btn" style="width: 100%; box-sizing: border-box;" data-text="DONE">
-            <div class="original-content" style="padding: 8px 24px; width: 100%; display: flex; align-items: center; justify-content: center;">DONE</div>
+      <div class="panel-divider"></div>
+      <div class="history-section">
+        <div class="ui-label">History</div>
+        <div class="history-controls">
+          <button id="return-btn" class="history-btn disabled" title="Undo (Cmd/Ctrl+Z)">
+            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7v6h6"></path>
+              <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
+            </svg>
+            Undo
+          </button>
+          <button id="redo-btn" class="history-btn disabled" title="Redo (Cmd/Ctrl+Y or Cmd/Ctrl+Shift+Z)">
+            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 7v6h-6"></path>
+              <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
+            </svg>
+            Redo
           </button>
         </div>
+      </div>
+      <div class="panel-divider"></div>
+      <button id="done-arrange-btn" class="primary-done-btn">DONE</button>
     </div>
   </div>
 

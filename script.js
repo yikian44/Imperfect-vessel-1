@@ -3,6 +3,7 @@
     let isFreeArrange = false;
     let isCustomArranged = false;
     let moveHistory = [];
+    let redoHistory = [];
     let selectedFragment = null;
     let returningFragment = null;
     let time = 0;
@@ -945,9 +946,9 @@
         customCursor.classList.remove('hover'); // hide hover ring while dragging
 
         const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        frag.dragOffsetX = e.clientX - (centerX + frag.x);
-        frag.dragOffsetY = e.clientY - (centerY + frag.y);
+        const centerY = window.innerHeight / 2 + (centerYOffset || 0);
+        frag.dragOffsetX = e.clientX - (centerX + frag.x * 1.18);
+        frag.dragOffsetY = e.clientY - (centerY + frag.y * 1.18);
 
         div.setPointerCapture(e.pointerId);
       });
@@ -956,9 +957,9 @@
         if (!frag.isDragging) return;
         e.stopPropagation();
         const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const newX = e.clientX - centerX - frag.dragOffsetX;
-        const newY = e.clientY - centerY - frag.dragOffsetY;
+        const centerY = window.innerHeight / 2 + (centerYOffset || 0);
+        const newX = (e.clientX - centerX - frag.dragOffsetX) / 1.18;
+        const newY = (e.clientY - centerY - frag.dragOffsetY) / 1.18;
         
         if (!frag.hasMoved) {
           if (Math.abs(newX - frag.dragStartX) > 3 || Math.abs(newY - frag.dragStartY) > 3) {
@@ -986,6 +987,8 @@
               oldRot: frag.dragStartRot,
               oldScale: frag.dragStartScale
             });
+            redoHistory = [];
+            updateHistoryButtons();
             
             // Allow fragments to be placed anywhere and stay there
             if (!isSettling && !isFreeArrange) {
@@ -1101,6 +1104,8 @@
         oldColor: selectedFragment.color,
         type: 'color'
       });
+      redoHistory = [];
+      updateHistoryButtons();
       selectedFragment.color = color;
       selectedFragment.pathElement.setAttribute("fill", color);
       editCount++;
@@ -1113,6 +1118,8 @@
         oldTexture: selectedFragment.texture,
         type: 'texture'
       });
+      redoHistory = [];
+      updateHistoryButtons();
       selectedFragment.texture = textureId;
       if (textureId === 'none') {
         selectedFragment.textureOverlay.setAttribute("fill", "none");
@@ -1122,11 +1129,24 @@
       editCount++;
     }
 
-    // Keyboard Rotation and Undo (Ctrl+Z)
+    // Keyboard Rotation and Undo/Redo
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyZ' || e.key.toLowerCase() === 'z')) {
+        if (e.shiftKey) {
+          e.preventDefault();
+          const redoBtn = document.getElementById('redo-btn');
+          if (redoBtn) redoBtn.click();
+        } else {
+          e.preventDefault();
+          document.getElementById('return-btn').click();
+        }
+        return;
+      }
+
+      if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyY' || e.key.toLowerCase() === 'y')) {
         e.preventDefault();
-        document.getElementById('return-btn').click();
+        const redoBtn = document.getElementById('redo-btn');
+        if (redoBtn) redoBtn.click();
         return;
       }
       
@@ -1142,6 +1162,8 @@
           oldRot: selectedFragment.targetRot,
           type: 'spatial'
         });
+        redoHistory = [];
+        updateHistoryButtons();
 
         selectedFragment.targetRot -= 15;
       } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
@@ -1154,6 +1176,8 @@
           oldRot: selectedFragment.targetRot,
           type: 'spatial'
         });
+        redoHistory = [];
+        updateHistoryButtons();
 
         selectedFragment.targetRot += 15;
       } else if (e.code === 'KeyA' || e.key.toLowerCase() === 'a') {
@@ -1167,6 +1191,8 @@
           oldScale: selectedFragment.targetScale,
           type: 'spatial'
         });
+        redoHistory = [];
+        updateHistoryButtons();
 
         selectedFragment.targetScale = Math.max(0.3, selectedFragment.targetScale - 0.1);
       } else if (e.code === 'KeyS' || e.key.toLowerCase() === 's') {
@@ -1180,6 +1206,8 @@
           oldScale: selectedFragment.targetScale,
           type: 'spatial'
         });
+        redoHistory = [];
+        updateHistoryButtons();
 
         selectedFragment.targetScale = Math.min(4.0, selectedFragment.targetScale + 0.1);
       }
@@ -1352,13 +1380,12 @@
           }
 
         } else {
-          // Assembling State ("Let Go")
           if (isFreeArrange || isCustomArranged) {
             if (f.isDragging && typeof f.targetDragX !== 'undefined') {
               f.x += (f.targetDragX - f.x) * 0.15;
               f.y += (f.targetDragY - f.y) * 0.15;
             }
-            f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
+            f.element.style.transform = `translate(${centerX + f.x * 1.18 + window.parallaxX}px, ${centerY + f.y * 1.18 + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * 1.18})`;
             return;
           }
 
@@ -1401,7 +1428,7 @@
           }
         }
 
-        f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
+        f.element.style.transform = `translate(${centerX + f.x * 1.18 + window.parallaxX}px, ${centerY + f.y * 1.18 + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * 1.18})`;
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
@@ -1569,6 +1596,8 @@
       isFreeArrange = false;
       isCustomArranged = false;
       moveHistory = [];
+      redoHistory = [];
+      updateHistoryButtons();
       returningFragment = null;
       time = 0;
 
@@ -1795,6 +1824,8 @@
       isFreeArrange = true;
       isCustomArranged = true;
       moveHistory = [];
+      redoHistory = [];
+      updateHistoryButtons();
       
       // Prevent fragments from jumping back to their initial floating scales/rotations
       fragments.forEach(f => {
@@ -1836,16 +1867,16 @@
               <div class="controls-title">CONTROLS</div>
               <div class="controls-grid">
                 <div class="control-row">
-                  <div class="control-action">Move</div>
-                  <div class="control-keys"><span class="control-text">Drag</span></div>
+                  <div class="control-icon-desc">👆 Drag</div>
+                  <div class="control-info-sub">Move object</div>
                 </div>
                 <div class="control-row">
-                  <div class="control-action">Scale</div>
-                  <div class="control-keys"><span class="control-text">Pinch</span></div>
+                  <div class="control-icon-desc">✌️ Pinch</div>
+                  <div class="control-info-sub">Scale</div>
                 </div>
                 <div class="control-row">
-                  <div class="control-action">Rotate</div>
-                  <div class="control-keys"><span class="control-text">Twist</span></div>
+                  <div class="control-icon-desc">🔄 Twist</div>
+                  <div class="control-info-sub">Rotate</div>
                 </div>
               </div>
             </div>
@@ -1856,16 +1887,16 @@
               <div class="controls-title">CONTROLS</div>
               <div class="controls-grid">
                 <div class="control-row">
-                  <div class="control-action">Move</div>
-                  <div class="control-keys"><span class="control-text">CLICK + DRAG</span></div>
+                  <div class="control-icon-desc">🖱 Drag</div>
+                  <div class="control-info-sub">Move object</div>
                 </div>
                 <div class="control-row">
-                  <div class="control-action">Rotate</div>
-                  <div class="control-keys"><span class="keycap">Z</span><span class="keycap">X</span></div>
+                  <div class="control-icon-desc">⌨ Z / X</div>
+                  <div class="control-info-sub">Rotate</div>
                 </div>
                 <div class="control-row">
-                  <div class="control-action">Scale</div>
-                  <div class="control-keys"><span class="keycap">A</span><span class="keycap">S</span></div>
+                  <div class="control-icon-desc">⌨ A / S</div>
+                  <div class="control-info-sub">Scale</div>
                 </div>
               </div>
             </div>
@@ -1884,13 +1915,41 @@
       }
     });
 
-    document.getElementById('return-btn').addEventListener('click', () => {
+    function updateHistoryButtons() {
+      const undoBtn = document.getElementById('return-btn');
+      const redoBtn = document.getElementById('redo-btn');
+      if (undoBtn) {
+        if (moveHistory.length > 0) {
+          undoBtn.classList.remove('disabled');
+        } else {
+          undoBtn.classList.add('disabled');
+        }
+      }
+      if (redoBtn) {
+        if (redoHistory.length > 0) {
+          redoBtn.classList.remove('disabled');
+        } else {
+          redoBtn.classList.add('disabled');
+        }
+      }
+    }
+
+    function undoAction() {
       if (moveHistory.length > 0) {
         const lastMove = moveHistory.pop();
+        
+        // Save current state for redo
+        const redoMove = {
+          frag: lastMove.frag,
+          type: lastMove.type
+        };
+
         if (lastMove.type === 'color') {
+          redoMove.oldColor = lastMove.frag.color;
           lastMove.frag.color = lastMove.oldColor;
           lastMove.frag.pathElement.setAttribute("fill", lastMove.oldColor);
         } else if (lastMove.type === 'texture') {
+          redoMove.oldTexture = lastMove.frag.texture;
           lastMove.frag.texture = lastMove.oldTexture;
           if (lastMove.oldTexture === 'none') {
             lastMove.frag.textureOverlay.setAttribute("fill", "none");
@@ -1898,18 +1957,69 @@
             lastMove.frag.textureOverlay.setAttribute("fill", `url(#${lastMove.oldTexture})`);
           }
         } else {
-          // Restore previous position and rotation smoothly
+          // spatial
+          redoMove.oldX = lastMove.frag.x;
+          redoMove.oldY = lastMove.frag.y;
+          redoMove.oldRot = lastMove.frag.targetRot !== undefined ? lastMove.frag.targetRot : lastMove.frag.rot;
+          redoMove.oldScale = lastMove.frag.targetScale !== undefined ? lastMove.frag.targetScale : lastMove.frag.scale;
+
           lastMove.frag.x = lastMove.oldX;
           lastMove.frag.y = lastMove.oldY;
-          if (lastMove.oldRot !== undefined) {
-            lastMove.frag.targetRot = lastMove.oldRot;
-          }
-          if (lastMove.oldScale !== undefined) {
-            lastMove.frag.targetScale = lastMove.oldScale;
-          }
+          lastMove.frag.targetRot = lastMove.oldRot;
+          lastMove.frag.targetScale = lastMove.oldScale;
         }
+
+        redoHistory.push(redoMove);
+        updateHistoryButtons();
       }
-    });
+    }
+
+    function redoAction() {
+      if (redoHistory.length > 0) {
+        const lastRedo = redoHistory.pop();
+
+        // Save current state for undo
+        const undoMove = {
+          frag: lastRedo.frag,
+          type: lastRedo.type
+        };
+
+        if (lastRedo.type === 'color') {
+          undoMove.oldColor = lastRedo.frag.color;
+          lastRedo.frag.color = lastRedo.oldColor;
+          lastRedo.frag.pathElement.setAttribute("fill", lastRedo.oldColor);
+        } else if (lastRedo.type === 'texture') {
+          undoMove.oldTexture = lastRedo.frag.texture;
+          lastRedo.frag.texture = lastRedo.oldTexture;
+          if (lastRedo.oldTexture === 'none') {
+            lastRedo.frag.textureOverlay.setAttribute("fill", "none");
+          } else {
+            lastRedo.frag.textureOverlay.setAttribute("fill", `url(#${lastRedo.oldTexture})`);
+          }
+        } else {
+          // spatial
+          undoMove.oldX = lastRedo.frag.x;
+          undoMove.oldY = lastRedo.frag.y;
+          undoMove.oldRot = lastRedo.frag.targetRot !== undefined ? lastRedo.frag.targetRot : lastRedo.frag.rot;
+          undoMove.oldScale = lastRedo.frag.targetScale !== undefined ? lastRedo.frag.targetScale : lastRedo.frag.scale;
+
+          lastRedo.frag.x = lastRedo.oldX;
+          lastRedo.frag.y = lastRedo.oldY;
+          lastRedo.frag.targetRot = lastRedo.oldRot;
+          lastRedo.frag.targetScale = lastRedo.oldScale;
+        }
+
+        moveHistory.push(undoMove);
+        updateHistoryButtons();
+      }
+    }
+
+    document.getElementById('return-btn').addEventListener('click', undoAction);
+
+    const redoBtn = document.getElementById('redo-btn');
+    if (redoBtn) {
+      redoBtn.addEventListener('click', redoAction);
+    }
 
     document.getElementById('done-arrange-btn').addEventListener('click', () => {
       isFreeArrange = false;
