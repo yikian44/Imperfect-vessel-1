@@ -840,7 +840,7 @@
     }
 
     #gesture-hint.shrinking {
-      transform: translate(calc(50vw - 80px), calc(-50vh + 80px)) scale(0.02);
+      transform: translate(calc(50vw - 78px), calc(-50vh + 78px)) scale(0.01);
       opacity: 0;
       pointer-events: none;
     }
@@ -969,7 +969,7 @@
         transform: translate(-50%, -50%) scale(1);
       }
       #gesture-hint.shrinking {
-        transform: translate(calc(50vw - 44px), calc(-50vh + 44px)) scale(0.02);
+        transform: translate(calc(50vw - 43px), calc(-50vh + 43px)) scale(0.01);
       }
       .info-float-btn {
         top: 24px;
@@ -1067,23 +1067,23 @@
         justify-content: center;
         bottom: calc(20px + env(safe-area-inset-bottom));
         width: auto;
-        gap: 6px;
-        padding: 6px;
+        gap: 8px;
+        padding: 8px;
       }
       /* Icon-only buttons on mobile */
       #post-action-container .btn-label {
         display: none;
       }
       #post-action-container .dock-btn {
-        width: 42px;
-        height: 42px;
+        width: 48px;
+        height: 48px;
         padding: 0;
-        border-radius: 8px;
-        flex: 0 0 42px;
+        border-radius: 10px;
+        flex: 0 0 48px;
       }
       #post-action-container .btn-icon {
-        width: 17px;
-        height: 17px;
+        width: 20px;
+        height: 20px;
       }
       .prologue-quote {
         font-size: 12px;
