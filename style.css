@@ -34,6 +34,8 @@
     html.overlay-open body {
       touch-action: auto !important;
       overflow-y: auto !important;
+      height: auto !important;
+      min-height: 100dvh !important;
     }
 
     /* Custom Cursor */
@@ -1287,10 +1289,11 @@
 
     /* About Overlay */
     #about-overlay {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100%;
       background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -1299,9 +1302,6 @@
       pointer-events: none;
       visibility: hidden;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y !important;
       display: block;
       color: var(--text-color);
       box-sizing: border-box;
@@ -1410,10 +1410,11 @@
 
     /* Gallery Overlay styling */
     #gallery-overlay {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100%;
       background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -1422,9 +1423,6 @@
       pointer-events: none;
       visibility: hidden;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y !important;
       display: block;
       color: var(--text-color);
       box-sizing: border-box;
