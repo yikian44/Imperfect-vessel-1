@@ -1286,9 +1286,10 @@
       pointer-events: none;
       visibility: hidden;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y !important;
+      display: block;
       color: var(--text-color);
       box-sizing: border-box;
       padding: 40px;
@@ -1408,9 +1409,10 @@
       pointer-events: none;
       visibility: hidden;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y !important;
+      display: block;
       color: var(--text-color);
       box-sizing: border-box;
       padding: 40px;

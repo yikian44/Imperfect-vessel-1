@@ -2214,10 +2214,41 @@
     });
 
     const infoBtn = document.getElementById('info-btn');
+    const gestureHint = document.getElementById('gesture-hint');
     if (infoBtn) {
       infoBtn.addEventListener('click', () => {
         if (typeof playClink === 'function') playClink();
+        if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
         showGestureHint();
+      });
+
+      infoBtn.addEventListener('pointerenter', () => {
+        if (window.innerWidth >= 768) {
+          if (window.gestureHintTimer) clearTimeout(window.gestureHintTimer);
+          if (window.gestureHintLeaveTimer) clearTimeout(window.gestureHintLeaveTimer);
+          showGestureHint();
+        }
+      });
+
+      infoBtn.addEventListener('pointerleave', () => {
+        if (window.innerWidth >= 768) {
+          window.gestureHintLeaveTimer = setTimeout(() => {
+            hideGestureHint();
+          }, 300);
+        }
+      });
+    }
+
+    if (gestureHint) {
+      gestureHint.addEventListener('pointerenter', () => {
+        if (window.gestureHintLeaveTimer) clearTimeout(window.gestureHintLeaveTimer);
+      });
+      gestureHint.addEventListener('pointerleave', () => {
+        if (window.innerWidth >= 768) {
+          window.gestureHintLeaveTimer = setTimeout(() => {
+            hideGestureHint();
+          }, 300);
+        }
       });
     }
 
