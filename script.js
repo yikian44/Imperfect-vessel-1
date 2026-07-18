@@ -2209,7 +2209,7 @@
       return Math.random() > 0.3 ? `Portrait of a ${a} ${n}` : `The ${a} ${n}, ${s}`;
     }
 
-    function generateVesselBlob(userTitle) {
+    function generateVesselBlob(userTitle, forGallery = false) {
       return new Promise((resolve, reject) => {
         const w = window.innerWidth;
         const h = window.innerHeight;
@@ -2250,7 +2250,8 @@
         });
 
         if (userTitle && userTitle.trim().length > 0) {
-          svgContent += `<text x="${w / 2}" y="${h - 60}" font-family="'Clash Grotesk', 'Space Grotesk', Helvetica, sans-serif" font-size="14" font-weight="400" letter-spacing="6" fill="#5a5854" text-anchor="middle">${userTitle.trim().toUpperCase()}</text>`;
+          const textY = forGallery ? (h / 2 + Math.min(w, h) / 2 - 35) : (h - 60);
+          svgContent += `<text x="${w / 2}" y="${textY}" font-family="'Clash Grotesk', 'Space Grotesk', Helvetica, sans-serif" font-size="14" font-weight="400" letter-spacing="6" fill="#5a5854" text-anchor="middle">${userTitle.trim().toUpperCase()}</text>`;
         }
 
         svgContent += `</svg>`;
@@ -2261,19 +2262,38 @@
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          if (forGallery) {
+            canvas.width = 500;
+            canvas.height = 500;
+            const ctx = canvas.getContext('2d');
+            const cropSize = Math.min(w, h);
+            const sx = (w - cropSize) / 2;
+            const sy = (h - cropSize) / 2;
+            ctx.drawImage(img, sx, sy, cropSize, cropSize, 0, 0, 500, 500);
 
-          canvas.toBlob((pngBlob) => {
-            URL.revokeObjectURL(url);
-            if (pngBlob) {
-              resolve(pngBlob);
-            } else {
-              reject(new Error("Canvas toBlob failed"));
-            }
-          }, 'image/png');
+            canvas.toBlob((jpgBlob) => {
+              URL.revokeObjectURL(url);
+              if (jpgBlob) {
+                resolve(jpgBlob);
+              } else {
+                reject(new Error("Canvas toBlob failed"));
+              }
+            }, 'image/jpeg', 0.85); // High efficiency compressed JPEG for Firestore
+          } else {
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+
+            canvas.toBlob((pngBlob) => {
+              URL.revokeObjectURL(url);
+              if (pngBlob) {
+                resolve(pngBlob);
+              } else {
+                reject(new Error("Canvas toBlob failed"));
+              }
+            }, 'image/png');
+          }
         };
         img.onerror = (e) => {
           URL.revokeObjectURL(url);
@@ -2603,7 +2623,7 @@
       submitBtn.disabled = true;
 
       try {
-        const pngBlob = await generateVesselBlob(title);
+        const pngBlob = await generateVesselBlob(title, true);
         
         // Structure coordinates
         const vesselData = {
