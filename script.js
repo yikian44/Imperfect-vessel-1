@@ -2465,52 +2465,26 @@
           card.className = 'gallery-card';
           card.style.animationDelay = `${index * 0.08}s`;
           
-          const escapedTitle = (item.title || "UNTITLED").replace(/"/g, '&quot;');
-          const escapedCreator = (item.creatorName || "ANONYMOUS").replace(/"/g, '&quot;');
+          const escapedTitle = (item.title || "Untitled").replace(/"/g, '&quot;');
+          const escapedCreator = (item.creatorName || "Anonymous").replace(/"/g, '&quot;');
           
-          const isLiked = localStorage.getItem(`liked_${item.id}`) === "true";
-          const likeClass = isLiked ? "like-btn liked" : "like-btn";
+          // Format date
+          let dateStr = "";
+          if (item.createdAt) {
+            const d = new Date(item.createdAt.seconds ? item.createdAt.seconds * 1000 : item.createdAt);
+            dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+          }
 
           card.innerHTML = `
+            ${dateStr ? `<p class="card-date">${dateStr}</p>` : ''}
             <div class="card-preview-container">
-              <img class="card-preview" src="${item.imageUrl}" alt="${escapedTitle}">
+              <img class="card-preview" src="${item.imageUrl}" alt="${escapedTitle}" loading="lazy">
             </div>
             <div class="card-info">
               <h3 class="card-title">${escapedTitle}</h3>
-              <p class="card-creator">BY ${escapedCreator}</p>
-            </div>
-            <div class="card-footer">
-              <div class="card-likes">
-                <button class="${likeClass}" data-id="${item.id}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </button>
-                <span class="likes-count" id="likes-count-${item.id}">${item.likes || 0}</span>
-              </div>
+              <p class="card-creator">${escapedCreator}</p>
             </div>
           `;
-
-          // Bind Like action
-          const likeBtn = card.querySelector('.like-btn');
-          likeBtn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            if (typeof playClink === 'function') playClink();
-            
-            if (localStorage.getItem(`liked_${item.id}`) === "true") {
-              return;
-            }
-
-            const success = await dbService.likeVessel(item.id);
-            if (success) {
-              localStorage.setItem(`liked_${item.id}`, "true");
-              likeBtn.classList.add('liked');
-              const likesSpan = document.getElementById(`likes-count-${item.id}`);
-              if (likesSpan) {
-                likesSpan.innerText = parseInt(likesSpan.innerText, 10) + 1;
-              }
-            }
-          });
 
           galleryGrid.appendChild(card);
         });

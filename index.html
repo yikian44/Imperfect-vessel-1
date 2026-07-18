@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.7">
+  <link rel="stylesheet" href="style.css?v=5.0">
   <link rel="icon" href="data:,">
 </head>
 
@@ -198,22 +198,16 @@
   <!-- About Page Overlay -->
   <div id="about-overlay">
     <div class="about-nav">
-      <button id="about-close-btn" class="action-btn" data-text="CLOSE">CLOSE</button>
+      <button id="about-close-btn" class="overlay-close-btn" aria-label="Close">&#x2715;</button>
     </div>
     
     <div class="about-container">
-      <!-- Premium Visual Element: Logo -->
-      <div class="about-visual">
-        <img src="logo.svg" alt="Logo" class="about-logo-img">
-      </div>
-
-      <h1 class="about-title">Imperfect Vessel</h1>
-      <p class="about-subtitle">A digital meditation on wabi-sabi and the beauty of healing.</p>
+      <h1 class="about-title">About</h1>
       
       <div class="about-grid">
         <div class="about-col">
           <div class="about-label">01 / PHILOSOPHY</div>
-          <h3>Wabi-Sabi & Kintsugi</h3>
+          <h3>Wabi-Sabi &amp; Kintsugi</h3>
           <p>This project is inspired by the traditional Japanese aesthetics of finding beauty in imperfection, impermanence, and simplicity. Through kintsugi, broken pottery is repaired with gold lacquer—treating breakage and repair as part of the object's history, rather than something to disguise.</p>
         </div>
         
@@ -235,16 +229,11 @@
   <!-- Gallery Overlay -->
   <div id="gallery-overlay">
     <div class="gallery-nav">
-      <div class="gallery-filters">
-        <button id="gallery-filter-new" class="filter-btn active" data-text="NEWEST">NEWEST</button>
-        <button id="gallery-filter-popular" class="filter-btn" data-text="MOST LIKED">MOST LIKED</button>
-      </div>
-      <button id="gallery-close-btn" class="action-btn" data-text="CLOSE">CLOSE</button>
+      <button id="gallery-close-btn" class="overlay-close-btn" aria-label="Close">&#x2715;</button>
     </div>
     
     <div class="gallery-container">
-      <h1 class="gallery-title">Gallery of Flaws</h1>
-      <p class="gallery-subtitle">A collection of mended vessels, celebrated for their breaks.</p>
+      <h1 class="gallery-title">Gallery</h1>
       
       <div id="gallery-grid" class="gallery-grid">
         <!-- Dynamically loaded cards -->
@@ -279,7 +268,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=4.1"></script>
+  <script src="script.js?v=5.0"></script>
 </body>
 
 </html>

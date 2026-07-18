@@ -1133,7 +1133,7 @@
       inset: 0;
       width: 100vw;
       height: 100vh;
-      background-color: rgba(232, 230, 225, 0.96); /* --bg-color at 96% opacity */
+      background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       z-index: 10000;
@@ -1159,44 +1159,47 @@
       display: flex;
       justify-content: flex-end;
       width: 100%;
+      margin-bottom: 8px;
+    }
+
+    /* Shared overlay close button */
+    .overlay-close-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-color);
+      font-size: 18px;
+      line-height: 1;
+      padding: 6px;
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+    }
+    .overlay-close-btn:hover {
+      opacity: 1;
     }
 
     .about-container {
       max-width: 1000px;
       margin: 0 auto;
-      padding: 40px 0 80px 0;
+      padding: 20px 0 80px 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .about-visual {
-      margin-bottom: 24px;
-      opacity: 0.8;
-    }
-
-    .about-logo-img {
-      height: 36px;
-      width: auto;
-      display: block;
-      margin: 0 auto;
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
     }
 
     .about-title {
-      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 300;
-      margin: 0 0 12px 0;
+      margin: 0 0 40px 0;
       letter-spacing: -0.5px;
-    }
-
-    .about-subtitle {
-      font-size: 14px;
-      font-weight: 300;
-      opacity: 0.7;
-      margin: 0 0 60px 0;
-      letter-spacing: 0.5px;
-      max-width: 500px;
     }
 
     .about-grid {
@@ -1205,7 +1208,7 @@
       gap: 40px;
       text-align: left;
       width: 100%;
-      border-top: 1px solid rgba(90, 88, 84, 0.1);
+      border-top: 1px solid rgba(90, 88, 84, 0.15);
       padding-top: 40px;
     }
 
@@ -1236,10 +1239,7 @@
         padding: 24px;
       }
       .about-container {
-        padding: 20px 0 60px 0;
-      }
-      .about-subtitle {
-        margin-bottom: 40px;
+        padding: 16px 0 60px 0;
       }
       .about-grid {
         grid-template-columns: 1fr;
@@ -1254,7 +1254,7 @@
       inset: 0;
       width: 100vw;
       height: 100vh;
-      background-color: rgba(232, 230, 225, 0.96); /* --bg-color at 96% */
+      background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       z-index: 10000;
@@ -1286,81 +1286,44 @@
 
     .gallery-nav {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       width: 100%;
-    }
-
-    .gallery-filters {
-      display: flex;
-      gap: 12px;
-    }
-
-    .filter-btn {
-      padding: 6px 16px;
-      background: transparent;
-      border: 1px solid transparent;
-      color: var(--text-color);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 1.5px;
-      border-radius: 16px;
-      cursor: pointer;
-      opacity: 0.5;
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-
-    .filter-btn.active {
-      opacity: 1;
-      border-color: var(--text-color);
-      background: rgba(90, 88, 84, 0.05);
-    }
-
-    .filter-btn:hover {
-      opacity: 0.8;
+      margin-bottom: 8px;
     }
 
     .gallery-container {
       max-width: 1200px;
       margin: 0 auto;
       width: 100%;
-      padding: 40px 0 80px 0;
+      padding: 20px 0 80px 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
+      align-items: flex-start;
+      text-align: left;
     }
 
     .gallery-title {
-      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 300;
-      margin: 0 0 12px 0;
+      margin: 0 0 40px 0;
       letter-spacing: -0.5px;
-    }
-
-    .gallery-subtitle {
-      font-size: 14px;
-      font-weight: 300;
-      opacity: 0.7;
-      margin: 0 0 48px 0;
-      letter-spacing: 0.5px;
-      max-width: 500px;
     }
 
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 48px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
       width: 100%;
-      text-align: left;
+      border: 1px solid rgba(90, 88, 84, 0.12);
+      background: rgba(90, 88, 84, 0.12);
     }
 
-    /* Gallery Cards - Exhibition Design */
+    /* Gallery Cards - Blog Grid Design */
     @keyframes galleryCardFadeIn {
       from {
         opacity: 0;
-        transform: translateY(24px);
+        transform: translateY(16px);
       }
       to {
         opacity: 1;
@@ -1369,35 +1332,39 @@
     }
 
     .gallery-card {
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(90, 88, 84, 0.06);
-      border-radius: 12px;
-      padding: 24px;
+      background: rgba(232, 230, 225, 0.98);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 0;
       position: relative;
       overflow: hidden;
       opacity: 0;
-      animation: galleryCardFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: galleryCardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: background 0.3s ease;
+      cursor: pointer;
     }
 
     .gallery-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(90, 88, 84, 0.18);
-      background: rgba(255, 255, 255, 0.45);
-      box-shadow: 0 20px 40px rgba(90, 88, 84, 0.04);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .card-date {
+      font-size: 10px;
+      letter-spacing: 1px;
+      opacity: 0.45;
+      margin: 0 0 12px 0;
+      font-weight: 400;
+      text-transform: uppercase;
     }
 
     .card-preview-container {
       width: 100%;
-      aspect-ratio: 1;
-      border-radius: 8px;
+      aspect-ratio: 4 / 3;
       overflow: hidden;
-      background: #e8e6e1;
+      background: #d8d6d1;
       position: relative;
-      border: 1px solid rgba(90, 88, 84, 0.06);
+      margin-bottom: 16px;
     }
 
     .card-preview {
@@ -1405,7 +1372,7 @@
       height: 100%;
       object-fit: cover;
       opacity: 0.9;
-      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .gallery-card:hover .card-preview {
@@ -1416,70 +1383,43 @@
     .card-info {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
     }
 
     .card-title {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0;
       color: var(--text-color);
-      text-transform: uppercase;
       margin: 0;
+      line-height: 1.4;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .card-creator {
-      font-size: 10px;
-      opacity: 0.6;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin: 0;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid rgba(90, 88, 84, 0.08);
-      padding-top: 12px;
-      margin-top: auto;
-    }
-
-    .card-likes {
-      display: flex;
-      align-items: center;
-      gap: 6px;
       font-size: 11px;
-      font-weight: 500;
+      opacity: 0.5;
+      letter-spacing: 0;
+      margin: 0;
+      font-weight: 300;
     }
 
-    .like-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--text-color);
-      padding: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.7;
-      transition: all 0.3s ease;
+    /* hide old card-footer, card-likes, like-btn, remix-btn */
+    .card-footer,
+    .card-likes,
+    .like-btn,
+    .remix-btn {
+      display: none;
     }
 
-    .like-btn:hover {
-      opacity: 1;
-      transform: scale(1.2);
-      color: #d99a26;
+    @media (max-width: 900px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
-    .like-btn.liked {
-      opacity: 1;
-      color: #d99a26;
-      filter: drop-shadow(0 0 4px rgba(217, 154, 38, 0.4));
-    }
 
     /* Modal Overlay (Publishing) */
     .modal-overlay {
@@ -1613,14 +1553,10 @@
         padding: 24px;
       }
       .gallery-container {
-        padding: 20px 0 60px 0;
-      }
-      .gallery-subtitle {
-        margin-bottom: 32px;
+        padding: 16px 0 60px 0;
       }
       .gallery-grid {
         grid-template-columns: 1fr;
-        gap: 24px;
       }
     }
 
