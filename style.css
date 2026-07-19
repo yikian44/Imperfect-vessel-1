@@ -249,6 +249,9 @@
       opacity: 0.85;
       transition: opacity 3s ease;
     }
+    body.kintsugi .fragment svg {
+      filter: url(#ceramic-glaze) !important;
+    }
 
     /* Logos */
     .logo-container {
@@ -960,9 +963,6 @@
         transform: scale(0.9);
       }
       .fragment svg {
-        filter: none !important;
-      }
-      .kintsugi .fragment svg {
         filter: none !important;
       }
       #ui-panel {

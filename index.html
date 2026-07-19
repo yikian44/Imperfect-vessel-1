@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=8.9">
+  <link rel="stylesheet" href="style.css?v=9.0">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
 </head>
 
@@ -67,6 +67,21 @@
       <filter id="brush-stroke" x="-20%" y="-20%" width="140%" height="140%">
         <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="2" result="noise" />
         <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+
+      <!-- 3D Ceramic Glaze Filter -->
+      <filter id="ceramic-glaze" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+        <feSpecularLighting in="blur" surfaceScale="5" specularConstant="1.5" specularExponent="28" lighting-color="#ffffff" result="spec">
+          <feDistantLight azimuth="220" elevation="55" />
+        </feSpecularLighting>
+        <feComposite in="spec" in2="SourceAlpha" operator="in" result="specMasked" />
+        <feDiffuseLighting in="blur" surfaceScale="5" diffuseConstant="0.95" lighting-color="#ffffff" result="shading">
+          <feDistantLight azimuth="220" elevation="55" />
+        </feDiffuseLighting>
+        <feComposite in="shading" in2="SourceAlpha" operator="in" result="shadingMasked" />
+        <feBlend in="SourceGraphic" in2="shadingMasked" mode="multiply" result="shadedGraphic" />
+        <feComposite operator="arithmetic" k2="1" k3="0.85" in="shadedGraphic" in2="specMasked" result="glazed" />
       </filter>
 
       <!-- Matte Texture (Soft clouds) -->
@@ -334,7 +349,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=9.3"></script>
+  <script src="script.js?v=9.4"></script>
 </body>
 
 </html>
