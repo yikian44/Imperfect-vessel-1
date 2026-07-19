@@ -1093,41 +1093,7 @@
         customCursor.classList.remove('hover');
       });
 
-      // Interaction
-      div.addEventListener('pointerdown', (e) => {
-        if (!e.isPrimary) return; // Prevent second finger from dragging another fragment
-        e.stopPropagation();
-        if (isPrologue) return;
-        if (isSettling && !isFreeArrange) return;
-
-        // Instantly fade out gesture hint on interaction
-        if (typeof hideGestureHint === 'function') hideGestureHint();
-
-        selectFragment(frag);
-
-        // Bring to front safely without detaching DOM node
-        topZIndex++;
-        div.style.zIndex = topZIndex;
-
-        frag.isDragging = true;
-        frag.hasMoved = false;
-        frag.dragStartX = frag.x;
-        frag.dragStartY = frag.y;
-        frag.dragStartRot = frag.rot;
-        frag.dragStartScale = frag.scale;
-        frag.targetDragX = frag.x;
-        frag.targetDragY = frag.y;
-        returningFragment = null;
-        customCursor.classList.remove('hover'); // hide hover ring while dragging
-
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        const scaleVal = window.innerWidth < 768 ? 0.9 : 1.15;
-        frag.dragOffsetX = e.clientX - (centerX + frag.x * scaleVal);
-        frag.dragOffsetY = e.clientY - (centerY + frag.y * scaleVal);
-
-        div.setPointerCapture(e.pointerId);
-      });
+      // Interaction (delegated to canvas-container)
 
       div.addEventListener('pointermove', (e) => {
         if (!frag.isDragging) return;
@@ -1216,6 +1182,49 @@
       frag.glowPath = glowPath;
       frag.corePath = corePath;
       frag.tracingG = tracingG;
+    });
+
+    // Delegated pointerdown handler to bypass iOS Safari's direct event listener hit-test quirk
+    container.addEventListener('pointerdown', (e) => {
+      if (!e.isPrimary) return; // Prevent second finger from dragging another fragment
+      const fragEl = e.target.closest('.fragment');
+      if (!fragEl) return;
+
+      // Find corresponding fragment data object
+      const frag = fragments.find(f => f.element === fragEl);
+      if (!frag) return;
+
+      if (isPrologue) return;
+      if (isSettling && !isFreeArrange) return;
+
+      // Instantly fade out gesture hint on interaction
+      if (typeof hideGestureHint === 'function') hideGestureHint();
+
+      selectFragment(frag);
+
+      // Bring to front safely
+      topZIndex++;
+      frag.element.style.zIndex = topZIndex;
+
+      frag.isDragging = true;
+      frag.hasMoved = false;
+      frag.dragStartX = frag.x;
+      frag.dragStartY = frag.y;
+      frag.dragStartRot = frag.rot;
+      frag.dragStartScale = frag.scale;
+      frag.targetDragX = frag.x;
+      frag.targetDragY = frag.y;
+      returningFragment = null;
+      customCursor.classList.remove('hover'); // hide hover ring while dragging
+
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2 + (centerYOffset || 0);
+      const scaleVal = window.innerWidth < 768 ? 0.9 : 1.15;
+      frag.dragOffsetX = e.clientX - (centerX + frag.x * scaleVal);
+      frag.dragOffsetY = e.clientY - (centerY + frag.y * scaleVal);
+
+      frag.element.setPointerCapture(e.pointerId);
+      e.stopPropagation();
     });
 
     // Deselect on background click
