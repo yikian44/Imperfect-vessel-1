@@ -186,9 +186,7 @@
       transition: opacity 0s !important;
     }
 
-    body.has-selected #canvas-container {
-      z-index: 2000;
-    }
+
 
     body.kintsugi .fragment.selected {
       opacity: 1;
@@ -245,8 +243,7 @@
     /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
     body.kintsugi .fragment {
       opacity: 0.85;
-      transition: opacity 3s ease, filter 3s ease;
-      filter: drop-shadow(4px 6px 12px rgba(0, 0, 0, 0.16)) !important;
+      transition: opacity 3s ease;
     }
 
     /* Logos */
