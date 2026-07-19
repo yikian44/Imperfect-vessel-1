@@ -1,3 +1,13 @@
+    // Dynamic Visual Viewport Height tracking to prevent iOS Safari layout shift bugs
+    function refreshViewport() {
+      const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    refreshViewport();
+    window.visualViewport?.addEventListener('resize', refreshViewport);
+    window.visualViewport?.addEventListener('scroll', refreshViewport);
+    window.addEventListener('pageshow', refreshViewport);
+
     let editCount = 0;
     let isSettling = false;
     let isFreeArrange = false;
