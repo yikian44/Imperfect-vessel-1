@@ -186,6 +186,10 @@
       transition: opacity 0s !important;
     }
 
+    body.has-selected #canvas-container {
+      z-index: 2000;
+    }
+
     body.kintsugi .fragment.selected {
       opacity: 1;
     }
@@ -195,9 +199,10 @@
       transition: filter 0.3s ease !important;
     }
 
-    /* 当有碎片被选中时，未被选中的碎片变暗 */
+    /* 当有碎片被选中时，未被选中的碎片变暗且不接收点击事件，防止穿透误触 */
     body.has-selected .fragment:not(.selected) {
       opacity: 0.3 !important;
+      pointer-events: none !important;
       transition: opacity 0.3s ease !important;
     }
 
