@@ -1191,10 +1191,17 @@
 
     function selectFragment(frag) {
       if (selectedFragment) {
-        selectedFragment.element.classList.remove('selected');
+        deselectFragment();
       }
       selectedFragment = frag;
       frag.element.classList.add('selected');
+
+      // Append to selected-container so it renders on top of #ui-panel
+      const selContainer = document.getElementById('selected-container');
+      if (selContainer) {
+        selContainer.appendChild(frag.element);
+      }
+
       uiPanel.classList.add('visible');
       
       if (!isFreeArrange) {
@@ -1225,6 +1232,11 @@
 
     function deselectFragment() {
       if (selectedFragment) {
+        // Return back to canvas-container
+        const canvasContainer = document.getElementById('canvas-container');
+        if (canvasContainer) {
+          canvasContainer.appendChild(selectedFragment.element);
+        }
         selectedFragment.element.classList.remove('selected');
         selectedFragment = null;
       }
