@@ -896,7 +896,7 @@
     .controls-container {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       gap: 16px;
     }
 
@@ -949,6 +949,9 @@
       }
       #custom-cursor {
         display: none !important;
+      }
+      #canvas-container {
+        transform: scale(0.9);
       }
       .fragment svg {
         filter: none !important;

@@ -1086,8 +1086,9 @@
 
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        frag.dragOffsetX = e.clientX - (centerX + frag.x * 1.15);
-        frag.dragOffsetY = e.clientY - (centerY + frag.y * 1.15);
+        const scaleVal = window.innerWidth < 768 ? 0.9 : 1.15;
+        frag.dragOffsetX = e.clientX - (centerX + frag.x * scaleVal);
+        frag.dragOffsetY = e.clientY - (centerY + frag.y * scaleVal);
 
         div.setPointerCapture(e.pointerId);
       });
@@ -1097,8 +1098,9 @@
         e.stopPropagation();
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        const newX = (e.clientX - centerX - frag.dragOffsetX) / 1.15;
-        const newY = (e.clientY - centerY - frag.dragOffsetY) / 1.15;
+        const scaleVal = window.innerWidth < 768 ? 0.9 : 1.15;
+        const newX = (e.clientX - centerX - frag.dragOffsetX) / scaleVal;
+        const newY = (e.clientY - centerY - frag.dragOffsetY) / scaleVal;
         
         if (!frag.hasMoved) {
           if (Math.abs(newX - frag.dragStartX) > 3 || Math.abs(newY - frag.dragStartY) > 3) {
