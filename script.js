@@ -2686,6 +2686,7 @@
     document.getElementById('gallery-close-btn').addEventListener('click', () => {
       galleryOverlay.classList.remove('visible');
       document.documentElement.classList.remove('overlay-open');
+      window.scrollTo(0, 0);
     });
 
     // Toggle Filters
@@ -2985,6 +2986,7 @@
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
           galleryOverlay.classList.remove('visible');
           document.documentElement.classList.remove('overlay-open');
+          window.scrollTo(0, 0);
         }
       }
     });
@@ -3010,6 +3012,7 @@
         e.stopPropagation();
         aboutOverlay.classList.remove('visible');
         document.documentElement.classList.remove('overlay-open');
+        window.scrollTo(0, 0);
       });
       
       // Close overlay on Escape key press
@@ -3017,6 +3020,7 @@
         if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
           aboutOverlay.classList.remove('visible');
           document.documentElement.classList.remove('overlay-open');
+          window.scrollTo(0, 0);
         }
       });
     }
