@@ -39,7 +39,6 @@
     }
 
     html.overlay-open #canvas-container,
-    html.overlay-open #selected-container,
     html.overlay-open #ui-panel,
     html.overlay-open #post-action-container,
     html.overlay-open #site-logo,
@@ -165,6 +164,7 @@
       transform: scale(1.15);
       transform-origin: center center;
       pointer-events: none;
+      z-index: 5;
     }
 
     .fragment {
@@ -189,18 +189,7 @@
       transition: opacity 0s !important;
     }
 
-    #selected-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform: scale(1.15);
-      transform-origin: center center;
-      pointer-events: none;
+    body.is-dragging #canvas-container {
       z-index: 200;
     }
     
@@ -967,8 +956,7 @@
       #custom-cursor {
         display: none !important;
       }
-      #canvas-container,
-      #selected-container {
+      #canvas-container {
         transform: scale(0.9);
       }
       .fragment svg {

@@ -1196,10 +1196,8 @@
       selectedFragment = frag;
       frag.element.classList.add('selected');
 
-      // Append to selected-container so it renders on top of #ui-panel
-      const selContainer = document.getElementById('selected-container');
-      if (selContainer) {
-        selContainer.appendChild(frag.element);
+      if (typeof playClink === 'function') {
+        playClink();
       }
 
       uiPanel.classList.add('visible');
@@ -1232,11 +1230,6 @@
 
     function deselectFragment() {
       if (selectedFragment) {
-        // Return back to canvas-container
-        const canvasContainer = document.getElementById('canvas-container');
-        if (canvasContainer) {
-          canvasContainer.appendChild(selectedFragment.element);
-        }
         selectedFragment.element.classList.remove('selected');
         selectedFragment = null;
       }
