@@ -65,17 +65,37 @@
         }
 
         // Force play programmatically (handles some browsers' autoplay quirks)
-        try {
-          const playPromise = video.play();
-          if (playPromise !== undefined && typeof playPromise.catch === 'function') {
-            playPromise.catch(e => {
-              console.log("Autoplay blocked, fallback to timer");
-              triggerFallback();
-            });
+        let playAttempted = false;
+        const attemptPlay = () => {
+          if (playAttempted) return;
+          playAttempted = true;
+          try {
+            const playPromise = video.play();
+            if (playPromise !== undefined && typeof playPromise.catch === 'function') {
+              playPromise.catch(e => {
+                console.log("Autoplay blocked, triggers fallback");
+                triggerFallback();
+              });
+            }
+          } catch(err) {
+            console.log("Play failed, triggers fallback", err);
           }
-        } catch(err) {
-          console.log("Play failed, relying on fallback timer", err);
-        }
+        };
+
+        // Try playing immediately
+        attemptPlay();
+
+        // Safe user-interaction trigger for mobile browsers
+        window.addEventListener('touchstart', attemptPlay, { once: true });
+        window.addEventListener('pointerdown', attemptPlay, { once: true });
+
+        // If the video remains frozen/paused at 0.0 seconds after 1.5s, skip loader immediately.
+        setTimeout(() => {
+          if (video.currentTime === 0 || video.paused) {
+            console.log("Video autoplay blocked/frozen on mobile. Sliding up loader immediately.");
+            triggerFallback();
+          }
+        }, 1500);
 
         // Slide up when the video ends natively
         video.addEventListener('ended', () => {
