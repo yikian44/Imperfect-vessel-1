@@ -2334,12 +2334,13 @@
 
     function generateVesselBlob(userTitle, forGallery = false) {
       return new Promise((resolve, reject) => {
-        const w = window.innerWidth;
-        const h = window.innerHeight;
+        const isGallery = forGallery;
+        const w = isGallery ? 680 : window.innerWidth;
+        const h = isGallery ? 680 : window.innerHeight;
         const bg = getComputedStyle(document.body).backgroundColor;
         const svgFilters = document.getElementById('filter-defs').innerHTML;
 
-        let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+        let svgContent = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
           ${svgFilters}
           <defs>
             <filter id="bgNoise">
