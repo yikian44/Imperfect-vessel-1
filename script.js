@@ -2276,7 +2276,7 @@
         if (window.innerWidth >= 768) {
           window.gestureHintLeaveTimer = setTimeout(() => {
             hideGestureHint();
-          }, 300);
+          }, 450);
         }
       });
     }
@@ -2289,7 +2289,7 @@
         if (window.innerWidth >= 768) {
           window.gestureHintLeaveTimer = setTimeout(() => {
             hideGestureHint();
-          }, 300);
+          }, 450);
         }
       });
     }

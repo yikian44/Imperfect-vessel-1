@@ -838,9 +838,11 @@
 
     #gesture-hint {
       position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
+      top: 104px;
+      left: auto;
+      right: 56px;
+      transform: scale(0.9);
+      transform-origin: top right;
       z-index: 12000;
       pointer-events: none;
       opacity: 0;
@@ -860,11 +862,12 @@
       opacity: 1;
       visibility: visible;
       pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
+      transform: scale(1);
     }
 
     #gesture-hint.shrinking {
-      transform: translate(calc(50vw - 78px), calc(-50vh + 78px)) scale(0.01);
+      transform: scale(0.01);
+      transform-origin: top right;
       opacity: 0;
       pointer-events: none;
     }
@@ -898,6 +901,7 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 16px;
+      width: 100%;
     }
 
     .controls-title {
@@ -913,7 +917,8 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-      align-items: center;
+      align-items: flex-start;
+      width: 100%;
     }
 
     .control-row {
