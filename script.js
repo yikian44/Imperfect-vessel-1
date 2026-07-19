@@ -993,8 +993,14 @@
         textureOverlay.setAttribute("fill", "none");
       }
 
+      const glazeOverlay = document.createElementNS(svgNS, "path");
+      glazeOverlay.setAttribute("d", frag.path);
+      glazeOverlay.setAttribute("pointer-events", "none");
+      glazeOverlay.setAttribute("fill", "url(#glaze-gradient)");
+
       clippedGroup.appendChild(pathBg);
       clippedGroup.appendChild(textureOverlay);
+      clippedGroup.appendChild(glazeOverlay);
       
       drawFeatures(frag, clippedGroup, svgNS);
       
