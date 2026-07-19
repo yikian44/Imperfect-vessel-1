@@ -160,10 +160,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transform: scale(1.15);
-      transform-origin: center center;
       pointer-events: none;
-      z-index: 5;
     }
 
     .fragment {
@@ -174,6 +171,7 @@
       will-change: transform;
       transform: translateZ(0);
       pointer-events: auto;
+      z-index: 5;
     }
 
     .fragment svg {
@@ -188,9 +186,6 @@
       transition: opacity 0s !important;
     }
 
-    body.is-dragging #canvas-container {
-      z-index: 200;
-    }
     
     body.kintsugi .fragment.selected {
       opacity: 1;
@@ -956,7 +951,7 @@
         display: none !important;
       }
       #canvas-container {
-        transform: scale(0.9);
+        /* No container-level scaling to preserve standard z-indexing */
       }
       .fragment svg {
         filter: none !important;

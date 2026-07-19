@@ -1480,6 +1480,7 @@
 
       const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2 + centerYOffset;
+      const scaleVal = window.innerWidth < 768 ? 0.9 : 1.15;
       const tensionFactor = Math.min(editCount * 0.8, 25);
 
       let allSettled = true;
@@ -1539,7 +1540,7 @@
               f.x += (f.targetDragX - f.x) * 0.15;
               f.y += (f.targetDragY - f.y) * 0.15;
             }
-            f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
+            f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal})`;
             return;
           }
 
@@ -1582,7 +1583,7 @@
           }
         }
 
-        f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
+        f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal})`;
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
@@ -1614,7 +1615,7 @@
 
       if (document.getElementById('gold-underlay-svg')) {
         const goldSvg = document.getElementById('gold-underlay-svg');
-        const targetTransform = `translate(${centerX + window.parallaxX}px, ${centerY + window.parallaxY}px)`;
+        const targetTransform = `translate(${centerX + window.parallaxX}px, ${centerY + window.parallaxY}px) scale(${scaleVal})`;
         if (goldSvg.style.transform !== targetTransform) {
           goldSvg.style.transform = targetTransform;
         }
