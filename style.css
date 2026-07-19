@@ -167,7 +167,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      transform-origin: center;
+      transform-origin: 0px 0px !important;
       will-change: transform;
       transform: translateZ(0);
       pointer-events: auto;
@@ -952,8 +952,7 @@
         display: none !important;
       }
       #canvas-container {
-        transform: scale(0.9);
-        transform-origin: center center;
+        /* No container-level scaling to preserve standard z-indexing */
       }
       .fragment svg {
         filter: none !important;
