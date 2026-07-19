@@ -2697,6 +2697,19 @@
       window.scrollTo(0, 0);
     });
 
+    // Handle mobile keyboard dismiss scroll reset
+    const artTitleInput = document.getElementById('publish-art-title');
+    const creatorNameInput = document.getElementById('publish-creator-name');
+    [artTitleInput, creatorNameInput].forEach(input => {
+      if (input) {
+        input.addEventListener('blur', () => {
+          setTimeout(() => {
+            window.scrollTo(0, 0);
+          }, 150);
+        });
+      }
+    });
+
     // Close Gallery
     document.getElementById('gallery-close-btn').addEventListener('click', () => {
       galleryOverlay.classList.remove('visible');
