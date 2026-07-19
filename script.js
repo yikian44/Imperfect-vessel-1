@@ -2696,9 +2696,9 @@
 
     // Close Gallery
     document.getElementById('gallery-close-btn').addEventListener('click', () => {
+      window.scrollTo(0, 0);
       galleryOverlay.classList.remove('visible');
       document.documentElement.classList.remove('overlay-open');
-      window.scrollTo(0, 0);
     });
 
     // Toggle Filters
@@ -2996,9 +2996,9 @@
           publishModal.classList.remove('visible');
         }
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
+          window.scrollTo(0, 0);
           galleryOverlay.classList.remove('visible');
           document.documentElement.classList.remove('overlay-open');
-          window.scrollTo(0, 0);
         }
       }
     });
@@ -3022,17 +3022,17 @@
 
       aboutCloseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        window.scrollTo(0, 0);
         aboutOverlay.classList.remove('visible');
         document.documentElement.classList.remove('overlay-open');
-        window.scrollTo(0, 0);
       });
       
       // Close overlay on Escape key press
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
+          window.scrollTo(0, 0);
           aboutOverlay.classList.remove('visible');
           document.documentElement.classList.remove('overlay-open');
-          window.scrollTo(0, 0);
         }
       });
     }
