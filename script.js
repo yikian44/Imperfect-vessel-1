@@ -2691,7 +2691,10 @@
 
     // Cancel Publish
     document.getElementById('publish-cancel-btn').addEventListener('click', () => {
+      document.getElementById('publish-art-title').blur();
+      document.getElementById('publish-creator-name').blur();
       publishModal.classList.remove('visible');
+      window.scrollTo(0, 0);
     });
 
     // Close Gallery
@@ -2764,7 +2767,10 @@
         await dbService.publishVessel(title, creatorName, pngBlob, vesselData);
         
         // Hide publish modal
+        document.getElementById('publish-art-title').blur();
+        document.getElementById('publish-creator-name').blur();
         publishModal.classList.remove('visible');
+        window.scrollTo(0, 0);
         
         // Start Publish Ritual Sequence
         // 1. Fade out active page UI elements
@@ -2995,7 +3001,10 @@
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (publishModal && publishModal.classList.contains('visible')) {
+          document.getElementById('publish-art-title').blur();
+          document.getElementById('publish-creator-name').blur();
           publishModal.classList.remove('visible');
+          window.scrollTo(0, 0);
         }
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
           galleryOverlay.classList.remove('visible');
