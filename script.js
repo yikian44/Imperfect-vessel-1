@@ -1540,7 +1540,7 @@
               f.x += (f.targetDragX - f.x) * 0.15;
               f.y += (f.targetDragY - f.y) * 0.15;
             }
-            f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal})`;
+            f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
             return;
           }
 
@@ -1583,7 +1583,7 @@
           }
         }
 
-        f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal})`;
+        f.element.style.transform = `translate(${centerX + f.x + window.parallaxX}px, ${centerY + f.y + window.parallaxY}px) rotate(${f.rot}deg) scale(${f.scale})`;
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
@@ -1615,7 +1615,7 @@
 
       if (document.getElementById('gold-underlay-svg')) {
         const goldSvg = document.getElementById('gold-underlay-svg');
-        const targetTransform = `translate(${centerX + window.parallaxX}px, ${centerY + window.parallaxY}px) scale(${scaleVal})`;
+        const targetTransform = `translate(${centerX + window.parallaxX}px, ${centerY + window.parallaxY}px)`;
         if (goldSvg.style.transform !== targetTransform) {
           goldSvg.style.transform = targetTransform;
         }
