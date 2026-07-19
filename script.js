@@ -1604,6 +1604,19 @@
         }
 
         f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) translate(${f.cx * scaleVal}px, ${f.cy * scaleVal}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal}) translate(${-f.cx}px, ${-f.cy}px)`;
+
+        // Dynamic pointer-events control to protect bottom panel click-throughs on mobile
+        const uiPanelEl = document.getElementById('ui-panel');
+        if (selectedFragment && f !== selectedFragment && uiPanelEl && uiPanelEl.classList.contains('visible')) {
+          const visualY = centerY + f.y * scaleVal + window.parallaxY;
+          if (window.innerWidth < 768 && visualY > window.innerHeight - 300) {
+            f.element.style.pointerEvents = 'none';
+          } else {
+            f.element.style.pointerEvents = 'auto';
+          }
+        } else {
+          f.element.style.pointerEvents = 'auto';
+        }
       });
 
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
