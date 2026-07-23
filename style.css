@@ -1427,6 +1427,85 @@
       font-weight: 600;
     }
 
+    /* Personal Opening Hook & Story Flow */
+    .about-personal-hook {
+      width: 100%;
+      margin-bottom: 40px;
+      padding: 32px;
+      background: rgba(255, 255, 255, 0.45);
+      border-left: 3px solid var(--text-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .personal-quote {
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif !important;
+      font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+      font-style: italic;
+      margin: 0 0 12px 0;
+      line-height: 1.4;
+      color: var(--text-color);
+    }
+
+    .personal-subtext {
+      font-size: 14px;
+      opacity: 0.85;
+      margin: 0;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    .story-paragraph {
+      font-size: 15px;
+      line-height: 1.7;
+      font-weight: 300;
+      opacity: 0.9;
+      margin: 12px 0 0 0;
+      max-width: 800px;
+    }
+
+    .influences-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .influence-card {
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(90, 88, 84, 0.12);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .influence-card h3 {
+      font-size: 16px;
+      font-weight: 400;
+      margin: 0 0 4px 0;
+      color: var(--text-color);
+    }
+
+    .influence-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      opacity: 0.8;
+      margin: 0;
+      font-weight: 300;
+    }
+
+    .mini-quote {
+      font-family: 'Clash Grotesk Variable', sans-serif !important;
+      font-style: italic;
+      font-size: 13.5px;
+      margin: 0 0 6px 0;
+      padding-left: 10px;
+      border-left: 2px solid rgba(90, 88, 84, 0.3);
+      color: var(--text-color);
+    }
+
     /* About Extended Sections & Rationale Table */
     .about-section {
       width: 100%;
@@ -1646,7 +1725,8 @@
         gap: 32px;
         padding-top: 32px;
       }
-      .quotes-grid {
+      .quotes-grid,
+      .influences-grid {
         grid-template-columns: 1fr;
         gap: 16px;
       }
