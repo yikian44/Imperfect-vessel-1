@@ -1640,73 +1640,10 @@
       font-weight: 600;
     }
 
-    /* Showcase Edit Count Matrix Table (Matching User Design) */
-    .showcase-matrix-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      margin-top: 24px;
-      border: 1px solid rgba(90, 88, 84, 0.15);
-      border-radius: 12px;
-      background: #ffffff;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
-    }
-
-    .showcase-matrix-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 13.5px;
-      min-width: 680px;
-    }
-
-    .showcase-matrix-table th {
-      padding: 16px 24px;
-      font-weight: 700;
-      font-size: 13px;
-      color: #111111;
-      border-bottom: 1px solid rgba(90, 88, 84, 0.12);
-      background: #ffffff;
-    }
-
-    .showcase-matrix-table td {
-      padding: 20px 24px;
-      border-bottom: 1px solid rgba(90, 88, 84, 0.08);
-      vertical-align: middle;
-      line-height: 1.5;
-    }
-
-    .showcase-matrix-table tr:last-child td {
-      border-bottom: none;
-    }
-
-    .col-count-cell {
-      background: #fbf9f5;
-      font-weight: 700;
-      color: #111111;
-      width: 20%;
-      border-right: 1px solid rgba(90, 88, 84, 0.08);
-    }
-
-    .col-quotes-cell {
-      background: #ffffff;
-      width: 44%;
-      color: #1a1a1a;
-      border-right: 1px solid rgba(90, 88, 84, 0.08);
-    }
-
     .quote-highlight {
-      font-weight: 700;
-      font-size: 14px;
-      color: #111111;
-    }
-
-    .col-famous-cell {
-      background: #e6e5e2;
-      color: #555452;
-      width: 36%;
-      font-size: 13px;
-      line-height: 1.6;
-      font-weight: 400;
+      font-weight: 500;
+      color: var(--text-color);
+      font-size: 13.5px;
     }
 
     @media (max-width: 768px) {
