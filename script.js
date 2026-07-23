@@ -1,12 +1,39 @@
+    // Touch device detection and layout dimension caching
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+    let cachedPanelHeight = 0;
+    let cachedPanelTop = window.innerHeight;
+
+    function updateCachedPanelDimensions() {
+      const uiPanelEl = document.getElementById('ui-panel');
+      if (uiPanelEl) {
+        cachedPanelHeight = uiPanelEl.offsetHeight || 0;
+        if (uiPanelEl.classList.contains('visible')) {
+          cachedPanelTop = window.innerHeight - cachedPanelHeight;
+        } else {
+          cachedPanelTop = window.innerHeight;
+        }
+      }
+    }
+
     // Dynamic Visual Viewport Height tracking to prevent iOS Safari layout shift bugs
     function refreshViewport() {
       const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
+      updateCachedPanelDimensions();
     }
     refreshViewport();
     window.visualViewport?.addEventListener('resize', refreshViewport);
     window.visualViewport?.addEventListener('scroll', refreshViewport);
     window.addEventListener('pageshow', refreshViewport);
+    window.addEventListener('resize', refreshViewport);
+
+    // Global tactile feedback for button clicks on touch devices
+    document.addEventListener('click', (e) => {
+      const button = e.target.closest('button, .color-option, .texture-btn, .tab-btn');
+      if (button && window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate(10); } catch(err) {}
+      }
+    });
 
     let editCount = 0;
     let isSettling = false;
@@ -18,6 +45,7 @@
     let returningFragment = null;
     let time = 0;
     let isPrologue = true;
+    let isIntroComplete = false;
     let topZIndex = 100;
 
     // Prologue Sequence
@@ -44,6 +72,11 @@
         'img-speckled'
       );
 
+      bake(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='glaze-lighting' x='0%' y='0%' width='100%' height='100%'><feTurbulence type='fractalNoise' baseFrequency='0.015' numOctaves='2' result='noise' /><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.2126 0.7152 0.0722 0 0' in='noise' result='bumpMap' /><feSpecularLighting in='bumpMap' surfaceScale='15' specularConstant='1.8' specularExponent='45' lighting-color='#ffffff' result='spec'><fePointLight x='100' y='-50' z='150' /></feSpecularLighting></filter><rect width='400' height='400' fill='transparent' filter='url(#glaze-lighting)'/><path d='M-100 -100 L500 500' stroke='rgba(255,255,255,0.5)' stroke-width='80' filter='url(#b20)' /><path d='M0 -100 L600 500' stroke='rgba(255,255,255,0.3)' stroke-width='30' filter='url(#b8)' /><filter id='b20'><feGaussianBlur stdDeviation='20'/></filter><filter id='b8'><feGaussianBlur stdDeviation='8'/></filter></svg>`,
+        'img-glaze'
+      );
+
       const loader = document.getElementById('ll-loader');
       const video = document.getElementById('loader-video');
       const siteLogo = document.getElementById('site-logo');
@@ -60,7 +93,10 @@
             isPrologue = false;
             if (prologue) prologue.style.display = 'none';
             if (siteLogo) siteLogo.classList.add('visible');
-            setTimeout(() => { loader.style.display = 'none'; }, 1200);
+            setTimeout(() => {
+              loader.style.display = 'none';
+              isIntroComplete = true;
+            }, 1200);
           }
         }
 
@@ -117,6 +153,7 @@
       } else {
         // Instant fallback if video element isn't in DOM
         isPrologue = false;
+        isIntroComplete = true;
         if (prologue) prologue.style.display = 'none';
         if (siteLogo) siteLogo.classList.add('visible');
         if (loader) loader.style.display = 'none';
@@ -176,8 +213,17 @@
 
       hardwareX = e.clientX;
       hardwareY = e.clientY;
-      cursorTargetX = e.clientX;
-      cursorTargetY = e.clientY;
+
+      if (!isTouchDevice) {
+        cursorTargetX = e.clientX;
+        cursorTargetY = e.clientY;
+        
+        // Immediate update during drag for tight responsiveness
+        if (fragments && fragments.some(f => f.isDragging)) {
+          cursorX = cursorTargetX;
+          cursorY = cursorTargetY;
+        }
+      }
 
       // Crack trail logic
       if (crackCanvas && isPrologue === false) { // Only draw trail after prologue
@@ -210,14 +256,6 @@
             lastCrackY = e.clientY;
           }
         }
-      }
-
-      // Immediate update during drag for tight responsiveness
-      if (fragments && fragments.some(f => f.isDragging)) {
-        cursorX = cursorTargetX;
-        cursorY = cursorTargetY;
-        // Transform update removed here to prevent layout thrashing.
-        // updateCursor() in requestAnimationFrame handles it at 60fps.
       }
     });
 
@@ -1202,6 +1240,11 @@
 
       selectFragment(frag);
 
+      // Touch screen grab haptic
+      if (isTouchDevice && window.navigator && window.navigator.vibrate) {
+        try { window.navigator.vibrate(15); } catch(err) {}
+      }
+
       // Bring to front safely
       topZIndex++;
       frag.element.style.zIndex = topZIndex;
@@ -1246,6 +1289,7 @@
       }
 
       uiPanel.classList.add('visible');
+      updateCachedPanelDimensions();
       
       if (!isFreeArrange) {
         letGoBtn.classList.add('hidden');
@@ -1279,6 +1323,7 @@
         selectedFragment = null;
       }
       uiPanel.classList.remove('visible');
+      updateCachedPanelDimensions();
       document.body.classList.remove('has-selected');
 
       if (!isFreeArrange && !isSettling) {
@@ -1459,6 +1504,7 @@
     }
 
     function updateCursor() {
+      if (isTouchDevice) return;
       if (returningFragment) {
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2 + (centerYOffset || 0);
@@ -1514,19 +1560,19 @@
 
       let allSettled = true;
 
-      const uiPanelEl = document.getElementById('ui-panel');
-      let panelTop = window.innerHeight;
-      if (uiPanelEl && uiPanelEl.classList.contains('visible')) {
-        panelTop = uiPanelEl.getBoundingClientRect().top;
-      }
+      const panelTop = cachedPanelTop;
 
       fragments.forEach(f => {
         if (!isSettling) {
-          if (isPrologue) {
-            f.element.style.opacity = '0';
+          if (!isIntroComplete) {
+            if (f.element.style.opacity !== '0') {
+              f.element.style.opacity = '0';
+            }
             return; // Wait off-screen during prologue
           } else {
-            f.element.style.opacity = '1';
+            if (f.element.style.opacity !== '1') {
+              f.element.style.opacity = '1';
+            }
           }
 
           // Smooth shrink-in effect
@@ -1621,7 +1667,7 @@
         f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) translate(${f.cx * scaleVal}px, ${f.cy * scaleVal}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal}) translate(${-f.cx}px, ${-f.cy}px)`;
 
         // Dynamic pointer-events control to protect bottom panel click-throughs on mobile
-        if (selectedFragment && f !== selectedFragment && uiPanelEl && uiPanelEl.classList.contains('visible')) {
+        if (selectedFragment && f !== selectedFragment && uiPanel && uiPanel.classList.contains('visible')) {
           const visualY = centerY + f.y * scaleVal + window.parallaxY;
           if (window.innerWidth < 768 && visualY + 60 > panelTop) {
             f.element.style.pointerEvents = 'none';
@@ -1636,6 +1682,11 @@
       if (isSettling && allSettled && !document.body.classList.contains('kintsugi')) {
         document.body.classList.add('kintsugi');
         showFinalMessage();
+        
+        // Tactile complete feedback
+        if (window.navigator && window.navigator.vibrate) {
+          try { window.navigator.vibrate([40, 60, 40]); } catch(err) {}
+        }
         
         // Trigger natural sunlight sweep via JS
         fragments.forEach(f => {
@@ -1940,6 +1991,7 @@
       });
       selectedFragment = null;
       uiPanel.classList.remove('visible');
+      updateCachedPanelDimensions();
     });
 
     document.getElementById('change-shape-btn').addEventListener('click', () => {

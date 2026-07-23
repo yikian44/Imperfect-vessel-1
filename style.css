@@ -9,6 +9,7 @@
     * {
       box-sizing: border-box;
       cursor: none !important;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body,
@@ -18,6 +19,7 @@
       width: 100%;
       height: var(--vh, 100dvh);
       touch-action: none;
+      overscroll-behavior: none;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -172,6 +174,7 @@
       transform: translateZ(0);
       pointer-events: auto;
       z-index: 5;
+      transition: opacity 0.8s ease;
     }
 
     .fragment svg {
@@ -945,6 +948,9 @@
 
     /* Mobile Responsive Adjustments */
     @media (max-width: 768px) {
+      * {
+        cursor: auto !important;
+      }
       #loader-video {
         width: 100%;
         height: auto;
@@ -960,6 +966,9 @@
       .fragment svg {
         filter: none !important;
       }
+      .bg-noise {
+        display: none !important;
+      }
       #ui-panel {
         position: fixed;
         top: auto;
@@ -971,8 +980,8 @@
         border-radius: 24px 24px 0 0;
         padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
         gap: 16px;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         background: rgba(255, 255, 255, 0.9);
         border-top: 1px solid rgba(255, 255, 255, 0.4);
         border-right: none;
@@ -1418,6 +1427,209 @@
       font-weight: 600;
     }
 
+    /* About Extended Sections & Rationale Table */
+    .about-section {
+      width: 100%;
+      margin-top: 50px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(90, 88, 84, 0.15);
+    }
+
+    .about-section-header h2 {
+      font-size: clamp(1.4rem, 2.8vw, 2.2rem);
+      font-weight: 400;
+      margin: 8px 0 4px 0;
+      letter-spacing: -0.5px;
+      color: var(--text-color);
+    }
+
+    .about-section-header .section-desc {
+      font-size: 13px;
+      opacity: 0.7;
+      margin: 0 0 24px 0;
+      font-weight: 300;
+    }
+
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .quote-card {
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(90, 88, 84, 0.12);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .quote-card:hover {
+      background: rgba(255, 255, 255, 0.75);
+      transform: translateY(-2px);
+    }
+
+    .quote-text {
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif !important;
+      font-size: 16px;
+      font-style: italic;
+      line-height: 1.45;
+      margin: 0;
+      color: var(--text-color);
+    }
+
+    .quote-author {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.55;
+      font-weight: 600;
+    }
+
+    .quote-rationale {
+      font-size: 12.5px;
+      line-height: 1.6;
+      opacity: 0.85;
+      margin: 4px 0 0 0;
+      border-top: 1px dashed rgba(90, 88, 84, 0.15);
+      padding-top: 12px;
+      font-weight: 300;
+    }
+
+    /* Interaction vs Perfectionism Table */
+    .interaction-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+      border: 1px solid rgba(90, 88, 84, 0.15);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .interaction-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+      min-width: 680px;
+    }
+
+    .interaction-table th {
+      padding: 16px 20px;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(90, 88, 84, 0.15);
+      opacity: 0.65;
+      background: rgba(90, 88, 84, 0.04);
+      color: var(--text-color);
+    }
+
+    .interaction-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(90, 88, 84, 0.08);
+      vertical-align: top;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--text-color);
+    }
+
+    .interaction-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .interaction-table tr:hover td {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .interaction-tag {
+      display: inline-block;
+      padding: 3px 8px;
+      font-size: 9.5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(90, 88, 84, 0.1);
+      border-radius: 4px;
+      margin-right: 8px;
+      font-weight: 600;
+    }
+
+    /* Showcase Edit Count Matrix Table (Matching User Design) */
+    .showcase-matrix-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 24px;
+      border: 1px solid rgba(90, 88, 84, 0.15);
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+    }
+
+    .showcase-matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+      min-width: 680px;
+    }
+
+    .showcase-matrix-table th {
+      padding: 16px 24px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #111111;
+      border-bottom: 1px solid rgba(90, 88, 84, 0.12);
+      background: #ffffff;
+    }
+
+    .showcase-matrix-table td {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(90, 88, 84, 0.08);
+      vertical-align: middle;
+      line-height: 1.5;
+    }
+
+    .showcase-matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .col-count-cell {
+      background: #fbf9f5;
+      font-weight: 700;
+      color: #111111;
+      width: 20%;
+      border-right: 1px solid rgba(90, 88, 84, 0.08);
+    }
+
+    .col-quotes-cell {
+      background: #ffffff;
+      width: 44%;
+      color: #1a1a1a;
+      border-right: 1px solid rgba(90, 88, 84, 0.08);
+    }
+
+    .quote-highlight {
+      font-weight: 700;
+      font-size: 14px;
+      color: #111111;
+    }
+
+    .col-famous-cell {
+      background: #e6e5e2;
+      color: #555452;
+      width: 36%;
+      font-size: 13px;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
     @media (max-width: 768px) {
       .overlay-close-btn {
         top: 24px;
@@ -1433,6 +1645,17 @@
         grid-template-columns: 1fr;
         gap: 32px;
         padding-top: 32px;
+      }
+      .quotes-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .about-section {
+        margin-top: 36px;
+        padding-top: 28px;
+      }
+      .interaction-table th, .interaction-table td {
+        padding: 14px 16px;
       }
     }
 

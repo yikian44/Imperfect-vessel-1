@@ -103,10 +103,7 @@
       </filter>
 
       <pattern id="texture-glaze" width="400" height="400" patternUnits="userSpaceOnUse">
-        <rect width="400" height="400" fill="transparent" filter="url(#glaze-lighting)"/>
-        <!-- Soft diagonal shine for an extra glassy ceramic feel -->
-        <path d="M-100 -100 L500 500" stroke="rgba(255,255,255,0.5)" stroke-width="80" style="filter: blur(20px);" />
-        <path d="M0 -100 L600 500" stroke="rgba(255,255,255,0.3)" stroke-width="30" style="filter: blur(8px);" />
+        <image id="img-glaze" href="" width="400" height="400" />
       </pattern>
 
       <!-- Organic Wabi-Sabi Edge -->
@@ -279,25 +276,155 @@
       </div>
       <h1 class="about-title">About</h1>
       
+      <!-- Top 3 Pillars -->
       <div class="about-grid">
         <div class="about-col">
-          <div class="about-label">01 / PHILOSOPHY</div>
-          <h3>Wabi-Sabi &amp; Kintsugi</h3>
-          <p>This project is inspired by the traditional Japanese aesthetics of finding beauty in imperfection, impermanence, and simplicity. Through kintsugi, broken pottery is repaired with gold lacquer—treating breakage and repair as part of the object's history, rather than something to disguise.</p>
+          <div class="about-label">01 / MANIFESTO</div>
+          <h3>Perfectionism &amp; Mental Health</h3>
+          <p>In a world obsessed with seamless facades, perfectionism becomes a silent burden—a perpetual fear of cracking under pressure. <em>Imperfect Vessel</em> re-frames emotional breakdown not as ruin, but as a necessary deconstruction. We are all fragile vessels; true mental resilience begins when we stop hiding our fractures and allow ourselves to break.</p>
         </div>
         
         <div class="about-col">
-          <div class="about-label">02 / EXPERIMENT</div>
-          <h3>Digital Fracture</h3>
-          <p>Fragments are procedurally generated and suspended in an anti-gravity field. By dragging, rotating, and scaling the ceramic shards, you participate in the restoration process. Once released, the shards reassemble, sealing the seams with gold leaf underlays and ambient soundscapes.</p>
+          <div class="about-label">02 / ARTISTIC GENEALOGY</div>
+          <h3>Wabi-Sabi, Kintsugi &amp; Picasso</h3>
+          <p>Rooted in <strong>Wabi-Sabi</strong> and traditional <strong>Kintsugi</strong>, where gold lacquer transforms broken ceramic seams into luminous history rather than flaws to disguise. Combined with <strong>Picasso’s Cubism</strong>, portraiture and form are shattered into multi-perspective geometries—liberating the viewer from rigid symmetry to find raw aesthetic truth in disharmony.</p>
         </div>
         
         <div class="about-col">
-          <div class="about-label">03 / THE MAKER</div>
-          <h3>Sole Creator</h3>
-          <p>Conceptualized, designed, and developed entirely by a single creator. Focused on merging interactive physics, generative aesthetics, and meditative soundscapes into a tactile browser experience.</p>
+          <div class="about-label">03 / PHILOSOPHICAL INTENT</div>
+          <h3>Reclaiming Human Imperfection</h3>
+          <p>This digital sanctuary translates abstract therapeutic concepts into tactile visual art. By interacting with unstable geometries, the viewer transitions from passive anxiety over imperfection to active creation within flaw, recognizing that beauty lies in the courage to reassemble.</p>
         </div>
       </div>
+
+      <!-- Section: Guiding Quotes & Interpretations -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <div class="about-label">04 / GUIDING QUOTES</div>
+          <h2>Philosophical Epigraphs</h2>
+        </div>
+        <div class="quotes-grid">
+          <div class="quote-card">
+            <blockquote class="quote-text">“There is a crack, a crack in everything. That's how the light gets in.”</blockquote>
+            <div class="quote-author">— Leonard Cohen</div>
+            <p class="quote-rationale"><strong>Rationale:</strong> Perfectionism demands seamless, unbroken defense. Cohen’s quote serves as the foundational metaphor: crack lines are not defects to conceal, but the precise portals through which gold and genuine resilience shine.</p>
+          </div>
+
+          <div class="quote-card">
+            <blockquote class="quote-text">“Every act of creation is first an act of destruction.”</blockquote>
+            <div class="quote-author">— Pablo Picasso</div>
+            <p class="quote-rationale"><strong>Rationale:</strong> Relieves the fear of ruin. Before a ceramic vessel can be restored with gold or reorganized into Cubist dimension, the rigid form must shatter. Destruction is recast as necessary transformation.</p>
+          </div>
+
+          <div class="quote-card">
+            <blockquote class="quote-text">“The flaw is not a defect, but the signature of time and transformation.”</blockquote>
+            <div class="quote-author">— Japanese Kintsugi Philosophy</div>
+            <p class="quote-rationale"><strong>Rationale:</strong> Directly counters toxic perfectionist shame. Instead of discarding what is damaged, Kintsugi highlights repairs with precious gold—affirming that lived traumas make us more valuable, not less.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Interaction vs Perfectionism Table -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <div class="about-label">05 / INTERACTION RATIONALE</div>
+          <h2>Gesture to Psychology Framework</h2>
+          <p class="section-desc">How each interactive digital movement directly maps onto deconstructing perfectionist anxiety.</p>
+        </div>
+        
+        <div class="interaction-table-wrapper">
+          <table class="interaction-table">
+            <thead>
+              <tr>
+                <th>Digital Interaction</th>
+                <th>Perfectionist Dilemma</th>
+                <th>Psychological &amp; Healing Shift</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="interaction-tag">Mouse Click</span> Shatter Vessel</td>
+                <td>Fear of breaking down or exposing internal fragility under social pressure.</td>
+                <td><strong>Confrontation:</strong> Experiencing controlled shattering removes the stigma of breaking, framing breakdown as a necessary beginning.</td>
+              </tr>
+              <tr>
+                <td><span class="interaction-tag">Drag &amp; Scale</span> Free Rearrange</td>
+                <td>Paralysis by analysis; belief that life must fit into a fixed, rigid order.</td>
+                <td><strong>Agency:</strong> Interactive physics returns creative control to the user, turning chaotic shards into a personalized Cubist composition.</td>
+              </tr>
+              <tr>
+                <td><span class="interaction-tag">Undo / Redo</span> Edit Counter</td>
+                <td>Persistent doubt over past choices; fear that an earlier state was "better" or flawless.</td>
+                <td><strong>Mindfulness:</strong> Observing repeated edits helps recognize when tweaking stems from creative expression versus perfectionist anxiety.</td>
+              </tr>
+              <tr>
+                <td><span class="interaction-tag">Gold Seams</span> Kintsugi Underlay</td>
+                <td>Compulsive urge to hide emotional scars, mistakes, or vulnerability.</td>
+                <td><strong>Illumination:</strong> Gold leaf outlines illuminate seams rather than masking them, celebrating scars as luminous personal history.</td>
+              </tr>
+              <tr>
+                <td><span class="interaction-tag">Press "RELEASE"</span> Let Go Ritual</td>
+                <td>Hyper-vigilance and inability to stop tweaking or seeking flawless symmetry.</td>
+                <td><strong>Acceptance:</strong> Releasing the vessel locks the anti-gravity float, signaling closure and letting go of absolute control.</td>
+              </tr>
+              <tr>
+                <td><span class="interaction-tag">Publish Artwork</span> Community Gallery</td>
+                <td>Isolation caused by hiding behind a flawless curated persona.</td>
+                <td><strong>Connection:</strong> Sharing unique broken vessels de-stigmatizes vulnerability, fostering shared human empathy.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Section: Edit Count Showcase & Famous Quotes Table Matrix -->
+      <div class="about-section">
+        <div class="about-section-header">
+          <div class="about-label">06 / ITERATION REFLECTIONS MATRIX</div>
+          <h2>Edit Count vs. Showcase Quotes Framework</h2>
+          <p class="section-desc">How the system dynamically reflects your editing frequency, paired with philosophical inspirations from master artists and thinkers.</p>
+        </div>
+        
+        <div class="showcase-matrix-wrapper">
+          <table class="showcase-matrix-table">
+            <thead>
+              <tr>
+                <th class="col-count">Edit Count</th>
+                <th class="col-quotes">Quotes</th>
+                <th class="col-famous">Famous quotes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-count-cell"><strong>0 Edits</strong></td>
+                <td class="col-quotes-cell"><span class="quote-highlight">Sometimes, it's best to just watch.</span></td>
+                <td class="col-famous-cell">Claude Monet • Marcel Proust • Salvador Dalí</td>
+              </tr>
+              <tr>
+                <td class="col-count-cell"><strong>1–4 Edits</strong></td>
+                <td class="col-quotes-cell"><span class="quote-highlight">You knew when to stop.</span></td>
+                <td class="col-famous-cell">Leonardo da Vinci • Ludwig Mies van der Rohe • Charles Eames</td>
+              </tr>
+              <tr>
+                <td class="col-count-cell"><strong>5–15 Edits</strong></td>
+                <td class="col-quotes-cell"><span class="quote-highlight">You tried, and that is enough.</span></td>
+                <td class="col-famous-cell">Edwin Land • Samuel Beckett • Émile Zola</td>
+              </tr>
+              <tr>
+                <td class="col-count-cell"><strong>16–25 Edits</strong></td>
+                <td class="col-quotes-cell"><span class="quote-highlight">You tried to hold everything together.</span></td>
+                <td class="col-famous-cell">Scott Adams • Steve Jobs • Dieter Rams</td>
+              </tr>
+              <tr>
+                <td class="col-count-cell"><strong>&gt;25 Edits</strong></td>
+                <td class="col-quotes-cell"><span class="quote-highlight">&nbsp;Not everything needs to be fixed.</span></td>
+                <td class="col-famous-cell">Salvador Dalí • Robert Henri • Leonardo da Vinci</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
 
