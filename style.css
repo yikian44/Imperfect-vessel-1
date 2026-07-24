@@ -2072,3 +2072,71 @@
       line-height: 1.6;
     }
 
+    /* Relaxation Notifications (Top-Right Slide-In Toast) */
+    #relax-toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .relax-toast {
+      background: rgba(26, 24, 22, 0.88);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28), 0 0 18px rgba(212, 175, 55, 0.1);
+      border-radius: 10px;
+      padding: 12px 20px;
+      color: #f4f2ed;
+      font-family: 'Space Grotesk', sans-serif;
+      max-width: 320px;
+      pointer-events: auto;
+
+      /* Initial state for slide-in */
+      transform: translateX(130%);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      will-change: transform, opacity;
+    }
+
+    .relax-toast.visible {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    /* "一下子消失" - Rapid snap out animation */
+    .relax-toast.snap-out {
+      transform: scale(0.92) translateY(-12px) !important;
+      opacity: 0 !important;
+      transition: transform 0.1s ease-out, opacity 0.08s ease-out !important;
+    }
+
+    .relax-toast-text {
+      font-size: 13px;
+      line-height: 1.4;
+      color: #f0eee9;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      text-align: left;
+    }
+
+    @media (max-width: 768px) {
+      #relax-toast-container {
+        top: 16px;
+        right: 16px;
+        left: 16px;
+        align-items: center;
+      }
+      .relax-toast {
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+

@@ -36,6 +36,88 @@
     });
 
     let editCount = 0;
+    let lastNotifiedEditCount = 0;
+    let activeToastTimeout = null;
+
+    const relaxPhrases = [
+      {
+        minEdit: 3,
+        text: "Take a deep breath. Imperfection is natural."
+      },
+      {
+        minEdit: 7,
+        text: "It doesn't need to be flawless to be beautiful."
+      },
+      {
+        minEdit: 12,
+        text: "Let your hands rest for a moment. Feel the calm."
+      },
+      {
+        minEdit: 18,
+        text: "Shattered pieces hold their own quiet grace."
+      },
+      {
+        minEdit: 22,
+        text: "You don't have to fix every detail. Allow cracks to exist."
+      },
+      {
+        minEdit: 28,
+        text: "Not everything needs perfection. Release whenever ready."
+      }
+    ];
+
+    function checkRelaxNotification() {
+      if (isSettling || isPrologue) return;
+      if (editCount >= 3 && (lastNotifiedEditCount === 0 || editCount - lastNotifiedEditCount >= 4)) {
+        lastNotifiedEditCount = editCount;
+        showRelaxNotification(editCount);
+      }
+    }
+
+    function showRelaxNotification(count) {
+      const container = document.getElementById('relax-toast-container');
+      if (!container) return;
+
+      if (activeToastTimeout) {
+        clearTimeout(activeToastTimeout);
+        activeToastTimeout = null;
+      }
+
+      const oldToasts = container.querySelectorAll('.relax-toast');
+      oldToasts.forEach(t => {
+        t.classList.add('snap-out');
+        setTimeout(() => { if (t.parentNode) t.remove(); }, 100);
+      });
+
+      let item = relaxPhrases[0];
+      for (let i = relaxPhrases.length - 1; i >= 0; i--) {
+        if (count >= relaxPhrases[i].minEdit) {
+          item = relaxPhrases[i];
+          break;
+        }
+      }
+
+      const toast = document.createElement('div');
+      toast.className = 'relax-toast';
+      toast.innerHTML = `<div class="relax-toast-text">${item.text}</div>`;
+
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          toast.classList.add('visible');
+        });
+      });
+
+      // Display for 3.2 seconds, then snap out ("一下子消失")
+      activeToastTimeout = setTimeout(() => {
+        toast.classList.add('snap-out');
+        setTimeout(() => {
+          if (toast.parentNode) toast.remove();
+        }, 100);
+      }, 3200);
+    }
+
     let isSettling = false;
     let isFreeArrange = false;
     let isCustomArranged = false;
@@ -47,6 +129,7 @@
     let isPrologue = true;
     let isIntroComplete = false;
     let topZIndex = 100;
+
 
     // Prologue Sequence
     window.addEventListener('load', () => {
@@ -1170,6 +1253,8 @@
             });
             redoHistory = [];
             updateHistoryButtons();
+            editCount++;
+            checkRelaxNotification();
             
             // Allow fragments to be placed anywhere and stay there
             if (!isSettling && !isFreeArrange) {
@@ -1258,6 +1343,10 @@
       frag.targetDragX = frag.x;
       frag.targetDragY = frag.y;
       returningFragment = null;
+      cursorTargetX = e.clientX;
+      cursorTargetY = e.clientY;
+      cursorX = e.clientX;
+      cursorY = e.clientY;
       customCursor.classList.remove('hover'); // hide hover ring while dragging
 
       const centerX = window.innerWidth / 2;
@@ -1312,6 +1401,7 @@
 
       document.body.classList.add('has-selected');
       editCount += 0.5;
+      checkRelaxNotification();
 
       // Force swipe hints to recalculate after layout becomes visible
       setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
@@ -1343,6 +1433,7 @@
       selectedFragment.color = color;
       selectedFragment.pathElement.setAttribute("fill", color);
       editCount++;
+      checkRelaxNotification();
     }
 
     function applyTexture(textureId) {
@@ -1361,6 +1452,7 @@
         selectedFragment.textureOverlay.setAttribute("fill", `url(#${textureId})`);
       }
       editCount++;
+      checkRelaxNotification();
     }
 
     // Keyboard Rotation and Undo/Redo
@@ -1400,6 +1492,8 @@
         updateHistoryButtons();
 
         selectedFragment.targetRot -= 15;
+        editCount++;
+        checkRelaxNotification();
       } else if (e.code === 'KeyX' || e.key.toLowerCase() === 'x') {
         if (selectedFragment.targetRot === undefined) selectedFragment.targetRot = selectedFragment.rot;
         
@@ -1414,6 +1508,8 @@
         updateHistoryButtons();
 
         selectedFragment.targetRot += 15;
+        editCount++;
+        checkRelaxNotification();
       } else if (e.code === 'KeyA' || e.key.toLowerCase() === 'a') {
         if (selectedFragment.targetScale === undefined) selectedFragment.targetScale = selectedFragment.scale;
         
@@ -1429,6 +1525,8 @@
         updateHistoryButtons();
 
         selectedFragment.targetScale = Math.min(4.0, selectedFragment.targetScale + 0.1);
+        editCount++;
+        checkRelaxNotification();
       } else if (e.code === 'KeyS' || e.key.toLowerCase() === 's') {
         if (selectedFragment.targetScale === undefined) selectedFragment.targetScale = selectedFragment.scale;
         
@@ -1444,6 +1542,8 @@
         updateHistoryButtons();
 
         selectedFragment.targetScale = Math.max(0.3, selectedFragment.targetScale - 0.1);
+        editCount++;
+        checkRelaxNotification();
       }
     });
 
@@ -1505,12 +1605,10 @@
 
     function updateCursor() {
       if (isTouchDevice) return;
-      if (returningFragment) {
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2 + (centerYOffset || 0);
-        cursorX = centerX + returningFragment.x + returningFragment.dragOffsetX;
-        cursorY = centerY + returningFragment.y + returningFragment.dragOffsetY;
-      } else if (!fragments.some(f => f.isDragging)) {
+      if (fragments && fragments.some(f => f.isDragging)) {
+        cursorX = cursorTargetX;
+        cursorY = cursorTargetY;
+      } else {
         cursorX += (cursorTargetX - cursorX) * 0.85;
         cursorY += (cursorTargetY - cursorY) * 0.85;
       }
@@ -1743,6 +1841,14 @@
       returningFragment = null;
       letGoBtn.classList.add('hidden');
 
+      // Dismiss any active relaxation toast
+      const toastContainer = document.getElementById('relax-toast-container');
+      if (toastContainer) {
+        const toasts = toastContainer.querySelectorAll('.relax-toast');
+        toasts.forEach(t => t.classList.add('snap-out'));
+        setTimeout(() => { if (toastContainer) toastContainer.innerHTML = ''; }, 100);
+      }
+
       // Hide gallery and about buttons
       const headerNavGroup = document.querySelector('.header-nav-group');
       if (headerNavGroup) {
@@ -1847,6 +1953,13 @@
       document.getElementById('style-menu-content').style.display = 'flex';
       document.getElementById('style-arrow-icon').classList.add('expanded');
       editCount = 0;
+      lastNotifiedEditCount = 0;
+      if (activeToastTimeout) {
+        clearTimeout(activeToastTimeout);
+        activeToastTimeout = null;
+      }
+      const resetToastContainer = document.getElementById('relax-toast-container');
+      if (resetToastContainer) resetToastContainer.innerHTML = '';
       isSettling = false;
       isFreeArrange = false;
       isCustomArranged = false;
@@ -2210,6 +2323,15 @@
                 <div>
                   <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Scale Keys</div>
                   <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Resize shard</div>
+                </div>
+              </div>
+              <div class="control-row" style="display:flex; flex-direction:row; align-items:center; gap:16px; text-align:left;">
+                <span style="width:36px; height:36px; background:#f4f3ef; border: 1px solid rgba(0,0,0,0.05); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1e1d1a; flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+                </span>
+                <div>
+                  <div class="control-icon-desc" style="font-size:12px; font-weight:600; color:#1e1d1a;">Undo / Redo</div>
+                  <div class="control-info-sub" style="font-size:9px; opacity:0.5; text-transform:uppercase; letter-spacing:1px; margin-top:1px;">Ctrl/Cmd + Z / Y</div>
                 </div>
               </div>
             </div>
