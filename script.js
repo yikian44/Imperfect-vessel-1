@@ -183,38 +183,46 @@
           }
         }
 
-        // Force play programmatically (handles some browsers' autoplay quirks)
-        let playAttempted = false;
+        // Force play programmatically (handles Mobile Safari & Chrome Mobile Simulator quirks)
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+
         const attemptPlay = () => {
-          if (playAttempted) return;
-          playAttempted = true;
+          video.muted = true;
           try {
             const playPromise = video.play();
             if (playPromise !== undefined && typeof playPromise.catch === 'function') {
               playPromise.catch(e => {
-                console.log("Autoplay blocked, triggers fallback");
-                triggerFallback();
+                console.log("Autoplay waiting for user gesture or load:", e);
               });
             }
           } catch(err) {
-            console.log("Play failed, triggers fallback", err);
+            console.log("Play attempt error:", err);
           }
         };
 
-        // Try playing immediately
+        // Try playing immediately and on video ready events
         attemptPlay();
+        video.addEventListener('canplay', attemptPlay, { once: true });
+        video.addEventListener('loadeddata', attemptPlay, { once: true });
 
         // Safe user-interaction trigger for mobile browsers
         window.addEventListener('touchstart', attemptPlay, { once: true });
         window.addEventListener('pointerdown', attemptPlay, { once: true });
 
-        // If the video remains frozen/paused at 0.0 seconds after 1.5s, skip loader immediately.
+        video.addEventListener('error', () => {
+          console.log("Video load error, triggering fallback.");
+          triggerFallback();
+        });
+
+        // 6-second fallback check if video completely fails to play
         setTimeout(() => {
-          if (video.currentTime === 0 || video.paused) {
-            console.log("Video autoplay blocked/frozen on mobile. Sliding up loader immediately.");
+          if (video.paused && video.currentTime === 0) {
+            console.log("Video playback did not start after 6s. Sliding up loader.");
             triggerFallback();
           }
-        }, 1500);
+        }, 6000);
 
         // Slide up when the video ends natively
         video.addEventListener('ended', () => {
