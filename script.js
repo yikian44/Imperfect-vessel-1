@@ -204,25 +204,24 @@
 
         // Try playing immediately and on video ready events
         attemptPlay();
-        video.addEventListener('canplay', attemptPlay, { once: true });
-        video.addEventListener('loadeddata', attemptPlay, { once: true });
-
-        // Safe user-interaction trigger for mobile browsers
-        window.addEventListener('touchstart', attemptPlay, { once: true });
-        window.addEventListener('pointerdown', attemptPlay, { once: true });
+        video.addEventListener('canplay', attemptPlay);
+        video.addEventListener('loadeddata', attemptPlay);
+        if (loader) loader.addEventListener('click', attemptPlay);
+        window.addEventListener('touchstart', attemptPlay);
+        window.addEventListener('pointerdown', attemptPlay);
 
         video.addEventListener('error', () => {
           console.log("Video load error, triggering fallback.");
           triggerFallback();
         });
 
-        // 6-second fallback check if video completely fails to play
+        // 8-second fallback check if video completely fails to play
         setTimeout(() => {
           if (video.paused && video.currentTime === 0) {
-            console.log("Video playback did not start after 6s. Sliding up loader.");
+            console.log("Video playback did not start after 8s. Sliding up loader.");
             triggerFallback();
           }
-        }, 6000);
+        }, 8000);
 
         // Slide up when the video ends natively
         video.addEventListener('ended', () => {
