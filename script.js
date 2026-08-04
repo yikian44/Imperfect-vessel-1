@@ -3295,17 +3295,17 @@
     }
 
     // Scroll listener to hide overlay close buttons when scrolled down, and show them at the very top
-    window.addEventListener('scroll', () => {
-      if (document.documentElement.classList.contains('overlay-open')) {
-        const isScrolled = window.scrollY > 10;
-        const closeBtns = document.querySelectorAll('.overlay-close-btn');
-        closeBtns.forEach(btn => {
-          if (isScrolled) {
-            btn.classList.add('scrolled-down');
-          } else {
-            btn.classList.remove('scrolled-down');
-          }
-        });
-      }
-    });
+    const handleOverlayScroll = (e) => {
+      const isScrolled = e.target.scrollTop > 10;
+      const closeBtns = document.querySelectorAll('.overlay-close-btn');
+      closeBtns.forEach(btn => {
+        if (isScrolled) {
+          btn.classList.add('scrolled-down');
+        } else {
+          btn.classList.remove('scrolled-down');
+        }
+      });
+    };
+    if (aboutOverlay) aboutOverlay.addEventListener('scroll', handleOverlayScroll);
+    if (galleryOverlay) galleryOverlay.addEventListener('scroll', handleOverlayScroll);
 

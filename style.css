@@ -17,13 +17,17 @@
       margin: 0;
       padding: 0;
       width: 100%;
+      height: 100%;
       height: var(--vh, 100dvh);
       touch-action: none;
       overscroll-behavior: none;
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: 'Space Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      overflow: hidden;
+      overflow: hidden !important;
+      position: fixed;
+      top: 0;
+      left: 0;
       user-select: none;
       /* Woven canvas texture */
       background-image: 
@@ -33,10 +37,8 @@
 
     html.overlay-open,
     html.overlay-open body {
-      touch-action: auto !important;
-      overflow-y: auto !important;
-      height: auto !important;
-      min-height: var(--vh, 100dvh) !important;
+      touch-action: auto;
+      overflow: hidden !important;
     }
 
     html.overlay-open #canvas-container,
@@ -1311,11 +1313,13 @@
 
     /* About Overlay */
     #about-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      min-height: 100%;
+      width: 100vw;
+      height: var(--vh, 100dvh);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -1323,14 +1327,15 @@
       opacity: 0;
       pointer-events: none;
       visibility: hidden;
+      display: none;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      display: block;
       color: var(--text-color);
       box-sizing: border-box;
       padding: 40px;
     }
 
     #about-overlay.visible {
+      display: block !important;
       opacity: 1;
       pointer-events: auto;
       visibility: visible;
@@ -1678,11 +1683,13 @@
 
     /* Gallery Overlay styling */
     #gallery-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      min-height: 100%;
+      width: 100vw;
+      height: var(--vh, 100dvh);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       background-color: rgba(232, 230, 225, 0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -1690,11 +1697,18 @@
       opacity: 0;
       pointer-events: none;
       visibility: hidden;
+      display: none;
       transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.8s;
-      display: block;
       color: var(--text-color);
       box-sizing: border-box;
       padding: 40px;
+    }
+
+    #gallery-overlay.visible {
+      display: block !important;
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
     }
 
     #gallery-overlay::-webkit-scrollbar {
