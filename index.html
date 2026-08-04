@@ -7,7 +7,10 @@
   <title>Imperfect Vessel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@200,300,400,500,600,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=10.9">
   <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -24,9 +27,12 @@
   <div id="prologue">
     <div class="prologue-content">
       <div id="prologue-logo" class="logo-container">
-        <svg class="site-logo-svg" width="180" height="50" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="20" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16" font-weight="400" fill="currentColor">Imperfection</text>
-          <text x="40" y="38" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16" font-weight="400" fill="currentColor">Vessel</text>
+        <svg class="site-logo-svg" width="180" height="50" viewBox="0 0 180 50" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="20" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16"
+            font-weight="400" fill="currentColor">Imperfection</text>
+          <text x="40" y="38" font-family="'Clash Grotesk Variable', 'Clash Grotesk', sans-serif" font-size="16"
+            font-weight="400" fill="currentColor">Vessel</text>
           <g transform="translate(125, 8) scale(0.5)">
             <polygon points="0,0 48,0 24,24" fill="currentColor" />
             <polygon points="50,0 98,0 74,24" fill="currentColor" />
@@ -41,7 +47,7 @@
   <!-- Global Dark Dimmer and Texture Filters -->
   <div class="bg-noise"></div>
   <div id="bg-dimmer"></div>
-  
+
   <!-- Mouse Trail Fracture Canvas -->
   <svg id="crack-canvas"></svg>
 
@@ -85,8 +91,8 @@
 
       <!-- Rough Canvas Texture (Crosshatch) - Made more obvious -->
       <pattern id="texture-canvas" width="8" height="8" patternUnits="userSpaceOnUse">
-        <path d="M0 0L8 0M0 4L8 4" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
-        <path d="M0 0L0 8M4 0L4 8" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+        <path d="M0 0L8 0M0 4L8 4" stroke="rgba(0,0,0,0.15)" stroke-width="1" />
+        <path d="M0 0L0 8M4 0L4 8" stroke="rgba(0,0,0,0.15)" stroke-width="1" />
       </pattern>
 
       <!-- Glaze Texture (Glossy ceramic reflection with subtle crackle/waviness) -->
@@ -94,13 +100,16 @@
         <!-- Smooth, undulating surface noise for glass-like distortion -->
         <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
         <!-- Convert luminance to alpha for bump map -->
-        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.2126 0.7152 0.0722 0 0" in="noise" result="bumpMap" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.2126 0.7152 0.0722 0 0" in="noise"
+          result="bumpMap" />
         <!-- Generate glossy specular highlight -->
-        <feSpecularLighting in="bumpMap" surfaceScale="15" specularConstant="1.8" specularExponent="45" lighting-color="#ffffff" result="spec">
+        <feSpecularLighting in="bumpMap" surfaceScale="15" specularConstant="1.8" specularExponent="45"
+          lighting-color="#ffffff" result="spec">
           <fePointLight x="100" y="-50" z="150" />
         </feSpecularLighting>
         <!-- Ensure black areas of the lighting become transparent so it overlays cleanly -->
-        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0.33 0.33 0.33 0 0" in="spec" result="specAlpha" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0.33 0.33 0.33 0 0" in="spec"
+          result="specAlpha" />
       </filter>
 
       <pattern id="texture-glaze" width="400" height="400" patternUnits="userSpaceOnUse">
@@ -116,8 +125,10 @@
       <!-- Gold Leaf / Foil Texture -->
       <filter id="gold-leaf" x="-20%" y="-20%" width="140%" height="140%">
         <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="4" result="crinkle" />
-        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.5 0 0 0 0" in="crinkle" result="bumpMap" />
-        <feSpecularLighting in="bumpMap" surfaceScale="5" specularConstant="2.5" specularExponent="35" lighting-color="#fffae6" result="glare">
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.5 0 0 0 0" in="crinkle"
+          result="bumpMap" />
+        <feSpecularLighting in="bumpMap" surfaceScale="5" specularConstant="2.5" specularExponent="35"
+          lighting-color="#fffae6" result="glare">
           <fePointLight x="-150" y="-150" z="250" />
         </feSpecularLighting>
         <feComposite operator="arithmetic" k1="0" k2="1" k3="1" k4="0" in="glare" in2="SourceGraphic" result="foil" />
@@ -132,32 +143,37 @@
 
       <!-- Cracked Glaze / Ruwen Texture -->
       <pattern id="texture-cracked" width="80" height="80" patternUnits="userSpaceOnUse">
-        <path d="M 0,15 L 15,30 L 40,35 L 55,20 L 80,25 M 30,50 L 40,70 L 60,65 M 15,30 L 30,50 M 40,35 L 40,70 M 55,20 L 60,65 M 0,60 L 25,55 L 30,50 M 55,20 L 70,5 L 80,10 M 40,70 L 50,80 M 60,65 L 80,55" stroke="rgba(40, 38, 35, 0.55)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M 0,15 L 15,30 L 40,35 L 55,20 L 80,25 M 30,50 L 40,70 L 60,65 M 15,30 L 30,50 M 40,35 L 40,70 M 55,20 L 60,65 M 0,60 L 25,55 L 30,50 M 55,20 L 70,5 L 80,10 M 40,70 L 50,80 M 60,65 L 80,55"
+          stroke="rgba(40, 38, 35, 0.55)" stroke-width="1.2" fill="none" stroke-linecap="round"
+          stroke-linejoin="round" />
       </pattern>
 
       <!-- Gold Dust / Maki-e Flakes -->
       <pattern id="texture-gold-dust" width="64" height="64" patternUnits="userSpaceOnUse">
-        <circle cx="10" cy="15" r="1.5" fill="#d4af37" opacity="0.85"/>
-        <circle cx="28" cy="45" r="1" fill="#e5c158" opacity="0.75"/>
-        <circle cx="50" cy="25" r="2.2" fill="#d4af37" opacity="0.9"/>
-        <circle cx="40" cy="55" r="1.2" fill="#e5c158" opacity="0.8"/>
-        <circle cx="18" cy="35" r="0.8" fill="#d4af37" opacity="0.6"/>
+        <circle cx="10" cy="15" r="1.5" fill="#d4af37" opacity="0.85" />
+        <circle cx="28" cy="45" r="1" fill="#e5c158" opacity="0.75" />
+        <circle cx="50" cy="25" r="2.2" fill="#d4af37" opacity="0.9" />
+        <circle cx="40" cy="55" r="1.2" fill="#e5c158" opacity="0.8" />
+        <circle cx="18" cy="35" r="0.8" fill="#d4af37" opacity="0.6" />
       </pattern>
 
       <!-- Woven Linen / Fiber Texture -->
       <pattern id="texture-linen" width="12" height="12" patternUnits="userSpaceOnUse">
-        <path d="M 0 3 L 12 3 M 0 9 L 12 9" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1"/>
-        <path d="M 3 0 L 3 12 M 9 0 L 9 12" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1"/>
+        <path d="M 0 3 L 12 3 M 0 9 L 12 9" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1" />
+        <path d="M 3 0 L 3 12 M 9 0 L 9 12" stroke="rgba(90, 88, 84, 0.12)" stroke-width="1" />
       </pattern>
 
       <!-- Fish Scales / Seigaiha Pattern -->
       <pattern id="texture-scales" width="30" height="24" patternUnits="userSpaceOnUse">
-        <path d="M 0 12 A 15 12 0 0 1 30 12 M -15 0 A 15 12 0 0 1 15 0 M 15 0 A 15 12 0 0 1 45 0" stroke="rgba(90, 88, 84, 0.25)" stroke-width="1" fill="none"/>
+        <path d="M 0 12 A 15 12 0 0 1 30 12 M -15 0 A 15 12 0 0 1 15 0 M 15 0 A 15 12 0 0 1 45 0"
+          stroke="rgba(90, 88, 84, 0.25)" stroke-width="1" fill="none" />
       </pattern>
 
       <!-- Zen Ripples / Raked Gravel Pattern -->
       <pattern id="texture-ripple" width="40" height="20" patternUnits="userSpaceOnUse">
-        <path d="M 0 5 Q 10 0, 20 5 T 40 5 M 0 15 Q 10 10, 20 15 T 40 15" stroke="rgba(90, 88, 84, 0.25)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+        <path d="M 0 5 Q 10 0, 20 5 T 40 5 M 0 15 Q 10 10, 20 15 T 40 15" stroke="rgba(90, 88, 84, 0.25)"
+          stroke-width="1.1" fill="none" stroke-linecap="round" />
       </pattern>
     </defs>
   </svg>
@@ -166,24 +182,38 @@
 
   <div id="ui-panel">
     <div id="style-menu-container" style="width: 100%;">
-      <div id="toggle-style-btn" style="width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 0 0 8px 0; opacity: 1; transition: opacity 0.3s;">
-        <svg id="style-arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <div id="toggle-style-btn"
+        style="width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; padding: 0 0 8px 0; opacity: 1; transition: opacity 0.3s;">
+        <svg id="style-arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="18 15 12 9 6 15"></polyline>
         </svg>
       </div>
       <div id="style-menu-content" style="display: none; flex-direction: column; gap: 16px; margin-top: 16px;">
         <div id="color-section">
-          <div class="ui-label" style="display: flex; justify-content: space-between; align-items: center; padding-right: 4px;">
+          <div class="ui-label"
+            style="display: flex; justify-content: space-between; align-items: center; padding-right: 4px;">
             <span>COLOR</span>
-            <span id="color-swipe-hint" style="font-size: 9px; opacity: 0.5; font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px; transition: opacity 0.3s ease;">Swipe <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            <span id="color-swipe-hint"
+              style="font-size: 9px; opacity: 0.5; font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px; transition: opacity 0.3s ease;">Swipe
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg></span>
           </div>
           <div class="options-row" id="color-options"></div>
         </div>
         <div class="panel-divider"></div>
         <div id="texture-section">
-          <div class="ui-label" style="display: flex; justify-content: space-between; align-items: center; padding-right: 4px;">
+          <div class="ui-label"
+            style="display: flex; justify-content: space-between; align-items: center; padding-right: 4px;">
             <span>TEXTURE</span>
-            <span id="texture-swipe-hint" style="font-size: 9px; opacity: 0.5; font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px; transition: opacity 0.3s ease;">Swipe <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            <span id="texture-swipe-hint"
+              style="font-size: 9px; opacity: 0.5; font-weight: normal; text-transform: none; display: flex; align-items: center; gap: 4px; letter-spacing: 0.5px; transition: opacity 0.3s ease;">Swipe
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg></span>
           </div>
           <div class="options-row" id="texture-options">
             <button class="texture-btn" data-texture="none" data-text="Plain">Plain</button>
@@ -207,14 +237,16 @@
         <div class="ui-label">History</div>
         <div class="history-controls">
           <button id="return-btn" class="history-btn disabled" title="Undo (Cmd/Ctrl+Z)">
-            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 7v6h6"></path>
               <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path>
             </svg>
             Undo
           </button>
           <button id="redo-btn" class="history-btn disabled" title="Redo (Cmd/Ctrl+Y or Cmd/Ctrl+Shift+Z)">
-            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 7v6h-6"></path>
               <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path>
             </svg>
@@ -229,7 +261,8 @@
 
   <div id="gesture-hint" style="display: none;"></div>
   <button id="info-btn" class="info-float-btn" title="Show Controls Guide" style="display: none;">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
       <line x1="12" y1="16" x2="12" y2="12"></line>
       <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -240,11 +273,16 @@
   <div id="final-message"></div>
   <div id="post-action-container">
     <button id="try-again-btn" class="dock-btn tab-btn" data-text="TRY AGAIN" title="Try Again">
-      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+      </svg>
       <span class="btn-label">TRY AGAIN</span>
     </button>
     <button id="change-shape-btn" class="dock-btn tab-btn" data-text="CHANGE SHAPE" title="Change Shape">
-      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="8" cy="16" r="5"></circle>
         <rect x="12" y="12" width="9" height="9" rx="1"></rect>
         <polygon points="15 2 21 11 9 11"></polygon>
@@ -252,11 +290,20 @@
       <span class="btn-label">CHANGE SHAPE</span>
     </button>
     <button id="free-arrange-btn" class="dock-btn tab-btn" data-text="REARRANGE" title="Rearrange">
-      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
+      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="5 9 2 12 5 15" />
+        <polyline points="9 5 12 2 15 5" />
+        <polyline points="15 19 12 22 9 19" />
+        <polyline points="19 9 22 12 19 15" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <line x1="12" y1="2" x2="12" y2="22" />
+      </svg>
       <span class="btn-label">REARRANGE</span>
     </button>
     <button id="save-btn" class="dock-btn tab-btn" data-text="SAVE (PNG)" title="Save as PNG">
-      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
         <polyline points="17 21 17 13 7 13 7 21"></polyline>
         <polyline points="7 3 7 8 15 8"></polyline>
@@ -264,7 +311,14 @@
       <span class="btn-label">SAVE (PNG)</span>
     </button>
     <button id="publish-btn" class="dock-btn primary-dock-btn" data-text="PUBLISH" title="Publish">
-      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <svg class="btn-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
       <span class="btn-label">PUBLISH</span>
     </button>
   </div>
@@ -279,8 +333,11 @@
 
       <!-- Personal Opening Hook -->
       <div class="about-personal-hook">
-        <blockquote class="personal-quote">“I built this project because I spent too much time believing every flaw needed fixing.”</blockquote>
-        <p class="personal-subtext">Perfectionism rarely feels like confidence. More often, it feels like fear—a quiet worry that one mistake might ruin everything. <em>Imperfect Vessel</em> is a digital space designed to unlearn that fear.</p>
+        <blockquote class="personal-quote">“I built this project because I spent too much time believing every flaw
+          needed fixing.”</blockquote>
+        <p class="personal-subtext">Perfectionism rarely feels like confidence. More often, it feels like fear—a quiet
+          worry that one mistake might ruin everything. <em>Imperfect Vessel</em> is a digital space designed to unlearn
+          that fear.</p>
       </div>
 
       <!-- Story Section 01: Why This Exists -->
@@ -289,7 +346,9 @@
           <div class="about-label">01 / WHY THIS EXISTS</div>
           <h2>What if nothing is actually broken?</h2>
         </div>
-        <p class="story-paragraph">Instead of explaining perfectionism with words, this project lets people experience it by breaking, moving, and rebuilding a vessel. Here, breaking is not the end of an object, but the beginning of a story.</p>
+        <p class="story-paragraph">Instead of explaining perfectionism with words, this project lets people experience
+          it by breaking, moving, and rebuilding a vessel. Here, breaking is not the end of an object, but the beginning
+          of a story.</p>
       </div>
 
       <!-- Story Section 02: The Philosophy -->
@@ -298,15 +357,17 @@
           <div class="about-label">02 / THE PHILOSOPHY</div>
           <h2>Artistic Influences</h2>
         </div>
-        
+
         <div class="influences-grid">
           <div class="influence-card">
             <h3>Wabi-Sabi &amp; Kintsugi</h3>
-            <p>In Japanese tradition, broken ceramics are mended with gold lacquer—treating cracks as history rather than defects to hide.</p>
+            <p>In Japanese tradition, broken ceramics are mended with gold lacquer—treating cracks as history rather
+              than defects to hide.</p>
           </div>
           <div class="influence-card">
             <h3>Picasso’s Cubism</h3>
-            <p>Picasso showed that form does not need perfect symmetry to hold truth. Shattering a shape reveals raw emotion underneath.</p>
+            <p>Picasso showed that form does not need perfect symmetry to hold truth. Shattering a shape reveals raw
+              emotion underneath.</p>
           </div>
           <div class="influence-card">
             <h3>Leonard Cohen’s Crack</h3>
@@ -323,7 +384,7 @@
           <h2>Gesture &amp; Psychology</h2>
           <p class="section-desc">How small digital movements mirror emotional shifts.</p>
         </div>
-        
+
         <div class="interaction-table-wrapper">
           <table class="interaction-table">
             <thead>
@@ -369,9 +430,10 @@
         <div class="about-section-header">
           <div class="about-label">04 / REFLECTION</div>
           <h2>The Showcase Matrix</h2>
-          <p class="section-desc">How the system reflects your edit count, paired with inspirations from artists and thinkers.</p>
+          <p class="section-desc">How the system reflects your edit count, paired with inspirations from artists and
+            thinkers.</p>
         </div>
-        
+
         <div class="interaction-table-wrapper">
           <table class="interaction-table">
             <thead>
@@ -422,7 +484,7 @@
         <button id="gallery-close-btn" class="overlay-close-btn" aria-label="Close">&#x2715;</button>
       </div>
       <h1 class="gallery-title">Community</h1>
-      
+
       <div id="gallery-grid" class="gallery-grid">
         <!-- Dynamically loaded cards -->
       </div>
@@ -439,7 +501,7 @@
     <div class="modal-content">
       <h2 class="modal-title">Publish to Community</h2>
       <p class="modal-subtitle">Share your unique configuration with the world.</p>
-      
+
       <div class="modal-form-group">
         <label for="publish-art-title">ARTWORK TITLE</label>
         <input type="text" id="publish-art-title" autocomplete="off" placeholder="e.g. Portrait of a Shattered Woman">
@@ -448,7 +510,7 @@
         <label for="publish-creator-name">CREATOR NAME</label>
         <input type="text" id="publish-creator-name" autocomplete="off" placeholder="e.g. Anonymous">
       </div>
-      
+
       <div class="modal-actions">
         <button id="publish-cancel-btn" class="action-btn" data-text="CANCEL">CANCEL</button>
         <button id="publish-submit-btn" class="action-btn primary-btn" data-text="PUBLISH">PUBLISH</button>

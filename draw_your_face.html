@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draw Your Face - 创作属于你的脸部五官</title>
+  <link rel="stylesheet" href="css/face_grid.css">
+</head>
+<body>
+
+  <!-- Washi Tape Header (Inspired by Reference Design) -->
+  <header class="app-header">
+    <div class="washi-tape-title">Draw Your Face!!!!</div>
+    <div class="header-subtitle">点击任意无五官脸部进行创作 • 翻转已完成卡片查看创作者与耗时</div>
+  </header>
+
+  <!-- Gallery Top Action Bar -->
+  <div class="gallery-actions">
+    <button class="btn btn-primary" id="addCardBtn">
+      <span>✨ 增加空白脸部</span>
+    </button>
+    <a href="print_sheet.html" class="btn" style="text-decoration: none;">
+      <span>🖨️ 打印 A1 脸部底稿</span>
+    </a>
+    <a href="print_features.html" class="btn" style="text-decoration: none; background: #3d5a80; color: white;">
+      <span>✂️ 打印 A1 五官素材包</span>
+    </a>
+    <button class="btn" id="resetGridBtn">
+      <span>🗑️ 重置卡片</span>
+    </button>
+  </div>
+
+  <!-- Main Grid Canvas Layout -->
+  <main class="face-grid-container">
+    <div class="face-grid" id="faceGrid">
+      <!-- Dynamically generated face cards -->
+    </div>
+  </main>
+
+  <!-- Interactive Drawing Modal -->
+  <div class="drawing-modal" id="drawingModal">
+    <div class="canvas-workspace">
+      <!-- Background Cubist Face Template Base (No Features) -->
+      <div id="modalFaceBaseContainer" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+      <!-- Interactive Drawing Canvas -->
+      <canvas id="drawingCanvas"></canvas>
+    </div>
+
+    <!-- Floating Drawing Tools -->
+    <div class="drawing-toolbar">
+      <div class="toolbar-group">
+        <button class="tool-btn active" data-tool="pen" title="画笔 (Pen)">✏️</button>
+        <button class="tool-btn" data-tool="marker" title="马克笔 (Marker)">🖌️</button>
+        <button class="tool-btn" data-tool="eraser" title="橡皮擦 (Eraser)">🧹</button>
+      </div>
+
+      <div class="tool-divider"></div>
+
+      <!-- Color Swatches -->
+      <div class="toolbar-group">
+        <div class="color-swatch active" data-color="#1a1a1a" style="background: #1a1a1a;"></div>
+        <div class="color-swatch" data-color="#d9381e" style="background: #d9381e;"></div>
+        <div class="color-swatch" data-color="#2b59c3" style="background: #2b59c3;"></div>
+        <div class="color-swatch" data-color="#2e7d32" style="background: #2e7d32;"></div>
+        <div class="color-swatch" data-color="#f9a825" style="background: #f9a825;"></div>
+        <div class="color-swatch" data-color="#ffffff" style="background: #ffffff; border: 1px solid #ccc;"></div>
+      </div>
+
+      <div class="tool-divider"></div>
+
+      <!-- Stroke Size -->
+      <div class="toolbar-group">
+        <input type="range" id="brushSizeInput" class="brush-size-input" min="2" max="24" value="4" title="笔触大小">
+      </div>
+
+      <div class="tool-divider"></div>
+
+      <!-- History & Actions -->
+      <div class="toolbar-group">
+        <button class="tool-btn" id="undoBtn" title="撤销 (Undo)">↩️</button>
+        <button class="tool-btn" id="redoBtn" title="重做 (Redo)">↪️</button>
+        <button class="tool-btn" id="clearBtn" title="清空 (Clear)">🗑️</button>
+      </div>
+
+      <div class="tool-divider"></div>
+
+      <!-- Save / Cancel -->
+      <div class="toolbar-group">
+        <button class="btn" id="cancelDrawBtn" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">取消</button>
+        <button class="btn btn-primary" id="finishDrawBtn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">完成 ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stealth Completion Modal (Secret Time & Name Entry) -->
+  <div class="finish-modal" id="finishModal">
+    <div class="finish-card">
+      <div class="finish-title">🎉 画作完成！</div>
+      
+      <div class="time-badge">
+        <span>⏱ 创作耗时:</span>
+        <span id="timeBadgeVal">0秒</span>
+      </div>
+
+      <div class="name-input-group">
+        <label for="authorNameInput">请写下你的名字 / 签名：</label>
+        <input type="text" id="authorNameInput" placeholder="输入你的名字..." maxlength="20" autofocus>
+      </div>
+
+      <div class="finish-actions">
+        <button class="btn" id="backToCanvasBtn">返回修改</button>
+        <button class="btn btn-primary" id="saveCardBtn">保存到画廊 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/face_canvas.js"></script>
+</body>
+</html>

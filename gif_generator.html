@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Imperfect Vessel — GIF Generator</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: monospace;
+      color: #e8e6e1;
+      gap: 16px;
+    }
+    #statusBox {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #d4af37;
+      min-height: 20px;
+    }
+    #progressWrap {
+      width: 480px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+    }
+    #progressFill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4af37, #f5d76e);
+      width: 0%;
+    }
+    canvas { border: 1px solid rgba(255,255,255,0.06); }
+    #downloadBtn {
+      display: none;
+      padding: 11px 32px;
+      background: #d4af37;
+      color: #1e1d1a;
+      border: none;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 3px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="statusBox">LOADING GIF ENCODER...</div>
+<div id="progressWrap"><div id="progressFill"></div></div>
+<canvas id="c" width="840" height="594"></canvas>
+<button id="downloadBtn">⬇ DOWNLOAD GIF</button>
+<div id="hint">3 faces · A3 Landscape (840×594) · generating at 30fps (Ultra Smooth)</div>
+
+<!-- gif.js (local) -->
+<script src="./gif.js"></script>
+
+<script>
+// ═══════════════════════════════════════════
+//  CANVAS & CONTEXT (A3 Landscape: 840 x 594)
+// ═══════════════════════════════════════════
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = 840, H = 594;
+const CX = W/2, CY = H/2 - 10;
+
+// ═══════════════════════════════════════════
+//  UTILITIES (High-Precision Smooth Physics)
+// ═══════════════════════════════════════════
+function lerp(a,b,t){ return a+(b-a)*t; }
+function easeIn(t){ return t * t * t; } // Cubic easeIn
+function easeOut(t){ return 1 - Math.pow(1 - t, 4); } // Quintic easeOut
+function easeInOut(t){ return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; } // Cubic EaseInOut
+function smoothstep(t){ const p = Math.min(Math.max(t, 0), 1); return p * p * (3 - 2 * p); }
+function noise(t){ return Math.sin(t*0.7)*0.5 + Math.sin(t*1.15)*0.3 + Math.cos(t*1.63)*0.2; }
+
+// Seeded rand
+function makeRand(seed){
+  let s=seed;
+  return ()=>{ s=(s*16807)%2147483647; return (s-1)/2147483646; };
+}
+
+// ═══════════════════════════════════════════
+//  FACE GENERATOR (from script.js)
+// ═══════════════════════════════════════════
+function generateFace(seed){
+  const rand = makeRand(seed);
+  const v={
+    TL:{x:-80,y:-120},TM:{x:0,y:-130},TR:{x:80,y:-120},
+    FL:{x:-90,y:-50}, FM:{x:0,y:-40}, FR:{x:90,y:-50},
+    EL:{x:-80,y:10},  EM:{x:0,y:0},   ER:{x:80,y:10},
+    NL:{x:-30,y:40},  NR:{x:30,y:50},
+    ML:{x:-60,y:80},  MM:{x:0,y:85},  MR:{x:60,y:80},
+    BL:{x:-50,y:130}, BM:{x:0,y:140}, BR:{x:50,y:130},
+    EarL:{x:-130,y:-20},EarR:{x:130,y:-20}
+  };
+  const styleType=Math.floor(rand()*7);
+  let sx=1,sy=1;
+  if(styleType===1){sx=1.6;sy=0.8;}
+  else if(styleType===2){sx=0.7;sy=1.15;}
+  else if(styleType===4){v.TL.x-=30;v.TR.x+=30;v.BL.x+=20;v.BR.x-=20;}
+  else if(styleType===5){v.FL.x-=40;v.FR.x+=40;v.EL.x-=50;v.ER.x+=50;v.TL.x+=20;v.TR.x-=20;v.BL.x+=15;v.BR.x-=15;}
+  else if(styleType===6){v.TL.x+=30;v.TR.x-=30;v.BL.x-=40;v.BR.x+=40;v.ML.x-=30;v.MR.x+=30;}
+  for(const k in v){
+    v[k].x*=sx; v[k].y*=sy;
+    if(styleType===3){if(k.includes('L'))v[k].y-=30;if(k.includes('R'))v[k].y+=30;}
+    v[k].x+=(rand()-.5)*50;
+    v[k].y+=(rand()-.5)*50;
+  }
+  const polys=[
+    {type:'skin', pts:[v.TL,v.TM,v.FM,v.FL]},
+    {type:'skin', pts:[v.TM,v.TR,v.FR,v.FM]},
+    {type:'eye',  pts:[v.FL,v.FM,v.EM,v.EL]},
+    {type:'eye',  pts:[v.FM,v.FR,v.ER,v.EM]},
+    {type:'nose', pts:[v.EM,v.NR,v.NL]},
+    {type:'skin', pts:[v.EL,v.EM,v.NL,v.ML]},
+    {type:'skin', pts:[v.EM,v.ER,v.MR,v.NR]},
+    {type:'mouth',pts:[v.NL,v.NR,v.MR,v.MM,v.ML]},
+    {type:'skin', pts:[v.ML,v.MM,v.BM,v.BL]},
+    {type:'skin', pts:[v.MM,v.MR,v.BR,v.BM]},
+    {type:'skin', pts:[v.FL,v.EL,v.EarL]},
+    {type:'skin', pts:[v.FR,v.EarR,v.ER]}
+  ];
+
+  const skinPalette=['#8c7c61','#5e604f','#d1c7b7','#4a4542','#9e8c78',
+    '#b85d43','#a36b54','#d9a07b','#2b3e50','#1c3a27','#5c6b55','#d5cbb8',
+    '#d9c8c0','#b8c5b9','#f2cc8f','#c5bedb','#2a75d3','#4ca93c','#eac124'];
+  const eyeColors=['#f5f5f5','#e8e8e8','#ffffff'];
+  const mouthColors=['#c92a2a','#1d70b8','#222','#8c1616'];
+
+  const skin  = skinPalette[Math.floor(rand()*skinPalette.length)];
+  const skin2 = skinPalette[Math.floor(rand()*skinPalette.length)];
+  const eye   = eyeColors[Math.floor(rand()*eyeColors.length)];
+  const mouth = mouthColors[Math.floor(rand()*mouthColors.length)];
+
+  // Build fragment objects with color + centroid
+  return polys.map((poly,i)=>{
+    const pts=poly.pts;
+    let A=0,cx=0,cy=0,n=pts.length;
+    const all=[...pts,pts[0]];
+    for(let k=0;k<n;k++){
+      const f=all[k].x*all[k+1].y-all[k+1].x*all[k].y;
+      A+=f; cx+=(all[k].x+all[k+1].x)*f; cy+=(all[k].y+all[k+1].y)*f;
+    }
+    if(A!==0){cx/=A*3;cy/=A*3;}
+    const color = poly.type==='eye'?eye : poly.type==='mouth'?mouth : poly.type==='nose'?skin2 : (i%3===0?skin2:skin);
+
+    // Float start position
+    const angle=i*((Math.PI*2)/polys.length)*1.8+0.3;
+    const dist=70+i*18;
+    const dx=Math.cos(angle)*dist;
+    const dy=Math.sin(angle)*dist;
+    const rot=(rand()-.5)*320;
+    const scale=0.6+rand()*0.9;
+    const noiseX=rand()*1000;
+    const noiseY=rand()*1000;
+    const noiseR=rand()*1000;
+
+    // Off-screen enter & scatter distances (for A3 Landscape 840x594)
+    const enterDist = 680;
+    const initialX = Math.cos(angle) * enterDist;
+    const initialY = Math.sin(angle) * enterDist;
+    const startRot = (rand() - 0.5) * 360;
+
+    const dispDist = 680;
+    const dispX = Math.cos(angle) * dispDist;
+    const dispY = Math.sin(angle) * dispDist;
+    const dispRot = (rand() - 0.5) * 120;
+
+    const eyeStyle = Math.floor(rand() * 4);
+    const texturesList = ['plain', 'matte', 'cracks', 'gold-dust'];
+    const textureType = texturesList[Math.floor(rand() * texturesList.length)];
+
+    return {
+      pts, type:poly.type, color,
+      cx, cy,
+      eyeStyle, textureType,
+      dx, dy, rot, scale,
+      noiseX, noiseY, noiseR,
+      initialX, initialY, startRot,
+      dispX, dispY, dispRot
+    };
+  });
+}
+
+// ═══════════════════════════════════════════
+//  DRAW A SINGLE FRAGMENT ON CANVAS
+// ═══════════════════════════════════════════
+function drawFragment(frag, dx, dy, rot, scale, alpha){
+  const {pts, cx, cy, color, textureType} = frag;
+  ctx.save();
+  ctx.translate(CX + dx, CY + dy);
+  ctx.translate(cx * scale, cy * scale);
+  ctx.rotate(rot * Math.PI/180);
+  ctx.scale(scale, scale);
+  ctx.translate(-cx, -cy);
+  ctx.globalAlpha = alpha;
+
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+  ctx.closePath();
+  ctx.save();
+  ctx.clip();
+
+  // 1. Base Fill
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  // 2. Texture Overlay
+  if(textureType === 'cracks' || frag.type === 'nose'){
+    ctx.strokeStyle = 'rgba(40,38,35,0.35)';
+    ctx.lineWidth = 1.0;
+    ctx.beginPath();
+    ctx.moveTo(cx-30, cy-20); ctx.lineTo(cx-10, cy); ctx.lineTo(cx+25, cy-15);
+    ctx.moveTo(cx-10, cy); ctx.lineTo(cx+5, cy+30); ctx.lineTo(cx+30, cy+25);
+    ctx.stroke();
+  } else if(textureType === 'gold-dust' || frag.type === 'mouth'){
+    ctx.fillStyle = '#d4af37';
+    const specks = [{x:cx-15,y:cy-10,r:1.8},{x:cx+12,y:cy+8,r:1.2},{x:cx-8,y:cy+15,r:2.0},{x:cx+20,y:cy-18,r:1.4}];
+    specks.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); });
+  } else {
+    ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+    ctx.lineWidth = 1.0;
+    for(let j=cx-50; j<cx+50; j+=10){
+      ctx.beginPath(); ctx.moveTo(j, cy-50); ctx.lineTo(j, cy+50); ctx.stroke();
+    }
+  }
+
+  // 3. Glaze shine gradient
+  const grad = ctx.createLinearGradient(cx-40,cy-40,cx+40,cy+40);
+  grad.addColorStop(0,'rgba(255,255,255,0.30)');
+  grad.addColorStop(0.35,'rgba(255,255,255,0.12)');
+  grad.addColorStop(1,'rgba(0,0,0,0.05)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+  ctx.closePath();
+  ctx.strokeStyle = 'rgba(20,20,20,0.18)';
+  ctx.lineWidth = 1.0;
+  ctx.stroke();
+
+  drawFeature(frag, scale);
+  ctx.restore();
+}
+
+function drawFeature(frag, scale){
+  const {type, cx, cy, eyeStyle} = frag;
+  ctx.save();
+  ctx.lineWidth = 3.5 / scale;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  if(type === 'eye'){
+    const style = eyeStyle !== undefined ? eyeStyle : 0;
+    if(style % 2 === 0){
+      ctx.strokeStyle = '#111';
+      ctx.fillStyle = '#111';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, Math.PI*2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 7, 0, Math.PI*2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx, cy-4, 24, Math.PI*0.15, Math.PI*0.85);
+      ctx.stroke();
+    } else {
+      ctx.strokeStyle = '#111';
+      ctx.fillStyle = '#111';
+      ctx.beginPath();
+      ctx.moveTo(cx-26, cy);
+      ctx.quadraticCurveTo(cx, cy-18, cx+26, cy);
+      ctx.quadraticCurveTo(cx, cy+18, cx-26, cy);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx+2, cy, 8, 0, Math.PI*2);
+      ctx.fill();
+    }
+  } else if(type === 'nose'){
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 4.5 / scale;
+    ctx.beginPath();
+    ctx.moveTo(cx-8, cy-28);
+    ctx.lineTo(cx+16, cy+14);
+    ctx.lineTo(cx-10, cy+26);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx-10, cy+26, 4, 0, Math.PI*2);
+    ctx.stroke();
+  } else if(type === 'mouth'){
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 4.5 / scale;
+    ctx.beginPath();
+    ctx.moveTo(cx-32, cy);
+    ctx.quadraticCurveTo(cx, cy+18, cx+32, cy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx-25, cy-4);
+    ctx.quadraticCurveTo(cx, cy-16, cx+25, cy-4);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  GOLD LEAF UNDERLAY
+// ═══════════════════════════════════════════
+function drawGoldUnderlay(face, alpha) {
+  if (alpha <= 0.01) return;
+  ctx.save();
+  ctx.translate(CX, CY);
+  ctx.globalAlpha = alpha;
+
+  face.forEach(frag => {
+    const { pts } = frag;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.closePath();
+
+    const grad = ctx.createLinearGradient(-120, -120, 120, 120);
+    grad.addColorStop(0, '#f5d76e');
+    grad.addColorStop(0.3, '#d4af37');
+    grad.addColorStop(0.6, '#eeb422');
+    grad.addColorStop(1, '#b8860b');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.strokeStyle = '#e5c158';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  SUNLIGHT GLINT SWEEP
+// ═══════════════════════════════════════════
+function drawSunlightSweep(face, alpha, time) {
+  if (alpha <= 0.01) return;
+  face.forEach((frag, idx) => {
+    const { pts, cx, cy } = frag;
+    const gapX = cx * 0.03, gapY = cy * 0.03;
+    ctx.save();
+    ctx.translate(CX + gapX, CY + gapY);
+
+    const sweepTime = (time * 1.8 + idx * 0.45) % 4.0;
+    if (sweepTime < 2.5) {
+      const sweepProgress = sweepTime / 2.5;
+      const pulseAlpha = Math.sin(sweepProgress * Math.PI) * alpha;
+
+      if (pulseAlpha > 0.05) {
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+        ctx.closePath();
+
+        ctx.strokeStyle = `rgba(255, 250, 230, ${pulseAlpha * 0.55})`;
+        ctx.lineWidth = 12;
+        ctx.shadowColor = 'rgba(255, 245, 200, 0.9)';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(255, 255, 255, ${pulseAlpha * 0.9})`;
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 4;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    ctx.restore();
+  });
+}
+
+// ═══════════════════════════════════════════
+//  DRAW BACKGROUND  (Parchment Background)
+// ═══════════════════════════════════════════
+function drawBackground(){
+  ctx.fillStyle='#e8e6e1';
+  ctx.fillRect(0,0,W,H);
+  ctx.save();
+  ctx.globalAlpha=0.018;
+  ctx.strokeStyle='rgba(0,0,0,1)';
+  ctx.lineWidth=1;
+  for(let i=0;i<W;i+=8){
+    ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke();
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  COMPUTE TRANSFORMATION OFFSETS
+// ═══════════════════════════════════════════
+function getFragmentOffset(frag, mode, p, time){
+  const floatX = noise(time * 0.5 + frag.noiseX) * 48;
+  const floatY = noise(time * 0.5 + frag.noiseY) * 48;
+  const floatR = noise(time * 0.4 + frag.noiseR) * 14;
+
+  const floatDx = frag.dx + floatX;
+  const floatDy = frag.dy + floatY;
+  const floatRot = frag.rot + floatR;
+  const floatScale = frag.scale;
+
+  const targetDx = frag.cx * 0.03;
+  const targetDy = frag.cy * 0.03;
+  const targetRot = 0;
+  const targetScale = 1.0;
+
+  if (mode === 'enter') {
+    // Phase 1: Fly in from off-screen to floating constellation
+    const ease = easeOut(Math.min(p, 1));
+    return {
+      dx: lerp(frag.initialX, floatDx, ease),
+      dy: lerp(frag.initialY, floatDy, ease),
+      rot: lerp(frag.startRot, floatRot, ease),
+      scale: lerp(1.4, floatScale, ease)
+    };
+  } else if (mode === 'float') {
+    // Floating in air
+    return { dx: floatDx, dy: floatDy, rot: floatRot, scale: floatScale };
+  } else if (mode === 'settle') {
+    // Phase 2: Gather smoothly into assembled face
+    const ease = easeInOut(Math.min(p, 1));
+    return {
+      dx: lerp(floatDx, targetDx, ease),
+      dy: lerp(floatDy, targetDy, ease),
+      rot: lerp(floatRot, targetRot, ease),
+      scale: lerp(floatScale, targetScale, ease)
+    };
+  } else if (mode === 'kintsugi') {
+    // Phase 3: Fully assembled face with Kintsugi gold shine
+    return { dx: targetDx, dy: targetDy, rot: targetRot, scale: targetScale };
+  } else if (mode === 'scatter_offscreen') {
+    // Phase 4: Explode/Scatter straight off-screen!
+    const ease = easeIn(Math.min(p, 1));
+    return {
+      dx: lerp(targetDx, frag.dispX, ease),
+      dy: lerp(targetDy, frag.dispY, ease),
+      rot: lerp(targetRot, frag.dispRot, ease),
+      scale: lerp(targetScale, frag.scale * 0.8, ease)
+    };
+  }
+  return { dx: floatDx, dy: floatDy, rot: floatRot, scale: floatScale };
+}
+
+// ═══════════════════════════════════════════
+//  ANIMATION SEQUENCE DEFINITION
+// ═══════════════════════════════════════════
+const FPS = 30;
+const CYCLE_FRAMES = 270; // 9s per face @ 30 FPS
+const TOTAL_FRAMES = CYCLE_FRAMES * 3;
+
+const FACE_SEEDS = [12345, 67890, 24680];
+const faces = FACE_SEEDS.map(s => generateFace(s));
+
+function renderFrame(frameIdx){
+  const cycle = Math.floor(frameIdx / CYCLE_FRAMES);
+  const localF = frameIdx % CYCLE_FRAMES;
+
+  const faceCurrent = faces[cycle];
+  const time = ((frameIdx % TOTAL_FRAMES)) / FPS;
+
+  let mode = 'enter', phaseProgress = 0, goldAlpha = 0;
+
+  if (localF < 55) {
+    mode = 'enter';
+    phaseProgress = localF / 55;
+  } else if (localF < 135) {
+    mode = 'settle';
+    phaseProgress = (localF - 55) / 80;
+  } else if (localF < 215) {
+    mode = 'kintsugi';
+    const kp = (localF - 135) / 80;
+    goldAlpha = Math.min(kp * 2.5, 1.0);
+  } else {
+    mode = 'scatter_offscreen';
+    phaseProgress = (localF - 215) / 55;
+    goldAlpha = Math.max(1.0 - phaseProgress * 3.5, 0);
+  }
+
+  // ── DRAW PIPELINE ──
+  // 1. Parchment Background
+  drawBackground();
+
+  // 2. Gold Leaf Underlay (appears ONLY after face assembly is complete)
+  if (goldAlpha > 0.01) {
+    drawGoldUnderlay(faceCurrent, goldAlpha);
+  }
+
+  // 3. Fragments (Physical off-screen enter, float, assemble, and scatter off-screen)
+  faceCurrent.forEach(frag => {
+    const off = getFragmentOffset(frag, mode, phaseProgress, time);
+    drawFragment(frag, off.dx, off.dy, off.rot, off.scale, 1.0);
+  });
+
+  // 4. Sunlight Glint Sweep over fragment edges during Kintsugi phase
+  if (goldAlpha > 0.01) {
+    drawSunlightSweep(faceCurrent, goldAlpha, time);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  GIF ENCODING PIPELINE
+// ═══════════════════════════════════════════
+let gif;
+let currentFrame=0;
+
+function setStatus(msg){ document.getElementById('statusBox').textContent=msg; }
+function setProgress(p){ document.getElementById('progressFill').style.width=(p*100)+'%'; }
+
+function encodeNextFrame(){
+  if(currentFrame >= TOTAL_FRAMES){
+    setStatus('FINALIZING GIF...');
+    gif.render();
+    return;
+  }
+
+  renderFrame(currentFrame);
+  gif.addFrame(ctx, {
+    copy: true,
+    delay: Math.round(1000/FPS),
+    dispose: 1
+  });
+
+  const prog = currentFrame / TOTAL_FRAMES;
+  setProgress(prog);
+  if(currentFrame % 20 === 0){
+    setStatus(`ENCODING... ${Math.round(prog*100)}%  (frame ${currentFrame}/${TOTAL_FRAMES})`);
+  }
+
+  currentFrame++;
+  // Yield to browser each frame batch
+  setTimeout(encodeNextFrame, 0);
+}
+
+function startEncoding(){
+  setStatus('INITIALIZING GIF ENCODER...');
+
+  gif = new GIF({
+    workers: 2,
+    quality: 8,
+    width: W,
+    height: H,
+    workerScript: './gif.worker.js'
+  });
+
+  gif.on('finished', function(blob){
+    const url = URL.createObjectURL(blob);
+    const btn = document.getElementById('downloadBtn');
+    btn.style.display='block';
+    btn.onclick = ()=>{
+      const a=document.createElement('a');
+      a.href=url; a.download='imperfect-vessel.gif';
+      a.click();
+    };
+    setStatus('✓ GIF READY — SAVING TO DISK...');
+    setProgress(1);
+
+    // Auto-save to disk via local save server
+    fetch('http://localhost:8766/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'image/gif'},
+      body: blob
+    }).then(r=>r.text()).then(msg=>{
+      setStatus('✓ GIF SAVED: ' + msg);
+    }).catch(()=>{
+      setStatus('✓ GIF READY — CLICK TO DOWNLOAD');
+    });
+
+    // Preview first frame
+    const img=new Image();
+    img.onload=()=>{ ctx.drawImage(img,0,0); };
+    img.src=url;
+  });
+
+  gif.on('progress', p=>{
+    setStatus(`RENDERING GIF... ${Math.round(p*100)}%`);
+    setProgress(0.95+p*0.05);
+  });
+
+  encodeNextFrame();
+}
+
+// ═══════════════════════════════════════════
+//  WAIT FOR FONTS THEN START
+// ═══════════════════════════════════════════
+document.fonts.ready.then(()=>{
+  // Draw first frame as preview
+  renderFrame(0);
+  setStatus('FONT LOADED — STARTING ENCODER...');
+  setTimeout(startEncoding, 500);
+});
+</script>
+
+</body>
+</html>

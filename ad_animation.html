@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imperfect Vessel — Loop Ad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #e8e6e1;
+      --text: #5a5854;
+      --dark: #1e1d1a;
+      --gold: #d4af37;
+      --gold-light: #f5d76e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #1a1916;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ── AD FRAME ── */
+    .ad-frame {
+      position: relative;
+      width: 540px;
+      height: 540px;
+      overflow: hidden;
+      border-radius: 2px;
+      background: var(--bg);
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px),
+        repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px);
+    }
+
+    /* ── NOISE ── */
+    .noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 80;
+    }
+
+    /* ── BG DIMMER (kintsugi phase) ── */
+    .bg-dimmer {
+      position: absolute;
+      inset: 0;
+      background: #181716;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+      transition: opacity 3s ease;
+    }
+    .bg-dimmer.active { opacity: 0.88; }
+
+    /* ── CANVAS for face fragments ── */
+    #face-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* ── GOLD UNDERLAY SVG ── */
+    #gold-underlay {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 3s ease;
+    }
+
+    /* ── MOUSE CRACK TRAIL ── */
+    #crack-trail-svg {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      z-index: 70;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      color: var(--text);
+    }
+    .logo.show { opacity: 1; transform: translateY(0); }
+    .logo.gold-mode { color: var(--gold-light); }
+
+    /* ── RELEASE BUTTON ── */
+    .release-btn {
+      position: absolute;
+      bottom: 36px;
+      right: 36px;
+      padding: 11px 26px;
+      background: var(--dark);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e8e6e1;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-radius: 30px;
+      z-index: 70;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 1s ease, transform 1s ease, background 0.4s ease, color 0.4s ease;
+      pointer-events: none;
+    }
+    .release-btn.show { opacity: 1; transform: translateY(0); }
+    .release-btn.clicking {
+      background: #e8e6e1;
+      color: var(--dark);
+    }
+
+    /* ── PHASE LABEL ── */
+    .phase-label {
+      position: absolute;
+      top: 34px;
+      right: 32px;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(90,88,84,0.4);
+      z-index: 70;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .phase-label.show { opacity: 1; }
+    .phase-label.gold { color: rgba(212,175,55,0.6); }
+
+    /* ── TAGLINE ── */
+    .tagline {
+      position: absolute;
+      bottom: 62px;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 70;
+      pointer-events: none;
+    }
+    .tag-overline {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(90,88,84,0.5);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .tag-overline.show { opacity: 1; transform: translateY(0); }
+
+    .tag-main {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--dark);
+      letter-spacing: 0.5px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 1s ease 0.15s, transform 1s ease 0.15s;
+      line-height: 1.3;
+    }
+    .tag-main.show { opacity: 1; transform: translateY(0); }
+
+    /* ── KINTSUGI QUOTE ── */
+    .kintsugi-quote {
+      position: absolute;
+      bottom: 56px;
+      left: 0; right: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 70;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    .kintsugi-quote.show { opacity: 1; transform: translateY(0); }
+    .kintsugi-quote .quote-text {
+      font-size: 12px;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold-light);
+      text-align: center;
+      max-width: 300px;
+      line-height: 1.6;
+      letter-spacing: 0.3px;
+    }
+    .kintsugi-quote .quote-attr {
+      font-size: 8.5px;
+      letter-spacing: 3px;
+      color: rgba(245,215,110,0.5);
+      text-transform: uppercase;
+    }
+
+    /* ── CTA ── */
+    .cta-pill {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      padding: 9px 28px;
+      background: var(--gold);
+      color: var(--dark);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-radius: 30px;
+      z-index: 70;
+      opacity: 0;
+      transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+    }
+    .cta-pill.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      width: 0%;
+      z-index: 90;
+    }
+
+    /* ── ANIMATED CURSOR DOT (faux interaction) ── */
+    .faux-cursor {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: var(--text);
+      border-radius: 50%;
+      z-index: 75;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease, border 0.3s ease;
+    }
+    .faux-cursor.visible { opacity: 1; }
+    .faux-cursor.ring {
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: 1px solid var(--text);
+    }
+    .faux-cursor.ring-gold {
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: 1px solid var(--gold);
+    }
+
+    /* ── SVG DEFS ── */
+    #svg-defs {
+      position: absolute;
+      width: 0; height: 0; overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<div class="ad-frame" id="adFrame">
+
+  <!-- SVG defs (filters, gradients, textures) -->
+  <svg id="svg-defs" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Glaze gradient (sheen) -->
+      <linearGradient id="glaze-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="35%" stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="55%" stop-color="#ffffff" stop-opacity="0.0"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.04"/>
+      </linearGradient>
+
+      <!-- Gold leaf filter -->
+      <filter id="gold-leaf" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="4" result="crinkle"/>
+        <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.5 0 0 0 0" in="crinkle" result="bumpMap"/>
+        <feSpecularLighting in="bumpMap" surfaceScale="5" specularConstant="2.5" specularExponent="35" lighting-color="#fffae6" result="glare">
+          <fePointLight x="-150" y="-150" z="250"/>
+        </feSpecularLighting>
+        <feComposite operator="arithmetic" k1="0" k2="1" k3="1" k4="0" in="glare" in2="SourceGraphic" result="foil"/>
+        <feComposite operator="in" in="foil" in2="SourceAlpha"/>
+      </filter>
+
+      <!-- Wabi-sabi edge -->
+      <filter id="wabi-edge" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+
+      <!-- Matte noise texture -->
+      <pattern id="texture-matte" width="256" height="256" patternUnits="userSpaceOnUse">
+        <image id="img-matte" href="" width="256" height="256"/>
+      </pattern>
+
+      <!-- Cracked texture -->
+      <pattern id="texture-cracked" width="80" height="80" patternUnits="userSpaceOnUse">
+        <path d="M 0,15 L 15,30 L 40,35 L 55,20 L 80,25 M 30,50 L 40,70 L 60,65 M 15,30 L 30,50 M 40,35 L 40,70 M 55,20 L 60,65 M 0,60 L 25,55 L 30,50 M 55,20 L 70,5 L 80,10 M 40,70 L 50,80 M 60,65 L 80,55"
+          stroke="rgba(40,38,35,0.5)" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </pattern>
+
+      <!-- Gold dust -->
+      <pattern id="texture-gold-dust" width="64" height="64" patternUnits="userSpaceOnUse">
+        <circle cx="10" cy="15" r="1.5" fill="#d4af37" opacity="0.85"/>
+        <circle cx="28" cy="45" r="1" fill="#e5c158" opacity="0.75"/>
+        <circle cx="50" cy="25" r="2.2" fill="#d4af37" opacity="0.9"/>
+        <circle cx="40" cy="55" r="1.2" fill="#e5c158" opacity="0.8"/>
+        <circle cx="18" cy="35" r="0.8" fill="#d4af37" opacity="0.6"/>
+      </pattern>
+    </defs>
+  </svg>
+
+  <!-- Noise overlay -->
+  <div class="noise"></div>
+
+  <!-- BG dimmer -->
+  <div class="bg-dimmer" id="bgDimmer"></div>
+
+  <!-- Gold underlay (kintsugi assembled face in gold) -->
+  <svg id="gold-underlay" viewBox="0 0 540 540" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <!-- Face fragment canvas -->
+  <svg id="face-canvas" viewBox="0 0 540 540" xmlns="http://www.w3.org/2000/svg"></svg>
+
+  <!-- Mouse crack trail -->
+  <svg id="crack-trail-svg" viewBox="0 0 540 540" xmlns="http://www.w3.org/2000/svg"
+    style="overflow:visible">
+  </svg>
+
+  <!-- Logo -->
+  <div class="logo" id="logo">
+    <svg width="140" height="36" viewBox="0 0 180 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="17" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="400" fill="currentColor">Imperfection</text>
+      <text x="32" y="33" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="400" fill="currentColor">Vessel</text>
+      <g transform="translate(118, 5) scale(0.42)">
+        <polygon points="0,0 48,0 24,24" fill="currentColor"/>
+        <polygon points="50,0 98,0 74,24" fill="currentColor"/>
+        <polygon points="50,29 50,43 81,36" fill="currentColor"/>
+        <polygon points="42,55 63,55 52.5,66" fill="currentColor"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Phase label -->
+  <div class="phase-label" id="phaseLabel"></div>
+
+  <!-- Release button (faux) -->
+  <div class="release-btn" id="releaseBtn">RELEASE</div>
+
+  <!-- Tagline -->
+  <div class="tagline" id="tagline">
+    <div class="tag-overline" id="tagOverline">an interactive experience</div>
+    <div class="tag-main" id="tagMain">Break it. Rearrange it.<br>Let go.</div>
+  </div>
+
+  <!-- Kintsugi quote -->
+  <div class="kintsugi-quote" id="kintsugiQuote">
+    <div class="quote-text">"There is a crack in everything.<br>That's how the light gets in."</div>
+    <div class="quote-attr">— Leonard Cohen</div>
+  </div>
+
+  <!-- CTA pill -->
+  <div class="cta-pill" id="ctaPill">imperfectvessel.art</div>
+
+  <!-- Faux cursor -->
+  <div class="faux-cursor" id="fauxCursor"></div>
+
+  <!-- Progress bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  FACE GENERATOR — faithfully ported from original script.js
+// ═══════════════════════════════════════════════════════════
+
+const svgNS = "http://www.w3.org/2000/svg";
+const CX = 270, CY = 240; // canvas center for the face
+
+function generateFacePolys(seed) {
+  // Seeded random helpers
+  let s = seed || 42;
+  const rand = () => { s = (s * 16807 + 0) % 2147483647; return (s - 1) / 2147483646; };
+
+  const v = {
+    TL: {x: -80, y: -120}, TM: {x: 0,  y: -130}, TR: {x: 80,  y: -120},
+    FL: {x: -90, y:  -50}, FM: {x: 0,  y:  -40}, FR: {x: 90,  y:  -50},
+    EL: {x: -80, y:   10}, EM: {x: 0,  y:    0}, ER: {x: 80,  y:   10},
+    NL: {x: -30, y:   40}, NR: {x: 30, y:   50},
+    ML: {x: -60, y:   80}, MM: {x: 0,  y:   85}, MR: {x: 60,  y:   80},
+    BL: {x: -50, y:  130}, BM: {x: 0,  y:  140}, BR: {x: 50,  y:  130},
+    EarL: {x: -130, y: -20}, EarR: {x: 130, y: -20}
+  };
+
+  const styleType = Math.floor(rand() * 7);
+  let scaleX = 1.0, scaleY = 1.0;
+
+  if (styleType === 1) { scaleX = 1.6; scaleY = 0.8; }
+  else if (styleType === 2) { scaleX = 0.7; scaleY = 1.15; }
+  else if (styleType === 4) { v.TL.x -= 30; v.TR.x += 30; v.BL.x += 20; v.BR.x -= 20; }
+  else if (styleType === 5) { v.FL.x -= 40; v.FR.x += 40; v.EL.x -= 50; v.ER.x += 50; v.TL.x += 20; v.TR.x -= 20; v.BL.x += 15; v.BR.x -= 15; }
+  else if (styleType === 6) { v.TL.x += 30; v.TR.x -= 30; v.BL.x -= 40; v.BR.x += 40; v.ML.x -= 30; v.MR.x += 30; }
+
+  for (const key in v) {
+    v[key].x *= scaleX;
+    v[key].y *= scaleY;
+    if (styleType === 3) {
+      if (key.includes('L')) v[key].y -= 30;
+      if (key.includes('R')) v[key].y += 30;
+    }
+    v[key].x += (rand() - 0.5) * 55;
+    v[key].y += (rand() - 0.5) * 55;
+  }
+
+  const polys = [
+    { type: 'skin',  pts: [v.TL, v.TM, v.FM, v.FL] },
+    { type: 'skin',  pts: [v.TM, v.TR, v.FR, v.FM] },
+    { type: 'eye',   pts: [v.FL, v.FM, v.EM, v.EL] },
+    { type: 'eye',   pts: [v.FM, v.FR, v.ER, v.EM] },
+    { type: 'nose',  pts: [v.EM, v.NR, v.NL] },
+    { type: 'skin',  pts: [v.EL, v.EM, v.NL, v.ML] },
+    { type: 'skin',  pts: [v.EM, v.ER, v.MR, v.NR] },
+    { type: 'mouth', pts: [v.NL, v.NR, v.MR, v.MM, v.ML] },
+    { type: 'skin',  pts: [v.ML, v.MM, v.BM, v.BL] },
+    { type: 'skin',  pts: [v.MM, v.MR, v.BR, v.BM] },
+    { type: 'skin',  pts: [v.FL, v.EL, v.EarL] },
+    { type: 'skin',  pts: [v.FR, v.EarR, v.ER] }
+  ];
+
+  return polys.map((poly, i) => {
+    const pts = poly.pts;
+    let pathStr = `M ${r(pts[0].x)} ${r(pts[0].y)}`;
+    let A = 0, cx = 0, cy = 0, n = pts.length;
+    for (let k = 1; k < n; k++) pathStr += ` L ${r(pts[k].x)} ${r(pts[k].y)}`;
+    pathStr += ' Z';
+    const all = [...pts, pts[0]];
+    for (let k = 0; k < n; k++) {
+      const f = all[k].x * all[k+1].y - all[k+1].x * all[k].y;
+      A += f; cx += (all[k].x + all[k+1].x) * f; cy += (all[k].y + all[k+1].y) * f;
+    }
+    if (A !== 0) { cx /= (A*3); cy /= (A*3); }
+    return { path: pathStr, type: poly.type, cx: r(cx), cy: r(cy), seed: rand };
+  });
+}
+
+function r(v) { return Math.round(v * 10) / 10; }
+
+// ═══════════════════════════════════════════════════════════
+//  COLOR PALETTES
+// ═══════════════════════════════════════════════════════════
+const skinPalette = [
+  '#8c7c61','#5e604f','#d1c7b7','#4a4542','#9e8c78',
+  '#b85d43','#a36b54','#d9a07b','#b58e2a',
+  '#2b3e50','#1c3a27','#5c6b55','#d5cbb8','#426375',
+  '#d9c8c0','#b8c5b9','#f2cc8f','#c5bedb',
+  '#2a75d3','#4ca93c','#eac124','#d13535','#e462a3',
+];
+const eyeColors = ['#f0f0f0','#e8e8e8','#ffffff'];
+const mouthColors = ['#c92a2a','#1d70b8','#111111','#8c1616'];
+
+// ═══════════════════════════════════════════════════════════
+//  DRAW A COMPLETE CUBIST FACE into SVG canvas
+// ═══════════════════════════════════════════════════════════
+function buildFace(faceSvg, polys, colors) {
+  faceSvg.innerHTML = '';
+  const { skin, skin2, eye, mouth, nose } = colors;
+
+  polys.forEach((poly, i) => {
+    const g = document.createElementNS(svgNS, 'g');
+
+    // Clip path
+    const clipId = `clip-ad-${i}`;
+    const defs = document.createElementNS(svgNS, 'defs');
+    const cp = document.createElementNS(svgNS, 'clipPath');
+    cp.id = clipId;
+    const cpPath = document.createElementNS(svgNS, 'path');
+    cpPath.setAttribute('d', poly.path);
+    cp.appendChild(cpPath);
+    defs.appendChild(cp);
+    g.appendChild(defs);
+
+    const clipped = document.createElementNS(svgNS, 'g');
+    clipped.setAttribute('clip-path', `url(#${clipId})`);
+
+    // Fill
+    let fillColor = poly.type === 'eye' ? eye :
+                    poly.type === 'mouth' ? mouth :
+                    poly.type === 'nose' ? skin2 :
+                    (i % 3 === 0 ? skin2 : skin);
+
+    const bg = document.createElementNS(svgNS, 'path');
+    bg.setAttribute('d', poly.path);
+    bg.setAttribute('fill', fillColor);
+    clipped.appendChild(bg);
+
+    // Texture overlay (matte for skin, cracked for nose, gold-dust for mouth)
+    const tx = document.createElementNS(svgNS, 'path');
+    tx.setAttribute('d', poly.path);
+    if (poly.type === 'skin') tx.setAttribute('fill', 'url(#texture-matte)');
+    else if (poly.type === 'nose') tx.setAttribute('fill', 'url(#texture-cracked)');
+    else if (poly.type === 'mouth') tx.setAttribute('fill', 'url(#texture-gold-dust)');
+    else tx.setAttribute('fill', 'none');
+    tx.setAttribute('pointer-events', 'none');
+    clipped.appendChild(tx);
+
+    // Glaze sheen
+    const gl = document.createElementNS(svgNS, 'path');
+    gl.setAttribute('d', poly.path);
+    gl.setAttribute('fill', 'url(#glaze-gradient)');
+    gl.setAttribute('pointer-events', 'none');
+    clipped.appendChild(gl);
+
+    // Facial features
+    drawFeature(poly, clipped);
+
+    g.appendChild(clipped);
+    faceSvg.appendChild(g);
+  });
+}
+
+function drawFeature(poly, parent) {
+  const { type, cx, cy } = poly;
+  const el = (...args) => {
+    const e = document.createElementNS(svgNS, args[0]);
+    for (let i = 1; i < args.length; i += 2) e.setAttribute(args[i], args[i+1]);
+    return e;
+  };
+
+  if (type === 'eye') {
+    // Concentric circles (style 1 — most iconic)
+    parent.appendChild(el('circle','cx',cx,'cy',cy,'r','20','stroke','#111','stroke-width','5','fill','none'));
+    parent.appendChild(el('circle','cx',cx,'cy',cy,'r','8','fill','#111'));
+  } else if (type === 'nose') {
+    // Hooked nose line (style 0)
+    const mx = cx + 20, my = cy + 20;
+    parent.appendChild(el('path','d',`M${cx} ${cy-25} L${mx} ${my} L${cx} ${cy+30}`,
+      'stroke','#111','stroke-width','6','fill','none','stroke-linecap','round','stroke-linejoin','round'));
+  } else if (type === 'mouth') {
+    // Wavy mouth (style 0)
+    parent.appendChild(el('path','d',`M${cx-35} ${cy-5} Q${cx} ${cy+20} ${cx+35} ${cy+5}`,
+      'stroke','#111','stroke-width','6','fill','none','stroke-linecap','round'));
+    parent.appendChild(el('path','d',`M${cx-20} ${cy} L${cx+20} ${cy}`,
+      'stroke','#111','stroke-width','4','stroke-linecap','round'));
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TRANSFORM HELPERS  (float offsets in face-local units)
+// ═══════════════════════════════════════════════════════════
+function applyFragmentTransforms(faceSvg, polys, offsets, baseScale) {
+  const children = faceSvg.children;
+  polys.forEach((poly, i) => {
+    const g = children[i];
+    if (!g) return;
+    const { dx, dy, rot, scale } = offsets[i] || { dx:0, dy:0, rot:0, scale:1 };
+    const s = (baseScale || 1) * scale;
+    // transform around centroid
+    g.setAttribute('transform',
+      `translate(${CX + poly.cx * s + dx}, ${CY + poly.cy * s + dy})` +
+      ` rotate(${rot})` +
+      ` scale(${s})` +
+      ` translate(${-poly.cx}, ${-poly.cy})`
+    );
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  CRACK TRAIL
+// ═══════════════════════════════════════════════════════════
+const crackSvg = document.getElementById('crack-trail-svg');
+function addCrack(x1, y1, x2, y2) {
+  const dx = x2-x1, dy = y2-y1;
+  const dist = Math.hypot(dx, dy);
+  if (dist < 1) return;
+  const angle = Math.atan2(dy, dx);
+  const jitter = (Math.random()-0.5) * dist * 0.4;
+  const mx = (x1+x2)/2 + Math.cos(angle + Math.PI/2) * jitter;
+  const my = (y1+y2)/2 + Math.sin(angle + Math.PI/2) * jitter;
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', `M${x1} ${y1} L${mx} ${my} L${x2} ${y2}`);
+  path.setAttribute('stroke', 'rgba(90,88,84,0.25)');
+  path.setAttribute('stroke-width', '0.7');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke-linecap', 'round');
+  crackSvg.appendChild(path);
+  // fade out
+  setTimeout(() => {
+    path.style.transition = 'opacity 1.2s ease';
+    path.style.opacity = '0';
+    setTimeout(() => crackSvg.removeChild(path), 1300);
+  }, 200);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GOLD UNDERLAY (kintsugi assembled face in deep dark + gold seams)
+// ═══════════════════════════════════════════════════════════
+function buildGoldFace(goldSvg, polys) {
+  goldSvg.innerHTML = '';
+  goldSvg.setAttribute('viewBox', '0 0 540 540');
+
+  // Defs for this SVG
+  const defs = document.createElementNS(svgNS, 'defs');
+  const radGrad = document.createElementNS(svgNS, 'radialGradient');
+  radGrad.id = 'goldBodyGrad';
+  radGrad.setAttribute('cx', '38%'); radGrad.setAttribute('cy', '35%'); radGrad.setAttribute('r', '65%');
+  [['0%','#2a2720'],['60%','#1e1c18'],['100%','#151310']].forEach(([off, col]) => {
+    const s = document.createElementNS(svgNS, 'stop');
+    s.setAttribute('offset', off); s.setAttribute('stop-color', col); radGrad.appendChild(s);
+  });
+  defs.appendChild(radGrad);
+  goldSvg.appendChild(defs);
+
+  // Dark body polygons
+  const bodyG = document.createElementNS(svgNS, 'g');
+  bodyG.setAttribute('transform', `translate(${CX}, ${CY})`);
+  polys.forEach(poly => {
+    const p = document.createElementNS(svgNS, 'path');
+    p.setAttribute('d', poly.path);
+    p.setAttribute('fill', 'url(#goldBodyGrad)');
+    p.setAttribute('stroke', 'rgba(212,175,55,0.15)');
+    p.setAttribute('stroke-width', '0.5');
+    bodyG.appendChild(p);
+  });
+  goldSvg.appendChild(bodyG);
+
+  // Gold seam lines: draw edges between fragment boundaries
+  const seamsG = document.createElementNS(svgNS, 'g');
+  seamsG.setAttribute('transform', `translate(${CX}, ${CY})`);
+  // Draw gold outlines on each fragment edge
+  polys.forEach(poly => {
+    // Outer glow stroke
+    const glowPath = document.createElementNS(svgNS, 'path');
+    glowPath.setAttribute('d', poly.path);
+    glowPath.setAttribute('fill', 'none');
+    glowPath.setAttribute('stroke', 'rgba(212,175,55,0.25)');
+    glowPath.setAttribute('stroke-width', '8');
+    glowPath.setAttribute('filter', 'url(#gold-leaf)');
+    seamsG.appendChild(glowPath);
+
+    // Core gold seam
+    const seamPath = document.createElementNS(svgNS, 'path');
+    seamPath.setAttribute('d', poly.path);
+    seamPath.setAttribute('fill', 'none');
+    seamPath.setAttribute('stroke', '#d4af37');
+    seamPath.setAttribute('stroke-width', '2');
+    seamPath.setAttribute('stroke-linecap', 'round');
+    seamPath.setAttribute('stroke-linejoin', 'round');
+    seamsG.appendChild(seamPath);
+  });
+  goldSvg.appendChild(seamsG);
+
+  // Gold dust particles
+  const dustG = document.createElementNS(svgNS, 'g');
+  dustG.setAttribute('transform', `translate(${CX}, ${CY})`);
+  const dustPositions = [
+    {x:-10,y:5,r:2.2},{x:30,y:-15,r:1.5},{x:-40,y:30,r:1.8},
+    {x:20,y:50,r:1.2},{x:-25,y:-40,r:2},{x:50,y:20,r:1.5}
+  ];
+  dustPositions.forEach(d => {
+    const c = document.createElementNS(svgNS, 'circle');
+    c.setAttribute('cx', d.x); c.setAttribute('cy', d.y); c.setAttribute('r', d.r);
+    c.setAttribute('fill', '#f5d76e'); c.setAttribute('opacity', '0.8');
+    dustG.appendChild(c);
+  });
+  goldSvg.appendChild(dustG);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EASING
+// ═══════════════════════════════════════════════════════════
+function easeInOut(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+function easeOut(t) { return 1 - Math.pow(1-t, 3); }
+function lerp(a, b, t) { return a + (b-a)*t; }
+function lerpAngle(a, b, t) { return a + (b-a)*t; }
+
+// ═══════════════════════════════════════════════════════════
+//  ANIMATION STATE
+// ═══════════════════════════════════════════════════════════
+const el = {
+  logo: document.getElementById('logo'),
+  bgDimmer: document.getElementById('bgDimmer'),
+  phaseLabel: document.getElementById('phaseLabel'),
+  tagOverline: document.getElementById('tagOverline'),
+  tagMain: document.getElementById('tagMain'),
+  releaseBtn: document.getElementById('releaseBtn'),
+  kintsugiQuote: document.getElementById('kintsugiQuote'),
+  ctaPill: document.getElementById('ctaPill'),
+  fauxCursor: document.getElementById('fauxCursor'),
+  progressBar: document.getElementById('progressBar'),
+  faceSvg: document.getElementById('face-canvas'),
+  goldSvg: document.getElementById('gold-underlay'),
+};
+
+function after(ms) { return new Promise(r => setTimeout(r, ms)); }
+function show(e, cls = 'show') { e.classList.add(cls); }
+function hide(e, cls = 'show') { e.classList.remove(cls); }
+
+// Progress bar animation
+let progStart = null;
+const LOOP_MS = 20000;
+
+function startProgress() {
+  progStart = performance.now();
+  const tick = (now) => {
+    const pct = ((now - progStart) % LOOP_MS) / LOOP_MS * 100;
+    el.progressBar.style.width = pct + '%';
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FRAGMENT FLOAT / DISPERSE / SETTLE
+// ═══════════════════════════════════════════════════════════
+let polys = [];
+let offsets = [];
+let animTime = 0;
+let animMode = 'float'; // 'float' | 'disperse' | 'settle' | 'kintsugi'
+
+// Float start positions — arranged in a constellation around center
+function buildStartOffsets(polys) {
+  return polys.map((_, i) => {
+    const angle = i * ((Math.PI*2) / polys.length) * 1.8 + 0.3;
+    const dist = 60 + i * 18;
+    return {
+      dx: Math.cos(angle) * dist,
+      dy: Math.sin(angle) * dist,
+      rot: (Math.random() - 0.5) * 320,
+      scale: 0.6 + Math.random() * 0.9,
+      noiseX: Math.random() * 1000,
+      noiseY: Math.random() * 1000,
+      noiseR: Math.random() * 1000,
+      // disperse targets
+      dispX: Math.cos(angle) * (dist * 1.5 + 40),
+      dispY: Math.sin(angle) * (dist * 1.5 + 40),
+      dispRot: (Math.random() - 0.5) * 60,
+    };
+  });
+}
+
+function noise(t) { return Math.sin(t)*0.5 + Math.sin(t*0.83)*0.3 + Math.sin(t*1.21)*0.2; }
+
+function computeOffsets(t, progress) {
+  return polys.map((poly, i) => {
+    const o = offsets[i];
+    if (!o) return { dx: 0, dy: 0, rot: 0, scale: 1 };
+
+    if (animMode === 'float') {
+      const floatX = noise(t * 0.5 + o.noiseX) * 32;
+      const floatY = noise(t * 0.5 + o.noiseY) * 32;
+      const floatR = noise(t * 0.4 + o.noiseR) * 8;
+      return {
+        dx: o.dx + floatX,
+        dy: o.dy + floatY,
+        rot: o.rot + floatR,
+        scale: o.scale
+      };
+    } else if (animMode === 'disperse') {
+      const p = easeOut(Math.min(progress, 1));
+      const floatX = noise(t * 0.5 + o.noiseX) * 15 * (1-p);
+      const floatY = noise(t * 0.5 + o.noiseY) * 15 * (1-p);
+      return {
+        dx: lerp(o.dx + floatX, o.dispX, p),
+        dy: lerp(o.dy + floatY, o.dispY, p),
+        rot: lerp(o.rot, o.dispRot, p),
+        scale: lerp(o.scale, o.scale * 0.85, p)
+      };
+    } else if (animMode === 'settle') {
+      const p = easeInOut(Math.min(progress, 1));
+      const gapX = poly.cx * 0.03;
+      const gapY = poly.cy * 0.03;
+      return {
+        dx: lerp(o.dispX, gapX, p),
+        dy: lerp(o.dispY, gapY, p),
+        rot: lerp(o.dispRot, 0, p),
+        scale: lerp(o.scale * 0.85, 1.0, p)
+      };
+    } else if (animMode === 'kintsugi') {
+      return {
+        dx: poly.cx * 0.03,
+        dy: poly.cy * 0.03,
+        rot: 0,
+        scale: 1.0
+      };
+    }
+    return { dx: 0, dy: 0, rot: 0, scale: 1 };
+  });
+}
+
+// Main render loop (runs continuously)
+let lastRenderTime = 0;
+function renderLoop(now) {
+  const dt = Math.min((now - lastRenderTime) / 1000, 0.05);
+  lastRenderTime = now;
+  animTime += dt;
+
+  const currentOffsets = computeOffsets(animTime, 0); // progress handled externally
+  applyFragmentTransforms(el.faceSvg, polys, currentOffsets, 1);
+
+  requestAnimationFrame(renderLoop);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  FAUX CURSOR ANIMATION
+// ═══════════════════════════════════════════════════════════
+let cursorRAF = null;
+
+function animateCursor(path, durationMs, onDone) {
+  const start = performance.now();
+  const cursor = el.fauxCursor;
+  cursor.classList.add('visible');
+
+  const tick = (now) => {
+    const t = Math.min((now - start) / durationMs, 1);
+    const pt = getPointOnPath(path, t);
+    cursor.style.left = pt.x + 'px';
+    cursor.style.top  = pt.y + 'px';
+
+    // Add crack trail every ~30px
+    if (t > 0.02 && t < 1) {
+      const prevT = Math.max(0.001, t - 0.02);
+      const prev = getPointOnPath(path, prevT);
+      if (prev && pt && Math.hypot(pt.x - prev.x, pt.y - prev.y) > 28) {
+        addCrack(prev.x, prev.y, pt.x, pt.y);
+      }
+    }
+
+    if (t < 1) {
+      cursorRAF = requestAnimationFrame(tick);
+    } else {
+      if (onDone) onDone();
+    }
+  };
+  cursorRAF = requestAnimationFrame(tick);
+}
+
+function getPointOnPath(path, t) {
+  // path = array of {x, y} waypoints — safe boundary check
+  if (!path || path.length < 2) return { x: 270, y: 240 };
+  const total = path.length - 1;
+  const seg = Math.min(t * total, total - 0.0001);
+  const i = Math.floor(seg);
+  const f = seg - i;
+  const a = path[i];
+  const b = path[Math.min(i + 1, path.length - 1)];
+  return {
+    x: lerp(a.x, b.x, f),
+    y: lerp(a.y, b.y, f),
+  };
+}
+
+// Cursor path: wanders around the face constellation area
+const cursorWanderPath = [
+  {x:300, y:220},
+  {x:250, y:180},
+  {x:200, y:220},
+  {x:240, y:270},
+  {x:290, y:290},
+  {x:340, y:260},
+  {x:330, y:200},
+  {x:280, y:160},
+  {x:230, y:190},
+  {x:270, y:240},
+  {x:310, y:250},
+];
+
+// Cursor path for "clicking" a fragment (toward a floating fragment)
+const cursorClickPath = [
+  {x:310, y:250},
+  {x:310, y:250},
+];
+
+// Cursor path: moving fragment (drag gesture)
+function buildDragPath(fromX, fromY, toX, toY) {
+  const steps = 12;
+  const path = [];
+  for (let i = 0; i <= steps; i++) {
+    path.push({
+      x: lerp(fromX, toX, i/steps) + (Math.random()-0.5)*8,
+      y: lerp(fromY, toY, i/steps) + (Math.random()-0.5)*8,
+    });
+  }
+  return path;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PROGRESS-DRIVEN ANIMATION MODES
+// ═══════════════════════════════════════════════════════════
+let disperseProgress = 0;
+let settleProgress = 0;
+
+// Override compute with live progress values
+const origCompute = computeOffsets;
+function computeOffsetsLive(t, _) {
+  return polys.map((poly, i) => {
+    const o = offsets[i];
+    if (!o) return { dx: 0, dy: 0, rot: 0, scale: 1 };
+
+    if (animMode === 'float') {
+      const floatX = noise(t * 0.5 + o.noiseX) * 32;
+      const floatY = noise(t * 0.5 + o.noiseY) * 32;
+      const floatR = noise(t * 0.4 + o.noiseR) * 8;
+      return { dx: o.dx + floatX, dy: o.dy + floatY, rot: o.rot + floatR, scale: o.scale };
+    } else if (animMode === 'disperse') {
+      const p = easeOut(Math.min(disperseProgress, 1));
+      const floatX = noise(t * 0.5 + o.noiseX) * 15 * (1-p);
+      const floatY = noise(t * 0.5 + o.noiseY) * 15 * (1-p);
+      return {
+        dx: lerp(o.dx + floatX, o.dispX, p),
+        dy: lerp(o.dy + floatY, o.dispY, p),
+        rot: lerp(o.rot, o.dispRot, p),
+        scale: lerp(o.scale, o.scale * 0.85, p)
+      };
+    } else if (animMode === 'settle') {
+      const p = easeInOut(Math.min(settleProgress, 1));
+      const gapX = poly.cx * 0.03;
+      const gapY = poly.cy * 0.03;
+      return {
+        dx: lerp(o.dispX, gapX, p),
+        dy: lerp(o.dispY, gapY, p),
+        rot: lerp(o.dispRot, 0, p),
+        scale: lerp(o.scale * 0.85, 1.0, p)
+      };
+    } else {
+      return { dx: poly.cx * 0.03, dy: poly.cy * 0.03, rot: 0, scale: 1.0 };
+    }
+  });
+}
+
+// Replace renderLoop with live version
+function renderLoopLive(now) {
+  const dt = Math.min((now - lastRenderTime) / 1000, 0.05);
+  lastRenderTime = now;
+  animTime += dt;
+
+  const currentOffsets = computeOffsetsLive(animTime, 0);
+  applyFragmentTransforms(el.faceSvg, polys, currentOffsets, 1);
+
+  requestAnimationFrame(renderLoopLive);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ANIMATE PROGRESS TWEEN
+// ═══════════════════════════════════════════════════════════
+function tween(setter, from, to, durationMs) {
+  return new Promise(resolve => {
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min((now - start) / durationMs, 1);
+      setter(lerp(from, to, t));
+      if (t < 1) requestAnimationFrame(tick);
+      else resolve();
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MAIN LOOP
+// ═══════════════════════════════════════════════════════════
+async function mainLoop() {
+  while (true) {
+    // ── GENERATE NEW FACE ──
+    const seed = Math.floor(Math.random() * 99999) + 1;
+    polys = generateFacePolys(seed);
+    offsets = buildStartOffsets(polys);
+
+    // Pick colors
+    const skin  = skinPalette[Math.floor(Math.random() * skinPalette.length)];
+    let skin2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
+    if (skin2 === skin) skin2 = skinPalette[(skinPalette.indexOf(skin)+3) % skinPalette.length];
+    const eye   = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+    const mouth = mouthColors[Math.floor(Math.random() * mouthColors.length)];
+
+    // Bake face in normal colors
+    buildFace(el.faceSvg, polys, { skin, skin2, eye, mouth });
+    buildGoldFace(el.goldSvg, polys);
+
+    // Reset visibility
+    animMode = 'float';
+    disperseProgress = 0;
+    settleProgress = 0;
+    el.goldSvg.style.opacity = '0';
+    el.bgDimmer.classList.remove('active');
+    el.logo.classList.remove('show','gold-mode');
+    el.phaseLabel.classList.remove('show','gold');
+    el.releaseBtn.classList.remove('show','clicking');
+    el.tagOverline.classList.remove('show');
+    el.tagMain.classList.remove('show');
+    el.kintsugiQuote.classList.remove('show');
+    el.ctaPill.classList.remove('show');
+    el.fauxCursor.classList.remove('visible','ring','ring-gold');
+    crackSvg.innerHTML = '';
+
+    await after(200);
+
+    // ────────────────────────────────────
+    // PHASE 1: LOGO INTRO (0–1.5s)
+    // ────────────────────────────────────
+    el.phaseLabel.textContent = 'Anti-Gravity';
+    show(el.phaseLabel);
+    show(el.logo);
+
+    await after(900);
+
+    // Show cursor wandering
+    el.fauxCursor.classList.add('visible');
+    el.fauxCursor.style.left = '300px';
+    el.fauxCursor.style.top  = '220px';
+
+    // ────────────────────────────────────
+    // PHASE 2: FLOATING FRAGMENTS (1.5–5s)
+    // ────────────────────────────────────
+    // show tagline
+    await after(600);
+    show(el.tagOverline);
+    await after(300);
+    show(el.tagMain);
+
+    // Cursor wanders across fragments (crack trail appears)
+    await new Promise(resolve => {
+      animateCursor(cursorWanderPath, 3200, resolve);
+    });
+
+    // ────────────────────────────────────
+    // PHASE 3: CURSOR CLICKS A FRAGMENT (5–6.5s)
+    // ────────────────────────────────────
+    el.fauxCursor.classList.add('ring');
+
+    // Simulate picking up a fragment (move it slightly)
+    const fragIdx = 2; // Eye L
+    const frag = offsets[fragIdx];
+    const startDrag = { x: CX + frag.dx, y: CY + frag.dy };
+    const endDrag   = { x: startDrag.x + 60, y: startDrag.y - 40 };
+
+    const dragPath = buildDragPath(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
+
+    await new Promise(resolve => {
+      animateCursor(dragPath, 1200, resolve);
+    });
+
+    // Update frag offset to reflect "drag"
+    offsets[fragIdx] = { ...frag, dx: frag.dx + 60, dy: frag.dy - 40 };
+
+    await after(400);
+
+    // ────────────────────────────────────
+    // PHASE 4: DISPERSE (6.5–9s)
+    // ────────────────────────────────────
+    el.tagOverline.classList.remove('show');
+    el.tagMain.classList.remove('show');
+    el.phaseLabel.textContent = 'Break';
+    el.fauxCursor.classList.remove('visible','ring');
+
+    // Show RELEASE button
+    show(el.releaseBtn);
+
+    animMode = 'disperse';
+    await tween(v => { disperseProgress = v; }, 0, 1, 1800);
+    await after(600);
+
+    // ────────────────────────────────────
+    // PHASE 5: RELEASE CLICK (9–10s)
+    // ────────────────────────────────────
+    el.phaseLabel.textContent = 'Release';
+    el.fauxCursor.style.left = '432px';
+    el.fauxCursor.style.top  = '432px';
+    el.fauxCursor.classList.add('visible');
+
+    await after(500);
+
+    // Button click flash
+    el.releaseBtn.classList.add('clicking');
+    await after(200);
+    el.releaseBtn.classList.remove('clicking');
+    await after(200);
+    el.releaseBtn.classList.remove('show');
+    el.fauxCursor.classList.remove('visible','ring');
+
+    // ────────────────────────────────────
+    // PHASE 6: SETTLE / REASSEMBLE (10–14s)
+    // ────────────────────────────────────
+    el.phaseLabel.classList.remove('show','gold');
+    el.phaseLabel.textContent = 'Kintsugi';
+    el.phaseLabel.classList.add('show','gold');
+    el.bgDimmer.classList.add('active');
+
+    animMode = 'settle';
+    await tween(v => { settleProgress = v; }, 0, 1, 3000);
+
+    // ────────────────────────────────────
+    // PHASE 7: KINTSUGI GOLD (14–17.5s)
+    // ────────────────────────────────────
+    animMode = 'kintsugi';
+
+    // Fade normal face to dark, show gold underlay
+    el.goldSvg.style.transition = 'opacity 2.5s ease';
+    el.goldSvg.style.opacity = '1';
+    el.logo.classList.add('gold-mode');
+
+    // Gold cursor ring
+    el.fauxCursor.style.left = '270px';
+    el.fauxCursor.style.top  = '240px';
+    el.fauxCursor.classList.add('visible','ring-gold');
+
+    await after(800);
+    show(el.kintsugiQuote);
+
+    await after(2000);
+
+    // ────────────────────────────────────
+    // PHASE 8: CTA (17.5–20s) → loop
+    // ────────────────────────────────────
+    el.kintsugiQuote.classList.remove('show');
+    el.phaseLabel.textContent = 'Imperfect Vessel';
+    el.fauxCursor.classList.remove('visible','ring-gold');
+
+    await after(400);
+    show(el.ctaPill);
+
+    await after(2200);
+
+    // ── FADE OUT for reset ──
+    el.ctaPill.classList.remove('show');
+    el.logo.classList.remove('show','gold-mode');
+    el.phaseLabel.classList.remove('show','gold');
+    el.goldSvg.style.transition = 'opacity 0.8s ease';
+    el.goldSvg.style.opacity = '0';
+    el.bgDimmer.classList.remove('active');
+
+    await after(900);
+    // → loop restart
+  }
+}
+
+// ─── BAKE MATTE TEXTURE ───
+const matte = document.getElementById('img-matte');
+if (matte) {
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' result='noise'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.45 0' in='noise'/></filter><rect width='100%' height='100%' filter='url(#f)'/></svg>`;
+  matte.setAttribute('href', 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
+}
+
+// ─── KICK OFF ───
+window.addEventListener('load', () => {
+  startProgress();
+  lastRenderTime = performance.now();
+  requestAnimationFrame(renderLoopLive);
+  after(100).then(mainLoop);
+});
+</script>
+
+</body>
+</html>

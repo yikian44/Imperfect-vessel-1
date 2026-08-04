@@ -1439,7 +1439,7 @@
     }
 
     .personal-quote {
-      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif !important;
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', 'Space Grotesk', sans-serif !important;
       font-size: clamp(1.2rem, 2.2vw, 1.6rem);
       font-style: italic;
       margin: 0 0 12px 0;
@@ -1497,7 +1497,7 @@
     }
 
     .mini-quote {
-      font-family: 'Clash Grotesk Variable', sans-serif !important;
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', 'Space Grotesk', sans-serif !important;
       font-style: italic;
       font-size: 13.5px;
       margin: 0 0 6px 0;
@@ -1554,7 +1554,7 @@
     }
 
     .quote-text {
-      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif !important;
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', 'Space Grotesk', sans-serif !important;
       font-size: 16px;
       font-style: italic;
       line-height: 1.45;
@@ -2039,7 +2039,7 @@
     .card-title,
     #prologue h1,
     .site-logo-svg text {
-      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif !important;
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', 'Space Grotesk', sans-serif !important;
       font-weight: 400 !important; /* Regular */
     }
 
@@ -2063,7 +2063,7 @@
       opacity: 1;
     }
     .ritual-message {
-      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', sans-serif;
+      font-family: 'Clash Grotesk Variable', 'Clash Grotesk', 'Space Grotesk', sans-serif;
       font-size: 20px;
       font-weight: 400;
       letter-spacing: 2px;

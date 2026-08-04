@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A1 Poster Face Grid - 填色/彩色海报 (Imperfect Vessel Engine)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #eef0eb;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #2b2825;
+    }
+
+    /* Print control toolbar (hidden when printing) */
+    .print-control-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 16px;
+      background: #ffffff;
+      padding: 14px 28px;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      background: #f0ede6;
+      padding: 4px;
+      border-radius: 20px;
+    }
+
+    .btn-option {
+      background: transparent;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s ease;
+    }
+
+    .btn-option.active {
+      background: #ffffff;
+      color: #2b2825;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-action {
+      background: #d96b43;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: #b8542f;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #2a9d8f;
+    }
+    .btn-secondary:hover {
+      background: #218378;
+    }
+
+    .btn-link {
+      background: #3d5a80;
+      text-decoration: none;
+    }
+    .btn-link:hover {
+      background: #2b4263;
+    }
+
+    /* A1 Paper Ratio Sheet Canvas (594mm x 841mm ratio) */
+    .a1-sheet {
+      width: 210mm; /* Displayed proportional preview */
+      aspect-ratio: 594 / 841;
+      background: #ffffff;
+      padding: 12mm 10mm;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Dynamic Grid Layout */
+    .grid-container {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      gap: 10px 8px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    /* Density Modes */
+    .grid-container.density-24 {
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+    }
+
+    .grid-container.density-35 {
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+    }
+
+    .grid-container.density-48 {
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+    }
+
+    .face-item {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2px;
+      page-break-inside: avoid;
+      position: relative;
+    }
+
+    .face-svg-wrapper {
+      width: 100%;
+      height: 85%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .face-svg-wrapper svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.08));
+    }
+
+    /* Disable shadow in line-art mode for crisp line printing */
+    .mode-lineart .face-svg-wrapper svg {
+      filter: none !important;
+    }
+
+    /* Discreet signature space: a faint blank underline for author signature/coloring */
+    .stealth-space {
+      margin-top: 4px;
+      width: 60%;
+      height: 6px;
+      border-bottom: 1px dashed #d0c9bd;
+    }
+
+    .mode-lineart .stealth-space {
+      border-bottom: 1px dashed #aaaaaa;
+    }
+
+    /* Print CSS Stylesheet */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .print-control-bar {
+        display: none !important;
+      }
+      .a1-sheet {
+        box-shadow: none;
+        width: 100vw;
+        height: 100vh;
+        padding: 6mm 4mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action & Control Bar -->
+  <div class="print-control-bar">
+    
+    <!-- Navigation to Feature Material Sheet -->
+    <a href="print_features.html" class="btn-action btn-link">
+      <span>✂️ 切换至 A1 五官素材贴纸页</span>
+    </a>
+
+    <!-- Render Mode Selector -->
+    <div class="control-group">
+      <span class="toolbar-label">模式切换：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-mode active" data-mode="lineart" onclick="setMode('lineart')">✏️ 纯黑白线稿 (填色版)</button>
+        <button class="btn-option btn-mode" data-mode="color" onclick="setMode('color')">🎨 预置彩色版</button>
+      </div>
+    </div>
+
+    <!-- Line Thickness (Visible in lineart mode) -->
+    <div class="control-group" id="strokeControlGroup">
+      <span class="toolbar-label">线条粗细：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-stroke" data-stroke="1.5" onclick="setStrokeWidth(1.5)">细 (1.5px)</button>
+        <button class="btn-option btn-stroke active" data-stroke="2.2" onclick="setStrokeWidth(2.2)">标准 (2.2px)</button>
+        <button class="btn-option btn-stroke" data-stroke="3.0" onclick="setStrokeWidth(3.0)">粗 (3.0px)</button>
+      </div>
+    </div>
+
+    <!-- Density Selector -->
+    <div class="control-group">
+      <span class="toolbar-label">脸部数量：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-density active" data-count="24" onclick="setDensity(24)">24 个 (大脸 ~12cm)</button>
+        <button class="btn-option btn-density" data-count="35" onclick="setDensity(35)">35 个 (中脸 ~9.5cm)</button>
+        <button class="btn-option btn-density" data-count="48" onclick="setDensity(48)">48 个 (小脸 ~7.5cm)</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn-action" onclick="window.print()">
+      <span>🖨️ 打印 A1 海报</span>
+    </button>
+    <button class="btn-action btn-secondary" onclick="exportHighResPNG()">
+      <span>🖼️ 下载 A1 超高清 PNG</span>
+    </button>
+  </div>
+
+  <!-- A1 Poster Sheet Content -->
+  <div class="a1-sheet" id="printableSheet">
+    <div class="grid-container density-24 mode-lineart" id="gridContainer">
+      <!-- Generated via JS -->
+    </div>
+  </div>
+
+  <!-- html2canvas for PNG export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const COLOR_THEMES = [
+      ['#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78', '#b5a895'],
+      ['#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b', '#e6c2a4'],
+      ['#2b3e50', '#1c3a27', '#5c6b55', '#d5cbb8', '#426375', '#a3b899'],
+      ['#d9c8c0', '#b8c5b9', '#f2cc8f', '#c5bedb', '#e8dfd8', '#f7d6a8'],
+      ['#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3', '#64b5f6'],
+      ['#f4f1ea', '#d6d2c4', '#a39e93', '#d4af37', '#5c5852', '#ffffff']
+    ];
+
+    let currentDensity = 24;
+    let currentMode = 'lineart'; // Default to lineart (filling/coloring book) as requested by user!
+    let currentStrokeWidth = 2.2;
+
+    function seededRandom(seed) {
+      let x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    }
+
+    function generateUniqueFaceSVG(cardIndex) {
+      let seed = (cardIndex + 1) * 7919;
+      function rand() {
+        return seededRandom(seed++);
+      }
+
+      const v = {
+        TL: {x: -80, y: -120},  TM: {x: 0, y: -130},    TR: {x: 80, y: -120},
+        FL: {x: -90, y: -50},   FM: {x: 0, y: -40},     FR: {x: 90, y: -50},
+        EL: {x: -80, y: 10},    EM: {x: 0, y: 0},       ER: {x: 80, y: 10},
+        NL: {x: -30, y: 40},    NR: {x: 30, y: 50},     
+        ML: {x: -60, y: 80},    MM: {x: 0, y: 85},      MR: {x: 60, y: 80},
+        BL: {x: -50, y: 130},   BM: {x: 0, y: 140},     BR: {x: 50, y: 130},
+        EarL: {x: -130, y: -20}, EarR: {x: 130, y: -20}
+      };
+
+      const styleType = cardIndex % 7;
+      let scaleX = 1.0;
+      let scaleY = 1.0;
+
+      if (styleType === 1) { 
+        scaleX = 1.35; scaleY = 0.9;
+      } else if (styleType === 2) { 
+        scaleX = 0.85; scaleY = 1.15;
+      } else if (styleType === 4) {
+        v.TL.x -= 30; v.TR.x += 30;
+        v.BL.x += 20; v.BR.x -= 20;
+      } else if (styleType === 5) {
+        v.FL.x -= 40; v.FR.x += 40;
+        v.EL.x -= 45; v.ER.x += 45;
+        v.TL.x += 20; v.TR.x -= 20;
+        v.BL.x += 15; v.BR.x -= 15;
+      } else if (styleType === 6) {
+        v.TL.x += 25; v.TR.x -= 25;
+        v.BL.x -= 35; v.BR.x += 35;
+        v.ML.x -= 25; v.MR.x += 25;
+      }
+
+      for (let key in v) {
+        v[key].x *= scaleX;
+        v[key].y *= scaleY;
+        
+        if (styleType === 3) {
+          if (key.includes('L')) v[key].y -= 25;
+          if (key.includes('R')) v[key].y += 25;
+        }
+
+        v[key].x += (rand() - 0.5) * 45;
+        v[key].y += (rand() - 0.5) * 45;
+      }
+
+      const polys = [
+        { points: [v.TL, v.TM, v.FM, v.FL] },
+        { points: [v.TM, v.TR, v.FR, v.FM] },
+        { points: [v.FL, v.FM, v.EM, v.EL] },
+        { points: [v.FM, v.FR, v.ER, v.EM] },
+        { points: [v.EM, v.NR, v.NL] },
+        { points: [v.EL, v.EM, v.NL, v.ML] },
+        { points: [v.EM, v.ER, v.MR, v.NR] },
+        { points: [v.NL, v.NR, v.MR, v.MM, v.ML] },
+        { points: [v.ML, v.MM, v.BM, v.BL] },
+        { points: [v.MM, v.MR, v.BR, v.BM] },
+        { points: [v.FL, v.EL, v.EarL] },
+        { points: [v.FR, v.EarR, v.ER] }
+      ];
+
+      const palette = COLOR_THEMES[cardIndex % COLOR_THEMES.length];
+      const colors = [...palette];
+      for (let i = colors.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [colors[i], colors[j]] = [colors[j], colors[i]];
+      }
+
+      let svgString = `<svg viewBox="-160 -160 320 320" xmlns="http://www.w3.org/2000/svg">
+        <g transform="rotate(${(rand() - 0.5) * 8})">`;
+
+      polys.forEach((poly, pIdx) => {
+        let pathStr = `M ${Math.round(poly.points[0].x * 10) / 10} ${Math.round(poly.points[0].y * 10) / 10}`;
+        for (let k = 1; k < poly.points.length; k++) {
+          pathStr += ` L ${Math.round(poly.points[k].x * 10) / 10} ${Math.round(poly.points[k].y * 10) / 10}`;
+        }
+        pathStr += " Z";
+
+        if (currentMode === 'lineart') {
+          // Line art mode for coloring: white polygon interior, bold dark stroke
+          svgString += `<path d="${pathStr}" fill="#ffffff" stroke="#111111" stroke-width="${currentStrokeWidth}" stroke-linejoin="round" stroke-linecap="round" />`;
+        } else {
+          // Color theme mode
+          const color = colors[pIdx % colors.length];
+          svgString += `<path d="${pathStr}" fill="${color}" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />`;
+        }
+      });
+
+      if (currentMode === 'lineart') {
+        svgString += `<polyline points="${v.TM.x},${v.TM.y} ${v.FM.x},${v.FM.y} ${v.EM.x},${v.EM.y} ${v.MM.x},${v.MM.y} ${v.BM.x},${v.BM.y}" fill="none" stroke="#666666" stroke-width="${Math.max(1, currentStrokeWidth * 0.75)}" stroke-dasharray="4,3" stroke-linecap="round" />`;
+      } else {
+        svgString += `<polyline points="${v.TM.x},${v.TM.y} ${v.FM.x},${v.FM.y} ${v.EM.x},${v.EM.y} ${v.MM.x},${v.MM.y} ${v.BM.x},${v.BM.y}" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5" stroke-linecap="round" />`;
+      }
+
+      svgString += `</g></svg>`;
+
+      return svgString;
+    }
+
+    function renderGrid(count) {
+      currentDensity = count;
+      const gridContainer = document.getElementById('gridContainer');
+      gridContainer.className = `grid-container density-${count} ${currentMode === 'lineart' ? 'mode-lineart' : ''}`;
+      gridContainer.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const faceItem = document.createElement('div');
+        faceItem.className = 'face-item';
+        const faceSvg = generateUniqueFaceSVG(i);
+        faceItem.innerHTML = `
+          <div class="face-svg-wrapper">
+            ${faceSvg}
+          </div>
+          <div class="stealth-space"></div>
+        `;
+        gridContainer.appendChild(faceItem);
+      }
+    }
+
+    function setDensity(count) {
+      document.querySelectorAll('.btn-density').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.count) === count);
+      });
+      renderGrid(count);
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.btn-mode').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      
+      const strokeGroup = document.getElementById('strokeControlGroup');
+      if (strokeGroup) {
+        strokeGroup.style.display = (mode === 'lineart') ? 'flex' : 'none';
+      }
+
+      renderGrid(currentDensity);
+    }
+
+    function setStrokeWidth(width) {
+      currentStrokeWidth = width;
+      document.querySelectorAll('.btn-stroke').forEach(btn => {
+        btn.classList.toggle('active', parseFloat(btn.dataset.stroke) === width);
+      });
+      if (currentMode === 'lineart') {
+        renderGrid(currentDensity);
+      }
+    }
+
+    // Initial render in line art mode with 24 faces
+    renderGrid(24);
+
+    function exportHighResPNG() {
+      const sheet = document.getElementById('printableSheet');
+      html2canvas(sheet, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        const modeName = currentMode === 'lineart' ? 'Coloring_Lineart' : 'Colored';
+        link.download = `A1_Poster_${currentDensity}_Faces_${modeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>

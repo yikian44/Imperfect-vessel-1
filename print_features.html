@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A1 Facial Features Sticker Sheet - A1 五官与表情拼贴素材 (Imperfect Vessel Engine)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #eef0eb;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #2b2825;
+    }
+
+    /* Print control toolbar (hidden when printing) */
+    .print-control-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+      background: #ffffff;
+      padding: 14px 28px;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toolbar-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #666;
+      white-space: nowrap;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 4px;
+      background: #f0ede6;
+      padding: 4px;
+      border-radius: 20px;
+    }
+
+    .btn-option {
+      background: transparent;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s ease;
+    }
+
+    .btn-option.active {
+      background: #ffffff;
+      color: #2b2825;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-action {
+      background: #d96b43;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-action:hover {
+      background: #b8542f;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: #2a9d8f;
+    }
+    .btn-secondary:hover {
+      background: #218378;
+    }
+
+    .btn-link {
+      background: #3d5a80;
+    }
+    .btn-link:hover {
+      background: #2b4263;
+    }
+
+    /* A1 Paper Ratio Sheet Canvas (594mm x 841mm ratio) */
+    .a1-sheet {
+      width: 210mm; /* Proportional preview width */
+      aspect-ratio: 594 / 841;
+      background: #ffffff;
+      padding: 12mm 10mm;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Sheet Header Banner */
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 2px solid #2b2825;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .sheet-title-main {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .sheet-subtitle {
+      font-size: 0.75rem;
+      color: #666;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    .sheet-brand {
+      text-align: right;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #444;
+      line-height: 1.2;
+    }
+
+    .sheet-brand span {
+      display: block;
+      font-size: 0.65rem;
+      color: #888;
+    }
+
+    /* Main Categories Grid Layout */
+    .features-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .category-section {
+      border: 1px dashed #cccccc;
+      border-radius: 8px;
+      padding: 6px 8px;
+      position: relative;
+    }
+
+    .category-title {
+      position: absolute;
+      top: -9px;
+      left: 12px;
+      background: #ffffff;
+      padding: 0 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .items-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5mm;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 6px;
+      padding-bottom: 4px;
+    }
+
+    /* Cutout Box for Individual Items - Calibrated to Physical Millimeter Dimensions */
+    .cutout-box {
+      border: 1px dashed #b0b0b0;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #fafafa;
+      padding: 3px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .cutout-box::after {
+      content: '✂';
+      position: absolute;
+      top: 1px;
+      right: 2px;
+      font-size: 8px;
+      color: #aaa;
+    }
+
+    .cutout-box svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* Mode specifics */
+    .mode-lineart .cutout-box {
+      background: #ffffff;
+    }
+
+    /* --- Density 35 (Calibrated 1:1 for 35 Medium Face Template ~9.5cm) --- */
+    .size-35 .cutout-box {
+      width: 32mm;
+      height: 26mm;
+    }
+    .size-35 .brows-grid .cutout-box {
+      width: 36mm;
+      height: 20mm;
+    }
+    .size-35 .noses-grid .cutout-box {
+      width: 30mm;
+      height: 30mm;
+    }
+    .size-35 .mouths-grid .cutout-box {
+      width: 40mm;
+      height: 25mm;
+    }
+    .size-35 .ears-grid .cutout-box {
+      width: 30mm;
+      height: 35mm;
+    }
+    .size-35 .props-grid .cutout-box {
+      width: 52mm;
+      height: 28mm;
+    }
+    .size-35 .facets-grid .cutout-box {
+      width: 34mm;
+      height: 30mm;
+    }
+
+    /* --- Density 24 (1.35x Scale for 24 Large Face Template ~12cm) --- */
+    .size-24 .cutout-box {
+      width: 44mm;
+      height: 35mm;
+    }
+    .size-24 .brows-grid .cutout-box {
+      width: 48mm;
+      height: 28mm;
+    }
+    .size-24 .noses-grid .cutout-box {
+      width: 40mm;
+      height: 40mm;
+    }
+    .size-24 .mouths-grid .cutout-box {
+      width: 54mm;
+      height: 34mm;
+    }
+    .size-24 .ears-grid .cutout-box {
+      width: 40mm;
+      height: 48mm;
+    }
+    .size-24 .props-grid .cutout-box {
+      width: 70mm;
+      height: 38mm;
+    }
+    .size-24 .facets-grid .cutout-box {
+      width: 46mm;
+      height: 40mm;
+    }
+
+    /* --- Density 48 (0.80x Scale for 48 Small Face Template ~7.5cm) --- */
+    .size-48 .cutout-box {
+      width: 26mm;
+      height: 21mm;
+    }
+    .size-48 .brows-grid .cutout-box {
+      width: 28mm;
+      height: 16mm;
+    }
+    .size-48 .noses-grid .cutout-box {
+      width: 24mm;
+      height: 24mm;
+    }
+    .size-48 .mouths-grid .cutout-box {
+      width: 32mm;
+      height: 20mm;
+    }
+    .size-48 .ears-grid .cutout-box {
+      width: 24mm;
+      height: 28mm;
+    }
+    .size-48 .props-grid .cutout-box {
+      width: 42mm;
+      height: 22mm;
+    }
+    .size-48 .facets-grid .cutout-box {
+      width: 28mm;
+      height: 24mm;
+    }
+
+    /* Footer Note on Sheet */
+    .sheet-footer {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.65rem;
+      color: #777;
+    }
+
+    /* Print CSS Stylesheet */
+    @media print {
+      body {
+        background: none;
+        padding: 0;
+      }
+      .print-control-bar {
+        display: none !important;
+      }
+      .a1-sheet {
+        box-shadow: none;
+        width: 100vw;
+        height: 100vh;
+        padding: 6mm 4mm;
+      }
+      .cutout-box::after {
+        color: #888;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Action & Control Bar -->
+  <div class="print-control-bar">
+    
+    <!-- Navigation back to Base Sheet -->
+    <a href="print_sheet.html" class="btn-action btn-link">
+      <span>🎭 切换至 A1 脸部底稿页</span>
+    </a>
+
+    <!-- Render Mode Selector -->
+    <div class="control-group">
+      <span class="toolbar-label">模式切换：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-mode active" data-mode="lineart" onclick="setMode('lineart')">✏️ 纯黑白线稿 (手绘/涂色剪裁版)</button>
+        <button class="btn-option btn-mode" data-mode="color" onclick="setMode('color')">🎨 毕加索彩色版 (直接剪裁版)</button>
+      </div>
+    </div>
+
+    <!-- Line Thickness (Visible in lineart mode) -->
+    <div class="control-group" id="strokeControlGroup">
+      <span class="toolbar-label">线条粗细：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-stroke" data-stroke="1.5" onclick="setStrokeWidth(1.5)">细 (1.5px)</button>
+        <button class="btn-option btn-stroke active" data-stroke="2.2" onclick="setStrokeWidth(2.2)">标准 (2.2px)</button>
+        <button class="btn-option btn-stroke" data-stroke="3.0" onclick="setStrokeWidth(3.0)">粗 (3.0px)</button>
+      </div>
+    </div>
+
+    <!-- Target Match Face Size Density -->
+    <div class="control-group">
+      <span class="toolbar-label">匹配底版脸部大小：</span>
+      <div class="btn-group">
+        <button class="btn-option btn-density" data-density="24" onclick="setTargetDensity(24)">匹配 24 大脸 (~12cm)</button>
+        <button class="btn-option btn-density active" data-density="35" onclick="setTargetDensity(35)">匹配 35 中脸 (~9.5cm)</button>
+        <button class="btn-option btn-density" data-density="48" onclick="setTargetDensity(48)">匹配 48 小脸 (~7.5cm)</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn-action" onclick="window.print()">
+      <span>🖨️ 打印 A1 五官素材</span>
+    </button>
+    <button class="btn-action btn-secondary" onclick="exportHighResPNG()">
+      <span>🖼️ 下载 A1 超高清 PNG</span>
+    </button>
+  </div>
+
+  <!-- A1 Poster Sheet Content -->
+  <div class="a1-sheet" id="printableFeaturesSheet">
+    
+    <!-- Sheet Title Header -->
+    <div class="sheet-header">
+      <div>
+        <div class="sheet-title-main">Facial Features DIY Cut-Out Sheet</div>
+        <div class="sheet-subtitle">Interactive DIY Cut-Out Materials — Cut along dashed lines and paste onto A1 face poster</div>
+      </div>
+      <div class="sheet-brand">
+        IMPERFECT VESSEL
+        <span>Interactive Art Engine</span>
+      </div>
+    </div>
+
+    <!-- Feature Categories Container -->
+    <div class="features-container size-35" id="featuresContainer">
+      <!-- Generated via JS -->
+    </div>
+
+    <!-- Sheet Footer Note -->
+    <div class="sheet-footer">
+      <span>Tip: Use double-sided tape, glue sticks, or Velcro dots to create a reusable interactive collage wall.</span>
+      <span>A1 Standard Format (594mm x 841mm) • Imperfect Vessel Project</span>
+    </div>
+
+  </div>
+
+  <!-- html2canvas for PNG export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    let currentMode = 'lineart'; // 'lineart' or 'color'
+    let currentStrokeWidth = 2.2;
+    let targetDensity = 35; // 24, 35, or 48
+
+    // Modern Cubist & Artistic Color Palettes
+    const PALETTES = {
+      lineartFill: "#ffffff",
+      lineartStroke: "#111111",
+      colors: [
+        ['#d9381e', '#2b59c3', '#f9a825', '#1a1a1a'],
+        ['#2a9d8f', '#e76f51', '#e9c46a', '#264653'],
+        ['#9d4edd', '#c77dff', '#e0aaff', '#3c096c'],
+        ['#b85d43', '#d9a07b', '#b58e2a', '#703d2b'],
+        ['#2b3e50', '#5c6b55', '#426375', '#a3b899']
+      ]
+    };
+
+    function getStrokeStyle() {
+      if (currentMode === 'lineart') {
+        return `fill="${PALETTES.lineartFill}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" stroke-linejoin="round" stroke-linecap="round"`;
+      } else {
+        return `stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"`;
+      }
+    }
+
+    // Helper to build SVGs with mode support
+    function makeSvg(content, viewBox = "-50 -50 100 100") {
+      return `<svg viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
+    }
+
+    // --- FEATURE GENERATORS (Clean Line-Art with Empty Coloring Space) ---
+
+    // 1. EYES (12 variations)
+    function generateEyes() {
+      const list = [];
+      
+      // Eye 1: Geometric Cubist Diamond Eye
+      list.push(makeSvg(`
+        <polygon points="-30,0 0,-20 30,0 0,20" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2b59c3"':''} />
+        <polygon points="-15,0 0,-10 15,0 0,10" fill="${currentMode==='color'?'#d9381e':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+        <circle cx="0" cy="0" r="4" fill="${currentMode==='color'?'#ffffff':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 2: Sharp Triangle Angular Eye
+      list.push(makeSvg(`
+        <polygon points="-35,-15 25,-10 0,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#f9a825"':''} />
+        <circle cx="-5" cy="2" r="8" fill="${currentMode==='color'?'#1a1a1a':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+        <circle cx="-3" cy="0" r="3" fill="#ffffff" stroke="${PALETTES.lineartStroke}" stroke-width="${Math.max(1, currentStrokeWidth*0.75)}" />
+      `));
+
+      // Eye 3: Concentric Polygon Eye
+      list.push(makeSvg(`
+        <polygon points="-30,-15 30,-15 20,20 -20,20" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e76f51"':''} />
+        <polygon points="-18,-8 18,-8 12,12 -12,12" fill="${currentMode==='color'?'#264653':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+        <polygon points="-8,-4 8,-4 5,5 -5,5" fill="${currentMode==='color'?'#ffffff':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 4: Asymmetric Picasso Oval & Spike Eye
+      list.push(makeSvg(`
+        <path d="M-35,5 Q0,-30 35,-5 Q0,25 -35,5 Z" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2a9d8f"':''} />
+        <circle cx="5" cy="-2" r="10" fill="${currentMode==='color'?'#d9381e':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+        <circle cx="7" cy="-4" r="3" fill="#ffffff" stroke="${PALETTES.lineartStroke}" stroke-width="${Math.max(1, currentStrokeWidth*0.75)}" />
+        <line x1="-35" y1="5" x2="-45" y2="-10" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+        <line x1="35" y1="-5" x2="45" y2="-20" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 5: Dual Facet Split Eye
+      list.push(makeSvg(`
+        <polygon points="-30,0 0,-25 30,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#9d4edd"':''} />
+        <polygon points="-30,0 30,0 0,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#c77dff"':''} />
+        <circle cx="0" cy="0" r="8" fill="${currentMode==='color'?'#3c096c':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 6: Cyclops Large Star Eye
+      list.push(makeSvg(`
+        <polygon points="0,-30 8,-10 30,0 8,10 0,30 -8,10 -30,0 -8,-10" ${getStrokeStyle()} ${currentMode==='color'?'fill="#f9a825"':''} />
+        <circle cx="0" cy="0" r="9" fill="${currentMode==='color'?'#d9381e':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 7: Curved Spiral Cubist Eye
+      list.push(makeSvg(`
+        <polygon points="-30,-10 -5,-25 30,-5 15,20 -20,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#426375"':''} />
+        <path d="M-10,0 A10,10 0 1,1 10,0 A5,5 0 1,1 0,0" fill="none" stroke="${currentMode==='color'?'#ffffff':PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 8: Geometric Trapezoid Sleepy Eye
+      list.push(makeSvg(`
+        <polygon points="-30,-10 30,-10 15,10 -15,10" ${getStrokeStyle()} ${currentMode==='color'?'fill="#b85d43"':''} />
+        <line x1="-30" y1="-10" x2="30" y2="-10" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.5}" />
+        <circle cx="0" cy="0" r="5" fill="${currentMode==='color'?'#1a1a1a':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 9: Double Circle Bullseye Eye
+      list.push(makeSvg(`
+        <circle cx="0" cy="0" r="28" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e9c46a"':''} />
+        <circle cx="0" cy="0" r="18" ${getStrokeStyle()} ${currentMode==='color'?'fill="#264653"':''} />
+        <circle cx="0" cy="0" r="8" fill="${currentMode==='color'?'#ffffff':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 10: Slanted Polygon Wink Eye
+      list.push(makeSvg(`
+        <polygon points="-35,-20 10,-5 30,15 -15,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#d9a07b"':''} />
+        <line x1="-25" y1="0" x2="20" y2="5" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.4}" />
+      `));
+
+      // Eye 11: Polygon Cat Eye
+      list.push(makeSvg(`
+        <polygon points="-40,10 -10,-20 35,-15 10,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2a9d8f"':''} />
+        <polygon points="-5,-5 5,-15 12,0 0,10" fill="${currentMode==='color'?'#1a1a1a':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Eye 12: Minimalist Line & Dot Geometric Eye
+      list.push(makeSvg(`
+        <polygon points="-25,-25 25,-25 0,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#703d2b"':''} />
+        <circle cx="0" cy="-5" r="7" fill="${currentMode==='color'?'#e6c2a4':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      return list;
+    }
+
+    // 2. EYEBROWS
+    function generateBrows() {
+      const list = [];
+
+      // Brow 1: Heavy Angular Trapezoid Brow
+      list.push(makeSvg(`
+        <polygon points="-40,-10 20,-18 38,0 -20,5" ${getStrokeStyle()} ${currentMode==='color'?'fill="#1a1a1a"':''} />
+      `));
+
+      // Brow 2: Zig-Zag Fractured Brow
+      list.push(makeSvg(`
+        <polygon points="-40,-5 -20,-20 0,-5 20,-20 40,-5 35,5 15,-10 -5,5 -25,-10 -35,5" ${getStrokeStyle()} ${currentMode==='color'?'fill="#d9381e"':''} />
+      `));
+
+      // Brow 3: Arch Polygon Brow
+      list.push(makeSvg(`
+        <polygon points="-38,10 -15,-15 15,-18 35,5 25,12 10,-8 -10,-6 -28,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2b59c3"':''} />
+      `));
+
+      // Brow 4: Double Segmented Block Brow
+      list.push(makeSvg(`
+        <polygon points="-35,-10 -5,-10 -5,5 -35,5" ${getStrokeStyle()} ${currentMode==='color'?'fill="#264653"':''} />
+        <polygon points="5,-12 35,-15 35,2 5,5" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e76f51"':''} />
+      `));
+
+      // Brow 5: Feathered Slash Brow
+      list.push(makeSvg(`
+        <polygon points="-35,5 -10,-15 40,-12 30,-2 -5,-4 -30,12" ${getStrokeStyle()} ${currentMode==='color'?'fill="#f9a825"':''} />
+      `));
+
+      // Brow 6: Crown Spike Brow
+      list.push(makeSvg(`
+        <polygon points="-35,5 -25,-15 -15,2 -5,-18 5,0 18,-16 30,5 0,-2 -20,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#9d4edd"':''} />
+      `));
+
+      return list;
+    }
+
+    // 3. NOSES
+    function generateNoses() {
+      const list = [];
+
+      // Nose 1: Cubist Prism Nose
+      list.push(makeSvg(`
+        <polygon points="0,-35 -20,15 0,35" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e0a96d"':''} />
+        <polygon points="0,-35 0,35 20,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#b08968"':''} />
+      `));
+
+      // Nose 2: Origami Fold Arrow Nose
+      list.push(makeSvg(`
+        <polygon points="-15,-30 15,-30 25,10 0,30 -25,10" ${getStrokeStyle()} ${currentMode==='color'?'fill="#d96b43"':''} />
+        <polyline points="0,-30 0,30" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Nose 3: Sharp Asymmetric Wedge Nose
+      list.push(makeSvg(`
+        <polygon points="-10,-35 18,-15 5,30 -22,20" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2a9d8f"':''} />
+      `));
+
+      // Nose 4: Minimal Line-art Nose Facet
+      list.push(makeSvg(`
+        <polyline points="-12,-35 8,-35 -5,15 18,25 -15,30" fill="none" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.2}" stroke-linecap="round" stroke-linejoin="round" />
+      `));
+
+      // Nose 5: Multi-faceted Hexagon Nose
+      list.push(makeSvg(`
+        <polygon points="0,-35 15,-15 15,10 0,30 -15,10 -15,-15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e9c46a"':''} />
+        <line x1="-15" y1="-15" x2="15" y2="10" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Nose 6: Picasso Curved Wedge Nose
+      list.push(makeSvg(`
+        <path d="M-10,-35 C15,-10 20,10 -5,30 L-20,15 Z" ${getStrokeStyle()} ${currentMode==='color'?'fill="#b85d43"':''} />
+      `));
+
+      return list;
+    }
+
+    // 4. MOUTHS & LIPS
+    function generateMouths() {
+      const list = [];
+
+      // Mouth 1: Cubist Angular Red Lips
+      list.push(makeSvg(`
+        <polygon points="-35,0 0,-18 35,0 15,18 -15,18" ${getStrokeStyle()} ${currentMode==='color'?'fill="#d9381e"':''} />
+        <line x1="-35" y1="0" x2="35" y2="0" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Mouth 2: Diamond Smile Mouth
+      list.push(makeSvg(`
+        <polygon points="-38,-8 -12,-15 0,-5 12,-15 38,-8 20,20 -20,20" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e76f51"':''} />
+        <polygon points="-25,-2 0,-5 25,-2 12,8 -12,8" fill="${currentMode==='color'?'#ffffff':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${Math.max(1, currentStrokeWidth*0.75)}" />
+      `));
+
+      // Mouth 3: Asymmetric Zig-Zag Lip
+      list.push(makeSvg(`
+        <polygon points="-35,-5 -10,-18 15,-8 35,-15 25,12 -15,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#9d4edd"':''} />
+      `));
+
+      // Mouth 4: Geometric O-Shape Surprised Mouth
+      list.push(makeSvg(`
+        <polygon points="-18,-25 18,-25 25,0 18,25 -18,25 -25,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2b59c3"':''} />
+        <polygon points="-8,-12 8,-12 12,0 8,12 -8,12 -12,0" fill="${currentMode==='color'?'#1a1a1a':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Mouth 5: Minimalist Slash Lips with Tooth Facet
+      list.push(makeSvg(`
+        <polygon points="-35,-10 30,-12 35,5 -30,8" ${getStrokeStyle()} ${currentMode==='color'?'fill="#f9a825"':''} />
+        <polygon points="-10,-10 10,-11 5,0 -5,0" fill="${currentMode==='color'?'#ffffff':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="1" />
+      `));
+
+      // Mouth 6: Polygon Pout Lips
+      list.push(makeSvg(`
+        <polygon points="-25,-12 0,-22 25,-12 12,0 -12,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#c77dff"':''} />
+        <polygon points="-25,-12 25,-12 18,18 0,25 -18,18" ${getStrokeStyle()} ${currentMode==='color'?'fill="#7b2cbf"':''} />
+      `));
+
+      return list;
+    }
+
+    // 5. EARS & ACCENTS
+    function generateEars() {
+      const list = [];
+
+      // Ear 1: Folded Origami Ear
+      list.push(makeSvg(`
+        <polygon points="-25,-30 15,-20 25,15 -10,35 -25,10" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e0a96d"':''} />
+        <polygon points="-10,-10 8,-5 12,10 -5,20" fill="${currentMode==='color'?'#b08968':'#ffffff'}" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth}" />
+      `));
+
+      // Ear 2: Triangle Spike Ear with Hoop Ring
+      list.push(makeSvg(`
+        <polygon points="-20,-35 25,0 -15,35" ${getStrokeStyle()} ${currentMode==='color'?'fill="#264653"':''} />
+        <circle cx="5" cy="25" r="8" fill="none" stroke="${currentMode==='color'?'#f9a825':PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.3}" />
+      `));
+
+      // Ear 3: Polygon Fan Ear
+      list.push(makeSvg(`
+        <polygon points="-25,-25 0,-35 25,-15 15,20 -15,30" ${getStrokeStyle()} ${currentMode==='color'?'fill="#b85d43"':''} />
+      `));
+
+      // Ear 4: Double Diamond Earring & Ear
+      list.push(makeSvg(`
+        <polygon points="-15,-30 15,-30 0,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2a9d8f"':''} />
+        <polygon points="0,5 12,22 0,38 -12,22" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e9c46a"':''} />
+      `));
+
+      return list;
+    }
+
+    // 6. GLASSES & PROPS
+    function generateProps() {
+      const list = [];
+
+      // Prop 1: Hexagonal Glasses
+      list.push(makeSvg(`
+        <polygon points="-45,-15 -25,-25 -5,-15 -5,10 -25,20 -45,10" ${getStrokeStyle()} ${currentMode==='color'?'fill="rgba(43,89,195,0.3)"':''} />
+        <polygon points="5,-15 25,-25 45,-15 45,10 25,20 5,10" ${getStrokeStyle()} ${currentMode==='color'?'fill="rgba(43,89,195,0.3)"':''} />
+        <line x1="-5" y1="-8" x2="5" y2="-8" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.5}" />
+      `, "-50 -30 100 60"));
+
+      // Prop 2: Triangular Retro Sunglasses
+      list.push(makeSvg(`
+        <polygon points="-45,-18 -5,-18 -25,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#1a1a1a"':''} />
+        <polygon points="5,-18 45,-18 25,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#1a1a1a"':''} />
+        <line x1="-5" y1="-15" x2="5" y2="-15" stroke="${PALETTES.lineartStroke}" stroke-width="${currentStrokeWidth*1.5}" />
+      `, "-50 -30 100 60"));
+
+      // Prop 3: Origami Geometric Mustache
+      list.push(makeSvg(`
+        <polygon points="-40,10 -20,-15 0,0 -5,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#1a1a1a"':''} />
+        <polygon points="40,10 20,-15 0,0 5,15" ${getStrokeStyle()} ${currentMode==='color'?'fill="#1a1a1a"':''} />
+      `, "-50 -30 100 60"));
+
+      // Prop 4: Star Beauty Patch & Cheek Tattoo
+      list.push(makeSvg(`
+        <polygon points="0,-25 7,-7 25,0 7,7 0,25 -7,7 -25,0 -7,-7" ${getStrokeStyle()} ${currentMode==='color'?'fill="#f9a825"':''} />
+      `));
+
+      return list;
+    }
+
+    // 7. ABSTRACT EXPRESSION FACETS
+    function generateFacets() {
+      const list = [];
+
+      // Facet 1: Cheek Blush Facet Polygon
+      list.push(makeSvg(`
+        <polygon points="-30,-15 20,-25 35,10 -15,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#e76f51"':''} />
+      `));
+
+      // Facet 2: Forehead Shadow Triangle
+      list.push(makeSvg(`
+        <polygon points="-35,-25 35,-20 0,25" ${getStrokeStyle()} ${currentMode==='color'?'fill="#426375"':''} />
+      `));
+
+      // Facet 3: Chin Accent Origami Block
+      list.push(makeSvg(`
+        <polygon points="-25,-20 0,-30 25,-10 15,25 -15,20" ${getStrokeStyle()} ${currentMode==='color'?'fill="#9d4edd"':''} />
+      `));
+
+      // Facet 4: Tear / Emotion Drop Polygon
+      list.push(makeSvg(`
+        <polygon points="0,-30 20,0 12,30 -12,30 -20,0" ${getStrokeStyle()} ${currentMode==='color'?'fill="#2a9d8f"':''} />
+      `));
+
+      return list;
+    }
+
+    // Main Render Function
+    function renderFeatures() {
+      const container = document.getElementById('featuresContainer');
+      container.className = `features-container size-${targetDensity} ${currentMode === 'lineart' ? 'mode-lineart' : ''}`;
+      container.innerHTML = '';
+
+      const categories = [
+        { id: 'eyes', name: 'EYES', items: generateEyes(), gridClass: 'eyes-grid' },
+        { id: 'brows', name: 'EYEBROWS', items: generateBrows(), gridClass: 'brows-grid' },
+        { id: 'noses', name: 'NOSES', items: generateNoses(), gridClass: 'noses-grid' },
+        { id: 'mouths', name: 'MOUTHS & LIPS', items: generateMouths(), gridClass: 'mouths-grid' },
+        { id: 'ears', name: 'EARS & EARRINGS', items: generateEars(), gridClass: 'ears-grid' },
+        { id: 'props', name: 'GLASSES & ACCESSORIES', items: generateProps(), gridClass: 'props-grid' },
+        { id: 'facets', name: 'ABSTRACT EXPRESSION FACETS', items: generateFacets(), gridClass: 'facets-grid' }
+      ];
+
+      categories.forEach(cat => {
+        const sec = document.createElement('div');
+        sec.className = 'category-section';
+        
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.innerHTML = cat.name;
+        sec.appendChild(title);
+
+        const grid = document.createElement('div');
+        grid.className = `items-grid ${cat.gridClass}`;
+
+        cat.items.forEach(svgStr => {
+          const box = document.createElement('div');
+          box.className = 'cutout-box';
+          box.innerHTML = svgStr;
+          grid.appendChild(box);
+        });
+
+        sec.appendChild(grid);
+        container.appendChild(sec);
+      });
+    }
+
+    // Control Handlers
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.btn-mode').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      const strokeGroup = document.getElementById('strokeControlGroup');
+      if (strokeGroup) {
+        strokeGroup.style.display = (mode === 'lineart') ? 'flex' : 'none';
+      }
+
+      renderFeatures();
+    }
+
+    function setStrokeWidth(width) {
+      currentStrokeWidth = width;
+      document.querySelectorAll('.btn-stroke').forEach(btn => {
+        btn.classList.toggle('active', parseFloat(btn.dataset.stroke) === width);
+      });
+      if (currentMode === 'lineart') {
+        renderFeatures();
+      }
+    }
+
+    function setTargetDensity(density) {
+      targetDensity = density;
+      document.querySelectorAll('.btn-density').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.density) === density);
+      });
+      renderFeatures();
+    }
+
+    // Initial load
+    renderFeatures();
+
+    // High resolution PNG Export
+    function exportHighResPNG() {
+      const sheet = document.getElementById('printableFeaturesSheet');
+      html2canvas(sheet, {
+        scale: 4,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      }).then(canvas => {
+        const link = document.createElement('a');
+        const modeName = currentMode === 'lineart' ? 'Lineart_DIY' : 'Colored_Artistic';
+        link.download = `A1_Facial_Features_Cutout_${modeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
