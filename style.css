@@ -232,25 +232,16 @@
     }
 
     #bg-dimmer {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: #181716; /* Museum dark gray */
-      opacity: 0;
-      z-index: -2; /* Above the canvas background, below gold underlay */
-      pointer-events: none;
-      will-change: opacity;
-      transition: opacity 4s ease;
+      display: none !important;
     }
 
     body.kintsugi #bg-dimmer {
-      opacity: 0.85; /* Dim the background to 85% opacity over the woven texture */
+      opacity: 0 !important;
+      display: none !important;
     }
 
-
-
-    /* Use GPU-accelerated opacity to dim fragments instead of expensive SVG filters */
     body.kintsugi .fragment {
-      opacity: 0.85;
+      opacity: 1 !important;
       transition: opacity 3s ease;
     }
 
