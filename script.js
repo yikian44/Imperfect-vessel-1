@@ -215,13 +215,13 @@
           triggerFallback();
         });
 
-        // 8-second fallback check if video completely fails to play
+        // 4.5-second fallback check: if video didn't start playing, slide up after animated SVG intro completes
         setTimeout(() => {
           if (video.paused && video.currentTime === 0) {
-            console.log("Video playback did not start after 8s. Sliding up loader.");
+            console.log("Video autoplay suppressed by Mobile Simulator. Smoothly transitioning animated SVG logo intro.");
             triggerFallback();
           }
-        }, 8000);
+        }, 4500);
 
         // Slide up when the video ends natively
         video.addEventListener('ended', () => {
