@@ -1109,7 +1109,19 @@
         padding-bottom: 12px;
         -webkit-overflow-scrolling: touch;
         touch-action: pan-x;
-        gap: 12px;
+        gap: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+        cursor: grab;
+      }
+      .options-row:active {
+        cursor: grabbing;
+      }
+      .color-group {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
       }
       /* Hide scrollbar for a cleaner look */
       .options-row::-webkit-scrollbar {

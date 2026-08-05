@@ -424,6 +424,75 @@
       btn.onclick = () => applyTexture(btn.dataset.texture);
     });
 
+    // Drag-to-Scroll Helper for Mobile Simulator & Mouse/Touch
+    function makeDraggableScroll(el) {
+      if (!el) return;
+      let isDown = false;
+      let startX = 0;
+      let scrollLeft = 0;
+      let isDragged = false;
+      let velX = 0;
+      let lastX = 0;
+      let lastTime = 0;
+      let animId = null;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+        isDown = true;
+        isDragged = false;
+        startX = e.clientX;
+        scrollLeft = el.scrollLeft;
+        lastX = e.clientX;
+        lastTime = Date.now();
+        velX = 0;
+        if (animId) cancelAnimationFrame(animId);
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDown) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 4) {
+          isDragged = true;
+        }
+        if (isDragged) {
+          el.scrollLeft = scrollLeft - dx;
+          const now = Date.now();
+          const dt = Math.max(1, now - lastTime);
+          velX = (e.clientX - lastX) / dt;
+          lastX = e.clientX;
+          lastTime = now;
+        }
+      });
+
+      const handleRelease = () => {
+        if (!isDown) return;
+        isDown = false;
+        if (isDragged) {
+          const captureClick = (clickEvt) => {
+            clickEvt.stopPropagation();
+            clickEvt.preventDefault();
+            window.removeEventListener('click', captureClick, true);
+          };
+          window.addEventListener('click', captureClick, true);
+
+          let currentVel = velX * 14;
+          const momentumLoop = () => {
+            if (Math.abs(currentVel) < 0.5) return;
+            el.scrollLeft -= currentVel;
+            currentVel *= 0.92;
+            animId = requestAnimationFrame(momentumLoop);
+          };
+          animId = requestAnimationFrame(momentumLoop);
+        }
+      };
+
+      window.addEventListener('pointerup', handleRelease);
+      window.addEventListener('pointercancel', handleRelease);
+    }
+
+    makeDraggableScroll(document.getElementById('color-options'));
+    makeDraggableScroll(document.getElementById('texture-options'));
+
     // Swipe Hint Logic
     function setupSwipeHint(containerId, hintId) {
       const container = document.getElementById(containerId);
@@ -1366,10 +1435,12 @@
       e.stopPropagation();
     });
 
-    // Deselect on background click
+    // Prevent uiPanel clicks from deselecting the active fragment
     document.body.addEventListener('pointerdown', (e) => {
       if (!e.isPrimary) return; // allow second finger touches for rotation
       if ((isSettling && !isFreeArrange) || isPrologue) return;
+      // Do NOT deselect when clicking inside the UI panel (color/texture buttons etc.)
+      if (uiPanel && uiPanel.contains(e.target)) return;
       deselectFragment();
     });
 
