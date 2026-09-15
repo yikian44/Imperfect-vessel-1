@@ -2787,10 +2787,63 @@
           items = [];
         }
         
-        // Filter out legacy mock items immediately
-        const filteredItems = items.filter(item => item.id !== "mock_vessel_1" && item.id !== "mock_vessel_2");
-        if (items.length !== filteredItems.length || !localStorage.getItem(this.storageKey)) {
-          localStorage.setItem(this.storageKey, JSON.stringify(filteredItems));
+        if (!items || items.length === 0) {
+          const createSampleSvg = (bg, shards, title) => {
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450"><rect width="600" height="450" fill="${bg}"/><g transform="translate(300, 210)">${shards}</g><text x="300" y="420" font-family="'Space Grotesk', sans-serif" font-size="12" letter-spacing="4" fill="%235a5854" text-anchor="middle">${title.toUpperCase()}</text></svg>`;
+          };
+
+          const svg1 = createSampleSvg('%23e8e5df', `
+            <polygon points="-80,-120 20,-140 60,-60 -30,-40" fill="%23d8c8b8" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="30,-130 110,-90 90,10 10,-30" fill="%232e2c29" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="-110,-50 -20,-30 -40,80 -120,40" fill="%23b8aba0" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="-10,-20 80,0 60,110 -20,70" fill="%23e2dad0" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="-50,90 40,80 10,150 -60,140" fill="%231e1d1a" stroke="%23c5a059" stroke-width="3"/>
+            <circle cx="50" cy="-40" r="12" fill="none" stroke="%231e1d1a" stroke-width="2"/>
+            <path d="M-60,-20 Q-40,-60 -20,-20" fill="none" stroke="%23c5a059" stroke-width="2"/>
+          `, 'Portrait of a Fractured Thought');
+
+          const svg2 = createSampleSvg('%23dedbd4', `
+            <polygon points="-100,-100 0,-150 70,-80 -40,-40" fill="%233a3834" stroke="%23d4af37" stroke-width="3.5"/>
+            <polygon points="10,-140 120,-80 80,40 0,-20" fill="%23c4b9ac" stroke="%23d4af37" stroke-width="3.5"/>
+            <polygon points="-80,-30 0,-10 -20,90 -90,50" fill="%23eae5dd" stroke="%23d4af37" stroke-width="3.5"/>
+            <polygon points="10,0 90,50 40,140 -20,80" fill="%231a1917" stroke="%23d4af37" stroke-width="3.5"/>
+            <path d="M-30,-70 Q10,-10 40,-80" fill="none" stroke="%231e1d1a" stroke-width="2.5"/>
+          `, 'Golden Solitude No. 4');
+
+          const svg3 = createSampleSvg('%23e5e2db', `
+            <polygon points="-70,-130 40,-120 70,-40 -20,-60" fill="%23b0a599" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="50,-110 110,-50 60,50 0,-30" fill="%2322211e" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="-100,-40 -10,-50 -30,60 -90,40" fill="%23f2ede6" stroke="%23c5a059" stroke-width="3"/>
+            <polygon points="0,-20 70,60 10,130 -40,50" fill="%237a746c" stroke="%23c5a059" stroke-width="3"/>
+          `, 'Unlearning Symmetry');
+
+          items = [
+            {
+              id: "sample_vessel_1",
+              title: "Portrait of a Fractured Thought",
+              creatorName: "Kora Lin",
+              likes: 18,
+              createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+              imageUrl: svg1
+            },
+            {
+              id: "sample_vessel_2",
+              title: "Golden Solitude No. 4",
+              creatorName: "T. Takahashi",
+              likes: 34,
+              createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+              imageUrl: svg2
+            },
+            {
+              id: "sample_vessel_3",
+              title: "Unlearning Symmetry",
+              creatorName: "Elena Rostova",
+              likes: 12,
+              createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
+              imageUrl: svg3
+            }
+          ];
+          localStorage.setItem(this.storageKey, JSON.stringify(items));
         }
       }
 
@@ -3218,15 +3271,45 @@
             </div>
           `;
 
+          // Click to enlarge pure image in Lightbox
+          card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openImageLightbox(item.imageUrl, item.title);
+          });
+
           galleryGrid.appendChild(card);
         });
-
-
 
       } catch (err) {
         console.error("Failed to load gallery items:", err);
         galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px; color: red;">Failed to load community cards.</div>`;
       }
+    }
+
+    // Pure Image Lightbox Controls
+    const simpleLightbox = document.getElementById('image-lightbox');
+    const simpleLightboxImg = document.getElementById('simple-lightbox-img');
+
+    function openImageLightbox(imageUrl, altText) {
+      if (!simpleLightbox || !simpleLightboxImg) return;
+      simpleLightboxImg.src = imageUrl || '';
+      simpleLightboxImg.alt = altText || 'Enlarged Artwork';
+      simpleLightbox.classList.add('visible');
+      simpleLightbox.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeImageLightbox() {
+      if (simpleLightbox) {
+        simpleLightbox.classList.remove('visible');
+        simpleLightbox.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    if (simpleLightbox) {
+      simpleLightbox.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeImageLightbox();
+      });
     }
 
     // Remix Loader Function
@@ -3237,6 +3320,7 @@
       if (galleryOverlay) {
         galleryOverlay.classList.remove('visible');
       }
+      document.documentElement.classList.remove('overlay-open');
 
       // Reset state variables
       isSettling = false;
@@ -3258,55 +3342,30 @@
       const finalMessage = document.getElementById('final-message');
       if (finalMessage) {
         finalMessage.classList.remove('visible');
-        finalMessage.innerHTML = '';
       }
 
-      editCount = 5; // Allow styling adjustments immediately
-
-      vesselData.fragments.forEach((savedFrag) => {
-        const f = fragments.find(frag => frag.id === savedFrag.id);
-        if (f) {
-          f.x = savedFrag.x;
-          f.y = savedFrag.y;
-          f.rot = savedFrag.rot;
-          f.scale = savedFrag.scale;
-          
-          f.targetRot = savedFrag.rot;
-          f.targetScale = savedFrag.scale;
-          
-          f.color = savedFrag.color;
-          f.texture = savedFrag.texture;
-          
-          // Re-apply path if shape varies
-          if (savedFrag.path) {
-            f.path = savedFrag.path;
-            f.pathElement.setAttribute("d", f.path);
-            f.textureOverlay.setAttribute("d", f.path);
-            f.clipPathElem.setAttribute("d", f.path);
-            if (f.glowPath) f.glowPath.setAttribute("d", f.path);
-            if (f.corePath) f.corePath.setAttribute("d", f.path);
-          }
-
-          f.pathElement.setAttribute("fill", f.color);
-          
-          if (f.texture === 'none') {
-            f.textureOverlay.setAttribute("fill", "none");
-          } else {
-            f.textureOverlay.setAttribute("fill", `url(#${f.texture})`);
-          }
-          
-          // Draw internal features
-          drawFeatures(f, f.clippedGroup, "http://www.w3.org/2000/svg");
-          
-          f.startX = f.x;
-          f.startY = f.y;
-          f.startRot = f.rot;
-          f.tensionDirX = 0;
-          f.tensionDirY = 0;
-        }
-      });
+      // Hide gallery and about buttons when entering rearrange
+      if (galleryBtn) galleryBtn.classList.remove('visible');
+      if (aboutBtn) aboutBtn.classList.remove('visible');
       
-      deselectFragment();
+      const canvasContainer = document.getElementById('canvas-container');
+      const rect = canvasContainer.getBoundingClientRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+
+      // Map fragments to canvas center
+      fragments = vesselData.fragments.map((frag, idx) => {
+        const f = new Fragment(frag.path, frag.x, frag.y, idx, frag.color, frag.texture, frag.featureSvgString);
+        f.scale = frag.scale || 1;
+        f.rot = frag.rot || 0;
+        f.isPlaced = true;
+        return f;
+      });
+
+      // Update edit count and trigger render
+      editCount = 0;
+      updateMetrics();
+      renderCanvas();
     }
 
     // Open Gallery Handler
@@ -3320,24 +3379,34 @@
       });
     }
 
-    // Escape Key Handler for Overlays
+    // Universal Escape Key Handler for Overlays & Modals
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        if (simpleLightbox && simpleLightbox.classList.contains('visible')) {
+          closeImageLightbox();
+          return;
+        }
         if (publishModal && publishModal.classList.contains('visible')) {
           document.getElementById('publish-art-title').blur();
           document.getElementById('publish-creator-name').blur();
           publishModal.classList.remove('visible');
           window.scrollTo(0, 0);
+          return;
         }
         if (galleryOverlay && galleryOverlay.classList.contains('visible')) {
           galleryOverlay.classList.remove('visible');
           document.documentElement.classList.remove('overlay-open');
           window.scrollTo(0, 0);
+          return;
+        }
+        if (aboutOverlay && aboutOverlay.classList.contains('visible')) {
+          aboutOverlay.classList.remove('visible');
+          document.documentElement.classList.remove('overlay-open');
+          window.scrollTo(0, 0);
+          return;
         }
       }
     });
-
-
 
     // Start loop
     animate();
