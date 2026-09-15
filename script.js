@@ -2759,10 +2759,6 @@
       doneArrangeBtn.addEventListener('click', handleDoneArrange);
     }
 
-    const mobileDoneArrangeBtn = document.getElementById('mobile-done-arrange-btn');
-    if (mobileDoneArrangeBtn) {
-      mobileDoneArrangeBtn.addEventListener('click', handleDoneArrange);
-    }
 
     const infoBtn = document.getElementById('info-btn');
     const gHint = document.getElementById('gesture-hint');
@@ -3750,36 +3746,3 @@
     };
     if (aboutOverlay) aboutOverlay.addEventListener('scroll', handleOverlayScroll);
     if (galleryOverlay) galleryOverlay.addEventListener('scroll', handleOverlayScroll);
-
-    // ── About Accordion (mobile only ≤820px) ──────────────────────────
-    function initAboutAccordion() {
-      const accordions = document.querySelectorAll('.about-accordion');
-      if (!accordions.length) return;
-
-      accordions.forEach(section => {
-        const trigger = section.querySelector('.accordion-trigger');
-        if (!trigger) return;
-
-        trigger.addEventListener('click', () => {
-          if (window.innerWidth > 820) return; // desktop: no-op
-
-          const isOpen = section.classList.contains('is-open') || section.dataset.open === 'true';
-
-          // Close all others first
-          accordions.forEach(other => {
-            other.classList.remove('is-open');
-            delete other.dataset.open;
-            const otherTrigger = other.querySelector('.accordion-trigger');
-            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
-          });
-
-          // Toggle clicked one
-          if (!isOpen) {
-            section.classList.add('is-open');
-            trigger.setAttribute('aria-expanded', 'true');
-          }
-        });
-      });
-    }
-
-    initAboutAccordion();
