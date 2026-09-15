@@ -1490,7 +1490,9 @@
         selectedFragment.element.classList.remove('selected');
         selectedFragment = null;
       }
-      uiPanel.classList.remove('visible');
+      if (!isFreeArrange || window.innerWidth >= 768) {
+        uiPanel.classList.remove('visible');
+      }
       updateCachedPanelDimensions();
       document.body.classList.remove('has-selected');
 
@@ -1705,6 +1707,8 @@
       droneGain.gain.setTargetAtTime(targetVol, t, 0.5);
     }
 
+    let isMorphingShape = false;
+
     // Main Animation Loop
     function animate() {
       time += 0.01;
@@ -1792,6 +1796,12 @@
           }
 
         } else {
+          if (isMorphingShape) {
+            f.element.style.transform = `translate(${centerX + f.x * scaleVal + window.parallaxX}px, ${centerY + f.y * scaleVal + window.parallaxY}px) translate(${f.cx * scaleVal}px, ${f.cy * scaleVal}px) rotate(${f.rot}deg) scale(${f.scale * scaleVal}) translate(${-f.cx}px, ${-f.cy}px)`;
+            allSettled = false;
+            return;
+          }
+
           if (isFreeArrange || isCustomArranged) {
             if (f.isDragging && typeof f.targetDragX !== 'undefined') {
               f.x += (f.targetDragX - f.x) * 0.15;
@@ -2007,6 +2017,8 @@
       }
 
       finalMessage.innerHTML = `${text}<br><span style="font-size: 0.6em; opacity: 0.7; display: block; margin-top: 10px; font-weight: normal; font-style: italic;">${quote}</span>`;
+      finalMessage.style.opacity = '';
+      finalMessage.style.pointerEvents = '';
       finalMessage.classList.add('visible');
       const pac = document.getElementById('post-action-container');
       if (pac) {
@@ -2054,6 +2066,8 @@
         goldSvg.style.transition = 'none';
         goldSvg.style.opacity = '0';
       }
+      finalMessage.style.opacity = '';
+      finalMessage.style.pointerEvents = '';
       finalMessage.classList.remove('visible');
       document.getElementById('post-action-container').classList.remove('visible');
       const pac = document.getElementById('post-action-container');
@@ -2061,6 +2075,8 @@
       pac.style.transitionDelay = '';
       pac.style.transitionDuration = '';
       document.getElementById('free-arrange-btn').style.display = '';
+      const doneBtn = document.getElementById('done-arrange-btn');
+      if (doneBtn) doneBtn.classList.add('hidden');
       letGoBtn.classList.remove('hidden');
 
       // Hide gallery and about buttons
@@ -2185,98 +2201,250 @@
       updateCachedPanelDimensions();
     });
 
-    document.getElementById('change-shape-btn').addEventListener('click', () => {
+    function triggerChangeShapeAnimation() {
+      if (isMorphingShape) return;
+      isMorphingShape = true;
+
       isFreeArrange = false;
       isCustomArranged = false;
       document.body.classList.remove('kintsugi');
-      document.getElementById('free-arrange-btn').style.display = '';
-      document.getElementById('arrange-tools').style.display = 'none';
+      const freeArrangeBtn = document.getElementById('free-arrange-btn');
+      if (freeArrangeBtn) freeArrangeBtn.style.display = '';
+      const arrangeTools = document.getElementById('arrange-tools');
+      if (arrangeTools) arrangeTools.style.display = 'none';
+      const doneBtn = document.getElementById('done-arrange-btn');
+      if (doneBtn) doneBtn.classList.add('hidden');
+
+      const finalMessage = document.getElementById('final-message');
+      if (finalMessage) {
+        finalMessage.style.opacity = '';
+        finalMessage.style.pointerEvents = '';
+        finalMessage.classList.remove('visible');
+      }
+
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
-        goldSvg.style.display = '';
-        goldSvg.style.transition = 'none';
+        goldSvg.style.transition = 'opacity 0.25s ease';
         goldSvg.style.opacity = '0';
       }
 
-      // Regenerate the paths and face pattern safely (matching fragments count)
-      let newPieces = [];
-      do {
-        newPieces = generatePieces();
-      } while (newPieces.length !== fragments.length);
-      pieces = newPieces;
-      updateGoldUnderlay(pieces);
-      
-      const skinPalette = [
-        '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78',
-        '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b',
-        '#2b3e50', '#1c3a27', '#5c6b55', '#d5cbb8', '#426375',
-        '#d9c8c0', '#b8c5b9', '#f2cc8f', '#c5bedb', '#3c3c3e',
-        '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3',
-        '#ffffff', '#888888', '#222222'
-      ];
-      const skinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
-      let skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
-      if (skinColor === skinColor2) skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
-      
-      const eyeColors = ['#ffffff', '#f0f0f0', '#e8e8e8'];
-      const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
-      const mouthColors = ['#c92a2a', '#1d70b8', '#111111', '#8c1616', '#4b1c73'];
-      const mouthColor = mouthColors[Math.floor(Math.random() * mouthColors.length)];
-      
-      fragments.forEach((f, index) => {
-        // Update shape paths and face overlay
-        const piece = pieces[index];
-        f.path = piece.path;
-        f.cx = piece.cx;
-        f.cy = piece.cy;
-        f.type = piece.type;
-        f.element.style.transformOrigin = `${f.cx}px ${f.cy}px`;
-        
-        f.pathElement.setAttribute("d", f.path);
-        f.textureOverlay.setAttribute("d", f.path);
-        f.clipPathElem.setAttribute("d", f.path);
-        f.glowPath.setAttribute("d", f.path);
-        f.corePath.setAttribute("d", f.path);
-        
-        const length = f.corePath.getTotalLength();
-        f.glowPath.style.strokeDasharray = `${length} ${length}`;
-        f.glowPath.style.strokeDashoffset = length;
-        f.corePath.style.strokeDasharray = `${length} ${length}`;
-        f.corePath.style.strokeDashoffset = length;
-        
-        if (f.corePath.getAnimations) {
-          f.glowPath.getAnimations().forEach(a => a.cancel());
-          f.corePath.getAnimations().forEach(a => a.cancel());
-        }
-        
-        // Instant update to new target coordinates (remain assembled)
-        const gapScale = 0.03;
-        f.x = f.basex + f.cx * gapScale;
-        f.y = f.basey + f.cy * gapScale;
-        f.rot = f.baseRot;
-        f.scale = 1;
+      if (typeof playClink === 'function') playClink();
+      if (typeof deselectFragment === 'function') deselectFragment();
 
-        // Imperfections disabled to prevent overlapping
-        f.impX = 0;
-        f.impY = 0;
-        f.impRot = 0;
-        f.targetRot = undefined;
-        f.isDragging = false;
-        f.hasMoved = false;
-        
-        // Semantic Coloring based on type
-        if (piece.type === 'eye') {
-          f.color = eyeColor;
-        } else if (piece.type === 'mouth') {
-          f.color = mouthColor;
-        } else if (piece.type === 'nose') {
-          f.color = skinColor2;
-        } else { // Cheeks, Forehead, Chin
-          f.color = Math.random() > 0.4 ? skinColor : skinColor2;
-        }
-        f.pathElement.setAttribute("fill", f.color);
-        drawFeatures(f, f.clippedGroup, "http://www.w3.org/2000/svg");
+      const isMobile = window.innerWidth < 768;
+      const flyDistBase = isMobile ? 500 : 800;
+
+      // 1. Calculate explosive outward vectors based on each fragment's centroid direction
+      const scatterData = fragments.map((f) => {
+        let dirX = f.cx;
+        let dirY = f.cy;
+        const mag = Math.hypot(dirX, dirY) || 1;
+        dirX /= mag;
+        dirY /= mag;
+
+        const angle = Math.atan2(dirY, dirX) + (Math.random() - 0.5) * 0.35;
+        const dist = flyDistBase + Math.random() * (isMobile ? 180 : 300);
+
+        return {
+          startX: f.x,
+          startY: f.y,
+          startRot: f.rot,
+          startScale: f.scale,
+          targetX: f.x + Math.cos(angle) * dist,
+          targetY: f.y + Math.sin(angle) * dist,
+          targetRot: f.rot + (Math.random() - 0.5) * 160,
+          targetScale: f.scale * (0.35 + Math.random() * 0.3)
+        };
       });
+
+      const easeInCubic = t => t * t * t;
+      const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+      const flyOutDuration = 440; // ms
+      const flyInDuration = 700;  // ms
+      const startTime = performance.now();
+
+      function animateFlyOut(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / flyOutDuration, 1);
+        const ease = easeInCubic(progress);
+
+        fragments.forEach((f, idx) => {
+          const s = scatterData[idx];
+          f.x = s.startX + (s.targetX - s.startX) * ease;
+          f.y = s.startY + (s.targetY - s.startY) * ease;
+          f.rot = s.startRot + (s.targetRot - s.startRot) * ease;
+          f.scale = s.startScale + (s.targetScale - s.startScale) * ease;
+
+          const fadeProgress = Math.max(0, (progress - 0.15) / 0.85);
+          f.element.style.opacity = String(Math.max(0, 1 - fadeProgress));
+        });
+
+        if (progress < 1) {
+          requestAnimationFrame(animateFlyOut);
+        } else {
+          // Shards have scattered completely off-screen and faded out!
+          // Regenerate new pieces and features
+          swapToNewFaceShape();
+
+          // Phase 2: Inward assembly from perimeter
+          const inStartTime = performance.now();
+          requestAnimationFrame(function animateFlyIn(nowIn) {
+            const elapsedIn = nowIn - inStartTime;
+            const progressIn = Math.min(elapsedIn / flyInDuration, 1);
+            const easeIn = easeOutCubic(progressIn);
+
+            const gapScale = 0.03;
+            fragments.forEach((f, idx) => {
+              const inData = incomingData[idx];
+              const destX = f.basex + f.cx * gapScale;
+              const destY = f.basey + f.cy * gapScale;
+              const destRot = f.baseRot;
+              const destScale = 1;
+
+              f.x = inData.startX + (destX - inData.startX) * easeIn;
+              f.y = inData.startY + (destY - inData.startY) * easeIn;
+              f.rot = inData.startRot + (destRot - inData.startRot) * easeIn;
+              f.scale = inData.startScale + (destScale - inData.startScale) * easeIn;
+
+              const fadeIn = Math.min(progressIn / 0.5, 1);
+              f.element.style.opacity = String(fadeIn);
+            });
+
+            if (progressIn < 1) {
+              requestAnimationFrame(animateFlyIn);
+            } else {
+              // Lock into final assembled coordinates
+              const gapScale = 0.03;
+              fragments.forEach(f => {
+                f.x = f.basex + f.cx * gapScale;
+                f.y = f.basey + f.cy * gapScale;
+                f.rot = f.baseRot;
+                f.scale = 1;
+                f.element.style.opacity = '1';
+                f.targetRot = undefined;
+                f.targetScale = undefined;
+                f.isDragging = false;
+                f.hasMoved = false;
+              });
+
+              if (typeof playClink === 'function') playClink();
+
+              if (finalMessage) {
+                finalMessage.style.opacity = '';
+                finalMessage.style.pointerEvents = '';
+                finalMessage.classList.add('visible');
+              }
+
+              if (goldSvg) {
+                goldSvg.style.transition = 'opacity 2.2s ease';
+                goldSvg.style.opacity = '1';
+              }
+
+              isMorphingShape = false;
+            }
+          });
+        }
+      }
+
+      let incomingData = [];
+
+      function swapToNewFaceShape() {
+        let newPieces = [];
+        do {
+          newPieces = generatePieces();
+        } while (newPieces.length !== fragments.length);
+        pieces = newPieces;
+        updateGoldUnderlay(pieces);
+
+        const skinPalette = [
+          '#8c7c61', '#5e604f', '#d1c7b7', '#4a4542', '#9e8c78',
+          '#b85d43', '#a36b54', '#d9a07b', '#b58e2a', '#703d2b',
+          '#2b3e50', '#1c3a27', '#5c6b55', '#d5cbb8', '#426375',
+          '#d9c8c0', '#b8c5b9', '#f2cc8f', '#c5bedb', '#3c3c3e',
+          '#2a75d3', '#4ca93c', '#eac124', '#d13535', '#e462a3',
+          '#ffffff', '#888888', '#222222'
+        ];
+        const skinColor = skinPalette[Math.floor(Math.random() * skinPalette.length)];
+        let skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
+        if (skinColor === skinColor2) skinColor2 = skinPalette[Math.floor(Math.random() * skinPalette.length)];
+
+        const eyeColors = ['#ffffff', '#f0f0f0', '#e8e8e8'];
+        const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+        const mouthColors = ['#c92a2a', '#1d70b8', '#111111', '#8c1616', '#4b1c73'];
+        const mouthColor = mouthColors[Math.floor(Math.random() * mouthColors.length)];
+
+        const inDistBase = isMobile ? 400 : 650;
+
+        incomingData = fragments.map((f, index) => {
+          const piece = pieces[index];
+          f.path = piece.path;
+          f.cx = piece.cx;
+          f.cy = piece.cy;
+          f.type = piece.type;
+          f.element.style.transformOrigin = `${f.cx}px ${f.cy}px`;
+
+          f.pathElement.setAttribute("d", f.path);
+          f.textureOverlay.setAttribute("d", f.path);
+          f.clipPathElem.setAttribute("d", f.path);
+          f.glowPath.setAttribute("d", f.path);
+          f.corePath.setAttribute("d", f.path);
+
+          const length = f.corePath.getTotalLength();
+          f.glowPath.style.strokeDasharray = `${length} ${length}`;
+          f.glowPath.style.strokeDashoffset = length;
+          f.corePath.style.strokeDasharray = `${length} ${length}`;
+          f.corePath.style.strokeDashoffset = length;
+
+          if (f.corePath.getAnimations) {
+            f.glowPath.getAnimations().forEach(a => a.cancel());
+            f.corePath.getAnimations().forEach(a => a.cancel());
+          }
+
+          if (piece.type === 'eye') {
+            f.color = eyeColor;
+          } else if (piece.type === 'mouth') {
+            f.color = mouthColor;
+          } else if (piece.type === 'nose') {
+            f.color = skinColor2;
+          } else {
+            f.color = Math.random() > 0.4 ? skinColor : skinColor2;
+          }
+          f.pathElement.setAttribute("fill", f.color);
+          drawFeatures(f, f.clippedGroup, "http://www.w3.org/2000/svg");
+
+          let inDirX = piece.cx;
+          let inDirY = piece.cy;
+          const mag = Math.hypot(inDirX, inDirY) || 1;
+          inDirX /= mag;
+          inDirY /= mag;
+
+          const angle = Math.atan2(inDirY, inDirX) + (Math.random() - 0.5) * 0.4;
+          const dist = inDistBase + Math.random() * 180;
+
+          return {
+            startX: Math.cos(angle) * dist,
+            startY: Math.sin(angle) * dist,
+            startRot: (Math.random() - 0.5) * 80,
+            startScale: 0.5 + Math.random() * 0.3
+          };
+        });
+
+        fragments.forEach((f, idx) => {
+          const inData = incomingData[idx];
+          f.x = inData.startX;
+          f.y = inData.startY;
+          f.rot = inData.startRot;
+          f.scale = inData.startScale;
+          f.element.style.opacity = '0';
+        });
+      }
+
+      requestAnimationFrame(animateFlyOut);
+    }
+
+    document.getElementById('change-shape-btn').addEventListener('click', () => {
+      triggerChangeShapeAnimation();
     });
 
 
@@ -2299,6 +2467,8 @@
         pac.classList.remove('visible');
       }
       document.getElementById('arrange-tools').style.display = 'block';
+      const doneBtn = document.getElementById('done-arrange-btn');
+      if (doneBtn) doneBtn.classList.remove('hidden');
 
       // Hide gallery and about buttons when entering rearrange
       const headerNavGroup = document.querySelector('.header-nav-group');
@@ -2312,6 +2482,8 @@
       if (window.innerWidth < 768) {
         document.getElementById('style-menu-content').style.display = 'none';
         document.getElementById('style-arrow-icon').classList.remove('expanded');
+        uiPanel.classList.add('visible');
+        updateCachedPanelDimensions();
       } else {
         document.getElementById('style-menu-content').style.display = 'flex';
         document.getElementById('style-arrow-icon').classList.add('expanded');
@@ -2330,6 +2502,8 @@
       
       const finalMessage = document.getElementById('final-message');
       if (finalMessage) {
+        finalMessage.style.opacity = '0';
+        finalMessage.style.pointerEvents = 'none';
         finalMessage.classList.remove('visible');
       }
     });
@@ -2556,9 +2730,12 @@
       redoBtn.addEventListener('click', redoAction);
     }
 
-    document.getElementById('done-arrange-btn').addEventListener('click', () => {
+    function handleDoneArrange() {
       isFreeArrange = false;
       uiPanel.classList.remove('visible');
+
+      const doneBtn = document.getElementById('done-arrange-btn');
+      if (doneBtn) doneBtn.classList.add('hidden');
       
       const infoBtn = document.getElementById('info-btn');
       if (infoBtn) infoBtn.style.display = 'none';
@@ -2575,7 +2752,17 @@
       deselectFragment();
       
       showFinalMessage();
-    });
+    }
+
+    const doneArrangeBtn = document.getElementById('done-arrange-btn');
+    if (doneArrangeBtn) {
+      doneArrangeBtn.addEventListener('click', handleDoneArrange);
+    }
+
+    const mobileDoneArrangeBtn = document.getElementById('mobile-done-arrange-btn');
+    if (mobileDoneArrangeBtn) {
+      mobileDoneArrangeBtn.addEventListener('click', handleDoneArrange);
+    }
 
     const infoBtn = document.getElementById('info-btn');
     const gHint = document.getElementById('gesture-hint');
@@ -2685,7 +2872,7 @@
 
         if (userTitle && userTitle.trim().length > 0) {
           const textY = forGallery ? (h / 2 + Math.min(w, h) / 2 - 35) : (h - 60);
-          svgContent += `<text x="${w / 2}" y="${textY}" font-family="'Clash Grotesk', 'Space Grotesk', Helvetica, sans-serif" font-size="14" font-weight="400" letter-spacing="6" fill="#5a5854" text-anchor="middle">${userTitle.trim().toUpperCase()}</text>`;
+          svgContent += `<text x="${w / 2}" y="${textY}" font-family="'Cormorant Garamond', Georgia, serif" font-size="18" font-weight="500" letter-spacing="4" fill="#5a5854" text-anchor="middle">${userTitle.trim()}</text>`;
         }
 
         svgContent += `</svg>`;
@@ -2789,7 +2976,7 @@
         
         if (!items || items.length === 0) {
           const createSampleSvg = (bg, shards, title) => {
-            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450"><rect width="600" height="450" fill="${bg}"/><g transform="translate(300, 210)">${shards}</g><text x="300" y="420" font-family="'Space Grotesk', sans-serif" font-size="12" letter-spacing="4" fill="%235a5854" text-anchor="middle">${title.toUpperCase()}</text></svg>`;
+            return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450"><rect width="600" height="450" fill="${bg}"/><g transform="translate(300, 210)">${shards}</g><text x="300" y="420" font-family="'Cormorant Garamond', Georgia, serif" font-size="16" letter-spacing="3" fill="%235a5854" text-anchor="middle">${title}</text></svg>`;
           };
 
           const svg1 = createSampleSvg('%23e8e5df', `
@@ -2959,9 +3146,9 @@
         
         let q;
         if (sortBy === "popular") {
-          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("likes", "desc"));
+          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("likes", "desc"), this.dbModule.limit(30));
         } else {
-          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("createdAt", "desc"));
+          q = this.dbModule.query(galleryRef, this.dbModule.orderBy("createdAt", "desc"), this.dbModule.limit(30));
         }
         
         const snap = await this.dbModule.getDocs(q);
@@ -2991,19 +3178,23 @@
       }
     }
 
-    let dbService;
+    let dbService = new MockDBService(); // Immediately initialized so it never blocks or hangs
     async function initDatabaseService() {
       const isFirebaseConfigured = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.trim().length > 0 && !FIREBASE_CONFIG.apiKey.includes("YOUR_");
 
       if (isFirebaseConfigured) {
         try {
-          console.log("Firebase: Loading CDN modules...");
-          const [appModule, authModule, dbModule, storageModule] = await Promise.all([
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Firebase CDN timeout")), 2500)
+          );
+          const loadPromise = Promise.all([
             import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"),
             import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"),
             import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"),
             import("https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js")
           ]);
+
+          const [appModule, authModule, dbModule, storageModule] = await Promise.race([loadPromise, timeoutPromise]);
 
           const app = appModule.initializeApp(FIREBASE_CONFIG);
           const auth = authModule.getAuth(app);
@@ -3011,8 +3202,15 @@
           const storage = storageModule.getStorage(app);
 
           dbService = new FirebaseDBService(FIREBASE_CONFIG, auth, db, storage, authModule, dbModule, storageModule);
+          
+          // Quiet background prefetch to prime cache
+          dbService.fetchGallery("newest").then(items => {
+            if (items && items.length > 0) {
+              localStorage.setItem("imperfect_vessel_cached_community", JSON.stringify(items));
+            }
+          }).catch(() => {});
         } catch (err) {
-          console.error("Failed to initialize Firebase, falling back to mock database:", err);
+          console.warn("Firebase CDN skipped or timed out, running in fast local mode:", err);
           dbService = new MockDBService();
         }
       } else {
@@ -3074,11 +3272,22 @@
     });
 
     // Close Gallery
-    document.getElementById('gallery-close-btn').addEventListener('click', () => {
+    function closeGalleryOverlay() {
       galleryOverlay.classList.remove('visible');
       document.documentElement.classList.remove('overlay-open');
       window.scrollTo(0, 0);
+    }
+
+    document.getElementById('gallery-close-btn').addEventListener('click', () => {
+      closeGalleryOverlay();
     });
+
+    const galleryMobileCloseBtn = document.getElementById('gallery-mobile-close-btn');
+    if (galleryMobileCloseBtn) {
+      galleryMobileCloseBtn.addEventListener('click', () => {
+        closeGalleryOverlay();
+      });
+    }
 
     // Toggle Filters
     let currentFilter = "newest";
@@ -3087,17 +3296,21 @@
 
     if (filterNew && filterPopular) {
       filterNew.addEventListener('click', () => {
+        if (currentFilter === "newest") return;
         filterNew.classList.add('active');
         filterPopular.classList.remove('active');
         currentFilter = "newest";
-        loadGalleryItems();
+        renderedGallerySignature = "";
+        loadGalleryItems(true);
       });
 
       filterPopular.addEventListener('click', () => {
+        if (currentFilter === "popular") return;
         filterPopular.classList.add('active');
         filterNew.classList.remove('active');
         currentFilter = "popular";
-        loadGalleryItems();
+        renderedGallerySignature = "";
+        loadGalleryItems(true);
       });
     }
 
@@ -3198,7 +3411,8 @@
           // Open Gallery overlay smoothly
           const galleryOverlay = document.getElementById('gallery-overlay');
           if (galleryOverlay) {
-            loadGalleryItems();
+            renderedGallerySignature = "";
+            loadGalleryItems(true);
             galleryOverlay.classList.add('visible');
             document.documentElement.classList.add('overlay-open');
             document.querySelectorAll('.overlay-close-btn').forEach(btn => btn.classList.remove('scrolled-down'));
@@ -3233,56 +3447,119 @@
       }
     });
 
-    // Fetch and Render Gallery items
-    async function loadGalleryItems() {
-      galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">Loading community...</div>`;
-      try {
-        const items = await dbService.fetchGallery(currentFilter);
-        galleryGrid.innerHTML = "";
+    // Signature cache to prevent duplicate renders and jarring re-animations
+    let renderedGallerySignature = "";
+
+    function getGallerySignature(items) {
+      if (!items || !items.length) return "empty";
+      return items.map(i => `${i.id || ''}_${i.title || ''}_${(i.createdAt && (i.createdAt.seconds || i.createdAt)) || ''}_${i.imageUrl || ''}`).join('|');
+    }
+
+    // Render Gallery cards instantly to DOM
+    function renderGalleryCards(items, animate = true) {
+      if (!items || items.length === 0) {
+        galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">The community is currently empty. Be the first to publish!</div>`;
+        renderedGallerySignature = "empty";
+        return;
+      }
+
+      const newSig = getGallerySignature(items);
+      // If the rendered items are identical, DO NOTHING! Avoid double-render / flicker completely!
+      if (newSig === renderedGallerySignature) {
+        return;
+      }
+      renderedGallerySignature = newSig;
+
+      galleryGrid.innerHTML = "";
+      items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'gallery-card';
+        if (animate) {
+          card.style.animationDelay = `${Math.min(index * 0.03, 0.25)}s`;
+        } else {
+          card.style.animation = 'none';
+          card.style.opacity = '1';
+        }
         
-        if (items.length === 0) {
-          galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">The community is currently empty. Be the first to publish!</div>`;
-          return;
+        const escapedTitle = (item.title || "Untitled").replace(/"/g, '&quot;');
+        const escapedCreator = (item.creatorName || "Anonymous").replace(/"/g, '&quot;');
+        
+        // Format date
+        let dateStr = "";
+        if (item.createdAt) {
+          const d = new Date(item.createdAt.seconds ? item.createdAt.seconds * 1000 : item.createdAt);
+          dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         }
 
-        items.forEach((item, index) => {
-          const card = document.createElement('div');
-          card.className = 'gallery-card';
-          card.style.animationDelay = `${index * 0.08}s`;
-          
-          const escapedTitle = (item.title || "Untitled").replace(/"/g, '&quot;');
-          const escapedCreator = (item.creatorName || "Anonymous").replace(/"/g, '&quot;');
-          
-          // Format date
-          let dateStr = "";
-          if (item.createdAt) {
-            const d = new Date(item.createdAt.seconds ? item.createdAt.seconds * 1000 : item.createdAt);
-            dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-          }
+        card.innerHTML = `
+          ${dateStr ? `<p class="card-date">${dateStr}</p>` : ''}
+          <div class="card-preview-container">
+            <img class="card-preview" src="${item.imageUrl}" alt="${escapedTitle}">
+          </div>
+          <div class="card-info">
+            <h3 class="card-title">${escapedTitle}</h3>
+            <p class="card-creator">${escapedCreator}</p>
+          </div>
+        `;
 
-          card.innerHTML = `
-            ${dateStr ? `<p class="card-date">${dateStr}</p>` : ''}
-            <div class="card-preview-container">
-              <img class="card-preview" src="${item.imageUrl}" alt="${escapedTitle}" loading="lazy">
-            </div>
-            <div class="card-info">
-              <h3 class="card-title">${escapedTitle}</h3>
-              <p class="card-creator">${escapedCreator}</p>
-            </div>
-          `;
-
-          // Click to enlarge pure image in Lightbox
-          card.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openImageLightbox(item.imageUrl, item.title);
-          });
-
-          galleryGrid.appendChild(card);
+        // Click to enlarge pure image in Lightbox
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openImageLightbox(item.imageUrl, item.title);
         });
 
+        galleryGrid.appendChild(card);
+      });
+    }
+
+    // Instant Stale-While-Revalidate Gallery Loader
+    async function loadGalleryItems(forceAnimate = false) {
+      let hasRendered = renderedGallerySignature !== "" && renderedGallerySignature !== "empty";
+
+      // 1. Instant Cache: Render cached community items immediately with 0ms latency if not already rendered
+      if (!hasRendered || forceAnimate) {
+        let renderedFromCache = false;
+        try {
+          const cachedRaw = localStorage.getItem("imperfect_vessel_cached_community");
+          if (cachedRaw) {
+            const cachedItems = JSON.parse(cachedRaw);
+            if (Array.isArray(cachedItems) && cachedItems.length > 0) {
+              renderGalleryCards(cachedItems, true);
+              renderedFromCache = true;
+              hasRendered = true;
+            }
+          }
+        } catch (e) {}
+
+        // Fallback: If no cache yet, render mock/local data instantly so user never sees empty delay
+        if (!renderedFromCache) {
+          new MockDBService();
+          const localItems = JSON.parse(localStorage.getItem("imperfect_vessel_gallery") || "[]");
+          if (localItems.length > 0) {
+            renderGalleryCards(localItems, true);
+            hasRendered = true;
+          } else if (!hasRendered) {
+            galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px;">Loading community...</div>`;
+          }
+        }
+      }
+
+      // 2. Background Revalidation: Fetch latest updates from cloud with a strict 2.5s timeout
+      try {
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Network sync timeout")), 2500)
+        );
+        const fetchPromise = dbService ? dbService.fetchGallery(currentFilter) : Promise.resolve([]);
+        
+        const freshItems = await Promise.race([fetchPromise, timeoutPromise]);
+        if (freshItems && freshItems.length > 0) {
+          // If items are already rendered (from cache or previous visit), do not replay entrance animation!
+          const shouldAnimate = !hasRendered;
+          renderGalleryCards(freshItems, shouldAnimate);
+          localStorage.setItem("imperfect_vessel_cached_community", JSON.stringify(freshItems));
+        }
       } catch (err) {
-        console.error("Failed to load gallery items:", err);
-        galleryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; opacity: 0.5; font-size: 14px; color: red;">Failed to load community cards.</div>`;
+        console.warn("Gallery network sync timed out or offline, kept cached/local data:", err);
       }
     }
 
@@ -3329,10 +3606,16 @@
       
       document.getElementById('free-arrange-btn').style.display = 'none';
       document.getElementById('arrange-tools').style.display = 'block';
+      if (window.innerWidth < 768) {
+        uiPanel.classList.add('visible');
+        updateCachedPanelDimensions();
+      }
       
       // Show action buttons container
       document.getElementById('post-action-container').classList.add('visible');
       document.getElementById('let-go-btn').classList.add('hidden');
+      const doneBtn = document.getElementById('done-arrange-btn');
+      if (doneBtn) doneBtn.classList.remove('hidden');
       
       const goldSvg = document.getElementById('gold-underlay-svg');
       if (goldSvg) {
@@ -3341,6 +3624,8 @@
       
       const finalMessage = document.getElementById('final-message');
       if (finalMessage) {
+        finalMessage.style.opacity = '0';
+        finalMessage.style.pointerEvents = 'none';
         finalMessage.classList.remove('visible');
       }
 
@@ -3415,6 +3700,13 @@
     const aboutBtn = document.getElementById('about-btn');
     const aboutOverlay = document.getElementById('about-overlay');
     const aboutCloseBtn = document.getElementById('about-close-btn');
+    const aboutMobileCloseBtn = document.getElementById('about-mobile-close-btn');
+
+    function closeAboutOverlay() {
+      aboutOverlay.classList.remove('visible');
+      document.documentElement.classList.remove('overlay-open');
+      window.scrollTo(0, 0);
+    }
 
     if (aboutBtn && aboutOverlay && aboutCloseBtn) {
       aboutBtn.addEventListener('click', (e) => {
@@ -3426,17 +3718,20 @@
 
       aboutCloseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        aboutOverlay.classList.remove('visible');
-        document.documentElement.classList.remove('overlay-open');
-        window.scrollTo(0, 0);
+        closeAboutOverlay();
       });
+
+      if (aboutMobileCloseBtn) {
+        aboutMobileCloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeAboutOverlay();
+        });
+      }
       
       // Close overlay on Escape key press
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && aboutOverlay.classList.contains('visible')) {
-          aboutOverlay.classList.remove('visible');
-          document.documentElement.classList.remove('overlay-open');
-          window.scrollTo(0, 0);
+          closeAboutOverlay();
         }
       });
     }
@@ -3456,3 +3751,35 @@
     if (aboutOverlay) aboutOverlay.addEventListener('scroll', handleOverlayScroll);
     if (galleryOverlay) galleryOverlay.addEventListener('scroll', handleOverlayScroll);
 
+    // ── About Accordion (mobile only ≤820px) ──────────────────────────
+    function initAboutAccordion() {
+      const accordions = document.querySelectorAll('.about-accordion');
+      if (!accordions.length) return;
+
+      accordions.forEach(section => {
+        const trigger = section.querySelector('.accordion-trigger');
+        if (!trigger) return;
+
+        trigger.addEventListener('click', () => {
+          if (window.innerWidth > 820) return; // desktop: no-op
+
+          const isOpen = section.classList.contains('is-open') || section.dataset.open === 'true';
+
+          // Close all others first
+          accordions.forEach(other => {
+            other.classList.remove('is-open');
+            delete other.dataset.open;
+            const otherTrigger = other.querySelector('.accordion-trigger');
+            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+          });
+
+          // Toggle clicked one
+          if (!isOpen) {
+            section.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    }
+
+    initAboutAccordion();
