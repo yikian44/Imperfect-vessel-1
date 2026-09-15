@@ -1970,8 +1970,8 @@
         display: none !important;
       }
 
-      /* Bottom sticky close bar */
-      .about-mobile-close-bar {
+      /* Bottom fixed close bar when overlay is visible */
+      #about-overlay.visible ~ .about-mobile-close-bar {
         display: flex !important;
       }
 
@@ -2517,11 +2517,11 @@
         font-size: 9.5px;
       }
 
-      /* Mobile: hide floating X, show bottom close bar */
+      /* Mobile: hide floating X, show bottom close bar when visible */
       #gallery-overlay .overlay-close-btn {
         display: none !important;
       }
-      .gallery-mobile-close-bar {
+      #gallery-overlay.visible ~ .gallery-mobile-close-bar {
         display: flex !important;
       }
     }
