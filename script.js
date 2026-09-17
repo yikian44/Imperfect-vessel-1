@@ -3247,12 +3247,17 @@
     }
 
     // Cancel Publish
-    document.getElementById('publish-cancel-btn').addEventListener('click', () => {
-      document.getElementById('publish-art-title').blur();
-      document.getElementById('publish-creator-name').blur();
-      publishModal.classList.remove('visible');
-      window.scrollTo(0, 0);
-    });
+    const publishCancelBtn = document.getElementById('publish-cancel-btn');
+    if (publishCancelBtn) {
+      publishCancelBtn.addEventListener('click', () => {
+        const titleEl = document.getElementById('publish-art-title');
+        const creatorEl = document.getElementById('publish-creator-name');
+        if (titleEl) titleEl.blur();
+        if (creatorEl) creatorEl.blur();
+        if (publishModal) publishModal.classList.remove('visible');
+        window.scrollTo(0, 0);
+      });
+    }
 
     // Handle mobile keyboard dismiss scroll reset
     const artTitleInput = document.getElementById('publish-art-title');
@@ -3274,9 +3279,12 @@
       window.scrollTo(0, 0);
     }
 
-    document.getElementById('gallery-close-btn').addEventListener('click', () => {
-      closeGalleryOverlay();
-    });
+    const galleryCloseBtn = document.getElementById('gallery-close-btn');
+    if (galleryCloseBtn) {
+      galleryCloseBtn.addEventListener('click', () => {
+        closeGalleryOverlay();
+      });
+    }
 
     const galleryMobileCloseBtn = document.getElementById('gallery-mobile-close-btn');
     if (galleryMobileCloseBtn) {
@@ -3311,15 +3319,19 @@
     }
 
     // Submit Publish
-    document.getElementById('publish-submit-btn').addEventListener('click', async () => {
-      
-      const title = document.getElementById('publish-art-title').value.trim();
-      const creatorName = document.getElementById('publish-creator-name').value.trim();
-      
-      if (!title) {
-        alert("Please enter a title for your artwork.");
-        return;
-      }
+    const publishSubmitBtn = document.getElementById('publish-submit-btn');
+    if (publishSubmitBtn) {
+      publishSubmitBtn.addEventListener('click', async () => {
+        
+        const titleEl = document.getElementById('publish-art-title');
+        const creatorEl = document.getElementById('publish-creator-name');
+        const title = titleEl ? titleEl.value.trim() : '';
+        const creatorName = creatorEl ? creatorEl.value.trim() : '';
+        
+        if (!title) {
+          alert("Please enter a title for your artwork.");
+          return;
+        }
 
       // Save creator name preference
       if (creatorName) {
@@ -3442,6 +3454,7 @@
         submitBtn.disabled = false;
       }
     });
+  }
 
     // Signature cache to prevent duplicate renders and jarring re-animations
     let renderedGallerySignature = "";
