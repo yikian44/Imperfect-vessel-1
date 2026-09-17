@@ -34,20 +34,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Handle save endpoint if needed
-  if (req.method === 'POST' && req.url === '/save') {
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-      const buffer = Buffer.concat(chunks);
-      const outputFile = path.join(PUBLIC_DIR, 'imperfect-vessel.gif');
-      fs.writeFileSync(outputFile, buffer);
-      console.log(`Saved ${buffer.length} bytes to ${outputFile}`);
-      res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`Saved ${buffer.length} bytes successfully`);
-    });
-    return;
-  }
 
   // Parse URL
   let parsedUrl = req.url.split('?')[0];
